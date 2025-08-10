@@ -1,3 +1,15 @@
+import { ButtonText } from "@/components/ui/button";
+import { CloseIcon } from "@/components/ui/icon";
+import {
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@/components/ui/modal";
+
 import { useAppContext } from "@/components/context/AppContextProvider";
 import {
   Avatar,
@@ -29,6 +41,7 @@ import React, { useState } from "react";
 import { Share, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Account = () => {
+  const [showModal, setShowModal] = useState(false);
   const {
     userMethods: { user },
   } = useAppContext();
@@ -40,125 +53,229 @@ const Account = () => {
     });
   }
   return (
-    <Box className="flex-1 bg-primary-950">
-      <SafeAreaView className="px-4">
-        <HStack space="md" className=" items-center">
-          <Avatar size={"lg"}>
-            <AvatarFallbackText>{user?.name}</AvatarFallbackText>
-            <AvatarImage
-              source={{
-                uri: user?.profile_picture ?? undefined,
-              }}
-            />
-            {<AvatarBadge />}
-          </Avatar>
-          <Box>
-            <Heading className="capitalize text-typography-300">
-              {user?.name}
-            </Heading>
-            <HStack space="md" className=" items-center">
-              <Text className="text-typography-400">{`${
-                user?.id.split("-")[0]
-              }...`}</Text>
-              <Button
-                variant="link"
-                onPress={() => {
-                  Share.share({ message: user?.id!, title: "SGK ID" });
+    <>
+      <Box className="flex-1 bg-primary-950">
+        <SafeAreaView className="px-4">
+          <HStack space="md" className=" items-center">
+            <Avatar size={"lg"}>
+              <AvatarFallbackText>{user?.name}</AvatarFallbackText>
+              <AvatarImage
+                source={{
+                  uri: user?.profile_picture ?? undefined,
                 }}
-              >
-                <ButtonIcon as={Copy} />
-              </Button>
-            </HStack>
-          </Box>
-        </HStack>
-        <Divider className="my-4" />
-        <VStack>
-          <Link href={"/stacks/profile"} asChild>
-            <TouchableOpacity>
-              <HStack space="md" className=" items-center justify-between py-4">
-                <HStack space="xl" className="items-center ">
-                  <Icon
-                    className="text-primary-600 w-8 h-8"
-                    as={CircleUserRound}
-                  />
-                  <Text size="lg" className="text-typography-100 font-medium ">
-                    Profile
-                  </Text>
-                </HStack>
-                <Icon className="text-typography-400" as={ChevronRight} />
-              </HStack>
-            </TouchableOpacity>
-          </Link>
-          <Link href={"/stacks/members"} asChild>
-            <TouchableOpacity>
-              <HStack space="md" className=" items-center justify-between py-4">
-                <HStack space="xl" className="items-center ">
-                  <Icon className="text-primary-600 w-8 h-8" as={Users} />
-                  <Text size="lg" className="text-typography-100 font-medium ">
-                    Groups & Families
-                  </Text>
-                </HStack>
-                <Icon className="text-typography-400" as={ChevronRight} />
-              </HStack>
-            </TouchableOpacity>
-          </Link>
-          <Link href={"/stacks/subscriptions"} asChild>
-            <TouchableOpacity>
-              <HStack space="md" className=" items-center justify-between py-4">
-                <HStack space="xl" className="items-center ">
-                  <Icon className="text-primary-600 w-8 h-8" as={DollarSign} />
-                  <Text size="lg" className="text-typography-100 font-medium ">
-                    Subscriptions
-                  </Text>
-                </HStack>
-                <Icon className="text-typography-400" as={ChevronRight} />
-              </HStack>
-            </TouchableOpacity>
-          </Link>
-          <Link href={"/stacks/payment-history"} asChild>
-            <TouchableOpacity>
-              <HStack space="md" className=" items-center justify-between py-4">
-                <HStack space="xl" className="items-center ">
-                  <Icon className="text-primary-600 w-8 h-8" as={FileText} />
-                  <Text size="lg" className="text-typography-100 font-medium ">
-                    Payment history
-                  </Text>
-                </HStack>
-                <Icon className="text-typography-400" as={ChevronRight} />
-              </HStack>
-            </TouchableOpacity>
-          </Link>
-          <Link href={"/stacks/messages"} asChild>
-            <TouchableOpacity>
-              <HStack space="md" className=" items-center justify-between py-4">
-                <HStack space="xl" className="items-center ">
-                  <Icon
-                    className="text-primary-600 w-8 h-8"
-                    as={MessageCircleQuestion}
-                  />
-                  <Text size="lg" className="text-typography-100 font-medium ">
-                    Contact Support
-                  </Text>
-                </HStack>
-                <Icon className="text-typography-400" as={ChevronRight} />
-              </HStack>
-            </TouchableOpacity>
-          </Link>
+              />
+              {<AvatarBadge />}
+            </Avatar>
+            <Box className="flex-1">
+              <Heading className="capitalize text-typography-300">
+                {user?.name}
+              </Heading>
 
-          <TouchableOpacity onPress={logOut}>
-            <HStack space="md" className=" items-center justify-between py-4">
-              <HStack space="xl" className="items-center ">
-                <Icon className="text-primary-600 w-8 h-8" as={LogOut} />
-                <Text size="lg" className="text-typography-100 font-medium ">
-                  {loggingOut ? "Signing Out..." : "Sign Out"}
-                </Text>
+              <HStack space="md" className=" items-center">
+                <Text className="text-typography-400">{`${
+                  user?.id.split("-")[0]
+                }...`}</Text>
+                <Button
+                  variant="link"
+                  onPress={() => {
+                    Share.share({
+                      message: user?.id!,
+                      title: "SGK ID",
+                    });
+                  }}
+                >
+                  <ButtonIcon as={Copy} />
+                </Button>
+                <Box className=" flex-1 ">
+                  <HStack className=" justify-end">
+                    <Text
+                      className=" text-primary-200 italic text-end"
+                      size="sm"
+                    >
+                      {user?.is_agent ? "Agent account" : "Client account"}
+                    </Text>
+                  </HStack>
+                </Box>
               </HStack>
-              <Icon className="text-typography-400" as={ChevronRight} />
-            </HStack>
-          </TouchableOpacity>
-        </VStack>
-      </SafeAreaView>
-    </Box>
+            </Box>
+          </HStack>
+          <Divider className="my-4" />
+          <VStack>
+            <Link href={"/stacks/profile"} asChild>
+              <TouchableOpacity>
+                <HStack
+                  space="md"
+                  className=" items-center justify-between py-4"
+                >
+                  <HStack space="xl" className="items-center ">
+                    <Icon
+                      className="text-primary-600 w-8 h-8"
+                      as={CircleUserRound}
+                    />
+                    <Text
+                      size="lg"
+                      className="text-typography-100 font-medium "
+                    >
+                      Profile
+                    </Text>
+                  </HStack>
+                  <Icon className="text-typography-400" as={ChevronRight} />
+                </HStack>
+              </TouchableOpacity>
+            </Link>
+            {!user?.is_agent && (
+              <>
+                <Link href={"/stacks/members"} asChild>
+                  <TouchableOpacity>
+                    <HStack
+                      space="md"
+                      className=" items-center justify-between py-4"
+                    >
+                      <HStack space="xl" className="items-center ">
+                        <Icon className="text-primary-600 w-8 h-8" as={Users} />
+                        <Text
+                          size="lg"
+                          className="text-typography-100 font-medium "
+                        >
+                          Groups & Families
+                        </Text>
+                      </HStack>
+                      <Icon className="text-typography-400" as={ChevronRight} />
+                    </HStack>
+                  </TouchableOpacity>
+                </Link>
+                <Link href={"/stacks/subscriptions"} asChild>
+                  <TouchableOpacity>
+                    <HStack
+                      space="md"
+                      className=" items-center justify-between py-4"
+                    >
+                      <HStack space="xl" className="items-center ">
+                        <Icon
+                          className="text-primary-600 w-8 h-8"
+                          as={DollarSign}
+                        />
+                        <Text
+                          size="lg"
+                          className="text-typography-100 font-medium "
+                        >
+                          Subscriptions
+                        </Text>
+                      </HStack>
+                      <Icon className="text-typography-400" as={ChevronRight} />
+                    </HStack>
+                  </TouchableOpacity>
+                </Link>
+                <Link href={"/stacks/payment-history"} asChild>
+                  <TouchableOpacity>
+                    <HStack
+                      space="md"
+                      className=" items-center justify-between py-4"
+                    >
+                      <HStack space="xl" className="items-center ">
+                        <Icon
+                          className="text-primary-600 w-8 h-8"
+                          as={FileText}
+                        />
+                        <Text
+                          size="lg"
+                          className="text-typography-100 font-medium "
+                        >
+                          Payment history
+                        </Text>
+                      </HStack>
+                      <Icon className="text-typography-400" as={ChevronRight} />
+                    </HStack>
+                  </TouchableOpacity>
+                </Link>
+                <Link href={"/stacks/messages"} asChild>
+                  <TouchableOpacity>
+                    <HStack
+                      space="md"
+                      className=" items-center justify-between py-4"
+                    >
+                      <HStack space="xl" className="items-center ">
+                        <Icon
+                          className="text-primary-600 w-8 h-8"
+                          as={MessageCircleQuestion}
+                        />
+                        <Text
+                          size="lg"
+                          className="text-typography-100 font-medium "
+                        >
+                          Contact Support
+                        </Text>
+                      </HStack>
+                      <Icon className="text-typography-400" as={ChevronRight} />
+                    </HStack>
+                  </TouchableOpacity>
+                </Link>
+              </>
+            )}
+
+            <TouchableOpacity
+              onPress={() => {
+                setShowModal(true);
+              }}
+            >
+              <HStack space="md" className=" items-center justify-between py-4">
+                <HStack space="xl" className="items-center ">
+                  <Icon className="text-primary-600 w-8 h-8" as={LogOut} />
+                  <Text size="lg" className="text-typography-100 font-medium ">
+                    {loggingOut ? "Signing Out..." : "Sign Out"}
+                  </Text>
+                </HStack>
+                <Icon className="text-typography-400" as={ChevronRight} />
+              </HStack>
+            </TouchableOpacity>
+          </VStack>
+        </SafeAreaView>
+      </Box>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+      >
+        <ModalBackdrop />
+        <ModalContent className=" bg-error-100 bo">
+          <ModalHeader>
+            <Heading size="lg">Sign Out</Heading>
+            <ModalCloseButton>
+              <Icon as={CloseIcon} />
+            </ModalCloseButton>
+          </ModalHeader>
+          <ModalBody>
+            <Text className=" text-typography-900">
+              You are about to sign out from SGK Commanders. You won't be able
+              to get real time security updates anymore. Are you sure you want
+              to proceed?
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              size="sm"
+              action="primary"
+              className="mr-3"
+              onPress={() => {
+                setShowModal(false);
+              }}
+            >
+              <ButtonText>Cancel</ButtonText>
+            </Button>
+            <Button
+              size="sm"
+              action="negative"
+              className="border-0"
+              onPress={logOut}
+            >
+              <ButtonText>Sign Out</ButtonText>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 export default Account;

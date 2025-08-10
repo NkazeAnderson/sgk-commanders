@@ -34,7 +34,11 @@ import { primaryColors } from "@/constants";
 import { uploadBase64ImageToSupabase } from "@/supabase/pictures";
 import { addMessageToSOS, createSOS, resolveSOS } from "@/supabase/sos";
 import { sosT, withoutIdT } from "@/types";
-import { getImageFromGallery, getUserLocation } from "@/utils";
+import {
+  getGoogleMapsDirectionURL,
+  getImageFromGallery,
+  getUserLocation,
+} from "@/utils";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
 import { ChevronUp, Send, X } from "lucide-react-native";
@@ -71,7 +75,7 @@ const SOS = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const {
-    userMethods: { user },
+    userMethods: { user, userLocation },
     sosMethods: { sos, activeSos, lastSosResponse, setLastSosResponse },
   } = useAppContext();
   const sosData = activeSos;
@@ -262,7 +266,13 @@ const SOS = () => {
                 <Button
                   className=" flex-1"
                   onPress={() => {
-                    router.push("/tabs");
+                    if (userLocation && activeSos) {
+                      const url = getGoogleMapsDirectionURL(
+                        userLocation,
+                        activeSos.location
+                      );
+                      router.navigate(url);
+                    }
                   }}
                 >
                   <ButtonText>Go</ButtonText>
@@ -293,13 +303,16 @@ const SOS = () => {
                 </Center>
                 <Heading className=" text-primary-50 my-2">Report</Heading>
                 <Form space="lg">
-                  <Textarea>
+                  <Textarea className=" text-typography-0">
                     <TextareaInput
                       value={reportMessage}
                       onChangeText={(text) => {
                         setReportMessage(text);
                       }}
                       placeholder="Report message"
+                      className=" text-typography-0"
+                      selectionColor={"white"}
+                      style={{ color: "white" }}
                     />
                   </Textarea>
 

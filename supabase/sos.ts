@@ -38,7 +38,7 @@ export async function resolveSOS(data:sosResponseT) {
 }
 
 export async function getMyLastResponse(userId:string){
- const res = await sosResponseTableRef.select("*").eq("response_by", userId).order('created_at', { ascending: false }).limit(1).single()
- const parsedData = sosResponseSchema.parse(res.data)
- return {data:parsedData, error:res.error}
+ const res = await sosResponseTableRef.select("*").eq("response_by", userId).order('created_at', { ascending: false }).limit(1)
+ const parsedData = res.data?  sosResponseSchema.array().parse(res.data): null
+ return {data:parsedData ? parsedData[0] : undefined, error:res.error}
 }

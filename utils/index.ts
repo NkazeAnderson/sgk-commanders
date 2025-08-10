@@ -1,14 +1,16 @@
+import { locationT } from "@/types";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import { Href } from "expo-router";
 import { z, ZodTypeAny } from "zod";
 
 export const hookFormErrorHandler = (error: any) => {
-    console.log(error)
+    console.error(error)
 }
 
 export const unknownErrorHandler = (error: any) => {
-    console.log(error)
+    console.error(error)
 }
 
 export const parseDatabaseResponse = <T extends ZodTypeAny>(res: PostgrestSingleResponse<any>|PostgrestSingleResponse<any[]>, schema:T) => {
@@ -85,4 +87,8 @@ export const getDistanceInMeters = (
             Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
-};                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+}; 
+
+export function getGoogleMapsDirectionURL(start:locationT, end:locationT) {
+    return `https://www.google.com/maps/dir/?api=1&origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}` as Href
+}

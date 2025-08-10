@@ -84,9 +84,7 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
     if (user?.is_agent) {
       getMyLastResponse(user.id)
         .then((res) => {
-          res.data
-            ? sosMethods.setLastSosResponse(res.data)
-            : unknownErrorHandler(res.error);
+          res.data && sosMethods.setLastSosResponse(res.data);
         })
         .catch((e) => {
           unknownErrorHandler(e);

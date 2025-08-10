@@ -23,6 +23,8 @@ const Profile = () => {
     ? new Date() > new Date(user.subcriptionExpiration)
     : true;
 
+  const groupKeys = Object.keys(myGroups);
+
   return (
     <>
       <View className="flex-1 bg-primary-900 px-4 ">
@@ -104,9 +106,12 @@ const Profile = () => {
                 {user?.is_agent ? "Agent" : "Client"}
               </Text>
             </Box>
-            <Heading className=" text-primary-500">Groups & Families</Heading>
-            {myGroups &&
-              Object.keys(myGroups).map((item) => {
+            {Boolean(groupKeys.length) && !user?.is_agent && (
+              <Heading className=" text-primary-500">Groups & Families</Heading>
+            )}
+            {Boolean(groupKeys.length) &&
+              !user?.is_agent &&
+              groupKeys.map((item) => {
                 const membership = myGroups[item].find(
                   (member) => member.member_id?.id === user?.id
                 )!;

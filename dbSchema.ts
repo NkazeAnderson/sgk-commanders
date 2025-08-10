@@ -35,17 +35,17 @@ export const usersTable = pgTable(tables.users, {
 
 export const GroupsTable = pgTable(tables.groups,{
   id:uuid().notNull().primaryKey().defaultRandom(),
-  admin_id: uuid().notNull().references(() => usersTable.id),
+  admin_id: uuid().notNull().references(() => usersTable.id, {onDelete: "cascade"}),
   is_organisation:boolean().notNull().default(false),
   name:varchar().notNull(),
-  subcription: uuid().references(() => SubscriptionsTable.id),
+  subcription: uuid().references(() => SubscriptionsTable.id, {onDelete:"restrict"}),
   subcriptionExpiration:date({mode:"string"}).defaultNow()
 })
 
 export const GroupMembersTable = pgTable(tables.group_members, {
   id: uuid().notNull().primaryKey().defaultRandom(),
   group_id: uuid().notNull().references(() => GroupsTable.id, {onDelete:"cascade"}),
-  member_id:uuid().references(() => usersTable.id),
+  member_id:uuid().references(() => usersTable.id, {onDelete:"cascade"}),
   role:varchar({length:50}).notNull(),
   invitation_accepted: boolean(),
   created_at: timestamp({mode:"string"}).defaultNow(), // to be used for cron job
@@ -54,7 +54,7 @@ export const GroupMembersTable = pgTable(tables.group_members, {
 
 export const SOSTable = pgTable(tables.sos,{
   id:uuid().notNull().primaryKey().defaultRandom(),
-  sent_by: uuid().notNull().references(()=>usersTable.id),
+  sent_by: uuid().notNull().references(()=>usersTable.id, {onDelete:"cascade"}),
   message:varchar(),
   resolved:boolean(),
   created_at: timestamp({mode:"string"}).defaultNow(),
@@ -64,7 +64,7 @@ export const SOSTable = pgTable(tables.sos,{
 
 export const SOSResponsesTable = pgTable(tables.sos_responses,{
   id:uuid().notNull().primaryKey().defaultRandom(),
-  sos: uuid().references(() => SOSTable.id).notNull(),
+  sos: uuid().references(() => SOSTable.id, {onDelete:"cascade"}).notNull(),
   response_by: uuid().notNull().references(()=>usersTable.id, {onDelete:"cascade"}),
   description:varchar(),
   images:varchar().array(),

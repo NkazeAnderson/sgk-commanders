@@ -3,6 +3,7 @@ import { userModes } from "./constants";
 import { groupMembersSchema, groupsSchema, messagesSchema, notificationsSchema, paymentsSchema, sosResponseSchema, sosSchema, subscriptionsSchema, usersSchema } from "./zodSchema";
 
 export type userModesT = typeof userModes[number]
+export type locationT = {longitude:number, latitude:number}
 
 export type userT = z.infer<typeof usersSchema>
 export type groupT = z.infer<typeof groupsSchema>

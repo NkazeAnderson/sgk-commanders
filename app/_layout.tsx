@@ -2,6 +2,7 @@ import AppContextProvider from "@/components/context/AppContextProvider";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import useToast from "@/hooks/useToast";
+import "@/localisation/i18n";
 import { supabase } from "@/supabase";
 import { acceptGroupInvite } from "@/supabase/groups";
 import { useFonts } from "expo-font";
@@ -12,6 +13,8 @@ import { useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+//@eslint-ignore
+import "@/localisation/i18n";
 
 export default function RootLayout() {
   const [loaded] = useFonts({

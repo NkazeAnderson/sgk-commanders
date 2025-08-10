@@ -15,8 +15,10 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { ExampleTranslate } from "@/localisation/example";
 import { addSOSResponse, joinedSOSSchemaT } from "@/supabase/sos";
 import { sosResponseT, withoutIdT } from "@/types";
+import { getGoogleMapsDirectionURL } from "@/utils";
 import { Link, router } from "expo-router";
 import {
   Bell,
@@ -111,6 +113,12 @@ const Home = () => {
 
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
+  const availableSOS = sos.filter((item) => {
+    if (activeSos) {
+      return activeSos.id === item.id;
+    }
+    return !item.resolved;
+  });
 
   async function interveneSOS(
     sosResponse: withoutIdT<sosResponseT>,
@@ -267,68 +275,76 @@ const Home = () => {
                 </Link>
               </Center>
             )}
-            {user?.is_agent && Boolean(sos.length) && (
+            {user?.is_agent && Boolean(availableSOS.length) && (
               <ScrollView>
-                {sos
-                  .filter((item) => {
-                    if (activeSos) {
-                      return activeSos.id === item.id;
-                    }
-                    return true;
-                  })
-                  .map((item) => {
-                    return (
-                      <TouchableOpacity
-                        key={item.id}
-                        onPress={() => {
-                          router.push("/tabs/sos");
-                        }}
-                      >
-                        <HStack space="sm" className=" items-center p-2">
-                          <Avatar>
-                            <AvatarFallbackText>
-                              {item.sent_by.name}
-                            </AvatarFallbackText>
-                            <AvatarImage
-                              source={{
-                                uri: item.sent_by.profile_picture ?? "/",
-                              }}
+                {availableSOS.map((item) => {
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => {
+                        router.push("/tabs/sos");
+                      }}
+                    >
+                      <HStack space="sm" className=" items-center p-2">
+                        <Avatar>
+                          <AvatarFallbackText>
+                            {item.sent_by.name}
+                          </AvatarFallbackText>
+                          <AvatarImage
+                            source={{
+                              uri: item.sent_by.profile_picture ?? "/",
+                            }}
+                          />
+                        </Avatar>
+                        <Box className="flex-grow">
+                          <Heading className=" text-typography-100 capitalize">
+                            {item.sent_by.name}
+                          </Heading>
+                          <Text size="sm">{item.message}</Text>
+                        </Box>
+                        <HStack space="sm">
+                          <Button
+                            action={
+                              activeSos && activeSos.id === item.id
+                                ? "positive"
+                                : "primary"
+                            }
+                            onPress={(e) => {
+                              e.stopPropagation();
+                              !activeSos
+                                ? interveneSOS(
+                                    {
+                                      sos: item.id!,
+                                      response_by: user.id!,
+                                    },
+                                    item
+                                  )
+                                : userLocation
+                                ? router.navigate(
+                                    getGoogleMapsDirectionURL(
+                                      userLocation,
+                                      activeSos.location
+                                    )
+                                  )
+                                : null;
+                            }}
+                          >
+                            <ButtonIcon
+                              as={activeSos ? CircleArrowRight : Siren}
                             />
-                          </Avatar>
-                          <Box className="flex-grow">
-                            <Heading className=" text-typography-100 capitalize">
-                              {item.sent_by.name}
-                            </Heading>
-                            <Text size="sm">{item.message}</Text>
-                          </Box>
-                          <HStack space="sm">
-                            <Button
-                              action={
-                                activeSos && activeSos.id === item.id
-                                  ? "positive"
-                                  : "primary"
-                              }
-                              onPress={(e) => {
-                                e.stopPropagation();
-                                interveneSOS(
-                                  {
-                                    sos: item.id!,
-                                    response_by: user.id!,
-                                  },
-                                  item
-                                );
-                              }}
-                            >
-                              <ButtonIcon
-                                as={activeSos ? CircleArrowRight : Siren}
-                              />
-                            </Button>
-                          </HStack>
+                          </Button>
                         </HStack>
-                      </TouchableOpacity>
-                    );
-                  })}
+                      </HStack>
+                    </TouchableOpacity>
+                  );
+                })}
               </ScrollView>
+            )}
+            <ExampleTranslate />
+            {user?.is_agent && !Boolean(availableSOS.length) && (
+              <Center className="flex-1">
+                <Text className="text-success-0">No sos posted</Text>
+              </Center>
             )}
           </ScrollView>
         </Animated.View>

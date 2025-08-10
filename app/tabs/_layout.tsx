@@ -6,9 +6,11 @@ import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
 import { primaryColors, tables } from "@/constants";
 import { registerToPostgresChanges } from "@/supabase/realtime";
+import { joinedSOSSchemaT } from "@/supabase/sos";
+import { getUserById } from "@/supabase/users";
 import { groupT } from "@/types";
 import { getUserLocation, unknownErrorHandler } from "@/utils";
-import { usersSchema } from "@/zodSchema";
+import { sosSchema, usersSchema } from "@/zodSchema";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -16,8 +18,10 @@ import React, { useEffect, useState } from "react";
 const cachedGroups: groupT[] = [];
 
 const _layout = () => {
-  const { setUserLocation, user, setUser, myGroups, setMyGroups } =
-    useAppContext().userMethods;
+  const {
+    userMethods: { setUserLocation, user, setUser, myGroups, setMyGroups },
+    sosMethods: { setSos },
+  } = useAppContext();
   const [
     postgresChangesRegistrationStatus,
     setPostgresChangesRegistrationStatus,
@@ -71,6 +75,32 @@ const _layout = () => {
               }
             } else if (payload.table === tables.group_members) {
               setUser((prev) => (prev ? { ...prev } : prev));
+            } else if (payload.table === tables.sos) {
+              if (
+                payload.eventType === "INSERT" ||
+                payload.eventType === "UPDATE"
+              ) {
+                const sos = sosSchema.parse(payload.new);
+                getUserById(sos.sent_by).then((res) => {
+                  if (res.data && !Array.isArray(res.data)) {
+                    const joinedSos: joinedSOSSchemaT = {
+                      ...sos,
+                      sent_by: res.data,
+                    };
+                    setSos((prev) => {
+                      const index = prev.findIndex(
+                        (item) => item.id === joinedSos.id
+                      );
+                      if (index >= 0) {
+                        prev[index] = joinedSos;
+                        return prev;
+                      } else {
+                        return [joinedSos, ...prev];
+                      }
+                    });
+                  }
+                });
+              }
             }
           } catch (error) {
             unknownErrorHandler(error);
