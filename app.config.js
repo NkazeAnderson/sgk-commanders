@@ -1,19 +1,42 @@
-{
+const ENV = process.env.environment || "development";
+
+const configByEnv = {
+  development: {
+    name: "SGK Commanders (Dev)",
+    iosBundleIdentifier: "com.searockettech.sgkcommanders.dev",
+    androidPackage: "com.searockettech.sgkcommanders.dev",
+  },
+  preview: {
+    name: "SGK Commanders (Preview)",
+    iosBundleIdentifier: "com.searockettech.sgkcommanders.preview",
+    androidPackage: "com.searockettech.sgkcommanders.preview",
+  },
+  production: {
+    name: "SGK Commanders",
+    iosBundleIdentifier: "com.searockettech.sgkcommanders",
+    androidPackage: "com.searockettech.sgkcommanders",
+  },
+};
+
+const envConfig = configByEnv[ENV];
+
+export default {
   "expo": {
-    "name": "sgk-commanders",
+    "name": envConfig.name,
     "slug": "sgk-commanders",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "sgkcommanders",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": envConfig.iosBundleIdentifier
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -25,19 +48,19 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.sea_rocket_tech.sgkcommanders"
+      "package": envConfig.androidPackage
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

@@ -4,10 +4,11 @@ import useToast from "@/hooks/useToast";
 import { useUser } from "@/hooks/useUser";
 import { supabase } from "@/supabase";
 import { getMessages } from "@/supabase/messages";
+import { getSettings } from "@/supabase/settings";
 import { getAllSOS, getMyLastResponse } from "@/supabase/sos";
 import { getSubscriptions } from "@/supabase/subscriptions";
 import { getUserById } from "@/supabase/users";
-import { subscriptionT, userT } from "@/types";
+import { settingsT, subscriptionT, userT } from "@/types";
 import { unknownErrorHandler } from "@/utils";
 import { router } from "expo-router";
 import React, {
@@ -24,6 +25,7 @@ type appContextT = {
   sosMethods: ReturnType<typeof useSOS>;
   messagesMethods: ReturnType<typeof useMessage>;
   subscriptions: subscriptionT[];
+  settings: settingsT["settings"];
 };
 
 const AppContext = createContext<appContextT | null>(null);
@@ -38,6 +40,7 @@ export const useAppContext = () => {
 
 const AppContextProvider: FC<PropsWithChildren> = (props) => {
   const [subscriptions, setSubscriptions] = useState<subscriptionT[]>([]);
+  const [settings, setSettings] = useState<settingsT["settings"]>({});
   const userMethods = useUser();
   const sosMethods = useSOS();
   const messagesMethods = useMessage();
@@ -62,6 +65,9 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
           if (Array.isArray(res.data)) {
             setSubscriptions(res.data);
           }
+        });
+        getSettings().then((res) => {
+          res && setSettings(res);
         });
       }
       if (event === "SIGNED_OUT") {
@@ -108,7 +114,13 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
 
   return (
     <AppContext.Provider
-      value={{ userMethods, sosMethods, messagesMethods, subscriptions }}
+      value={{
+        userMethods,
+        sosMethods,
+        messagesMethods,
+        subscriptions,
+        settings,
+      }}
     >
       {props.children}
     </AppContext.Provider>

@@ -1,5 +1,28 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import { defineConfig } from 'drizzle-kit';
+import Prompt from "prompt-sync";
+
+const prompt = Prompt()
+ const environment = prompt("What environment do you want to loaded?\nD -> Development\nS -> Staging\nP -> Production\n\n") as "D"|"S"|"P"
+ console.log(environment);
+
+ if(environment.toLowerCase() === "d"){
+   dotenv.config({path:"./.env.local"})
+   console.log("used development");
+   
+ }
+ else  if(environment.toLowerCase() === "s"){
+   dotenv.config({path:"./.env.staging"})
+ }
+ else  if(environment.toLowerCase() === "p"){
+   dotenv.config({path:"./.env.production"})
+ }
+ else {
+  throw new Error("Unsupported environment");
+}
+if (!process.env.DATABASE_URL) {
+   throw new Error("DATABASE_URL not found in env");
+ }
 
 export default defineConfig({
   out: './drizzle',

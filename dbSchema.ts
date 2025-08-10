@@ -97,6 +97,11 @@ export const NotificationsTable = pgTable(tables.notifications, {
   userId:uuid().references(() => usersTable.id, {onDelete:"cascade"}).notNull(),
 })
 
+export const SettingsTable = pgTable(tables.settings, {
+    settings: json().$type<Record<string, string|number|boolean>>().notNull(),
+    index: integer().primaryKey().default(0)
+})
+
 export const PaymentsTable = pgTable(tables.payments, {
   id: uuid().primaryKey().defaultRandom(),
   subscription:uuid().references(()=>SubscriptionsTable.id, {onDelete:"set null"}).notNull(),

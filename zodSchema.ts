@@ -1,5 +1,5 @@
 import { createInsertSchema } from 'drizzle-zod';
-import { GroupMembersTable, GroupsTable, MessagesTable, NotificationsTable, PaymentsTable, SOSResponsesTable, SOSTable, SubscriptionsTable, usersTable } from './dbSchema';
+import { GroupMembersTable, GroupsTable, MessagesTable, NotificationsTable, PaymentsTable, SettingsTable, SOSResponsesTable, SOSTable, SubscriptionsTable, usersTable } from './dbSchema';
 
 export const usersSchema = createInsertSchema(usersTable, {
     email:(schema)=> schema.email().min(1, "Email is required").max(255, "Email must be less than 255 characters").toLowerCase(),
@@ -29,3 +29,5 @@ export const notificationsSchema = createInsertSchema(NotificationsTable, {id:(s
 export const subscriptionsSchema = createInsertSchema(SubscriptionsTable,{id:(schema)=>schema.refine(item=>String(item))})
 
 export const paymentsSchema = createInsertSchema(PaymentsTable, {id:(schema)=>schema.refine(item=>String(item))})
+
+export const settingsSchema = createInsertSchema(SettingsTable)

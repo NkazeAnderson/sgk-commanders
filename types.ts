@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { userModes } from "./constants";
-import { groupMembersSchema, groupsSchema, messagesSchema, notificationsSchema, paymentsSchema, sosResponseSchema, sosSchema, subscriptionsSchema, usersSchema } from "./zodSchema";
+import { groupMembersSchema, groupsSchema, messagesSchema, notificationsSchema, paymentsSchema, settingsSchema, sosResponseSchema, sosSchema, subscriptionsSchema, usersSchema } from "./zodSchema";
 
 export type userModesT = typeof userModes[number]
 export type locationT = {longitude:number, latitude:number}
@@ -14,4 +14,5 @@ export type messageT =z.infer<typeof messagesSchema> & { pending?: boolean, unre
 export type notificationT =z.infer<typeof notificationsSchema>
 export type subscriptionT =z.infer<typeof subscriptionsSchema>
 export type paymentT =z.infer<typeof paymentsSchema>
+export type settingsT =z.infer<typeof settingsSchema>
 export type withoutIdT<T> = Omit<T, "id">

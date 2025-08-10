@@ -13,9 +13,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 
-const defaultCustomerSupportAgent: string | undefined =
-  process.env.EXPO_PUBLIC_CUSTOMER_SUPPORT_ID;
-
 const Messages = () => {
   const {
     control,
@@ -26,7 +23,13 @@ const Messages = () => {
   const {
     userMethods: { user },
     messagesMethods: { messages, setMessages },
+    settings,
   } = useAppContext();
+  const defaultCustomerSupportAgent: string | undefined = settings[
+    "CustomerSupportAgent"
+  ]
+    ? String(settings["CustomerSupportAgent"])
+    : undefined;
   const [pendingMessages, setPendingMessages] = useState<messageT[]>([]);
 
   async function submit(data: { text: string }) {

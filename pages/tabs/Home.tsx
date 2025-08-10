@@ -15,7 +15,6 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { ExampleTranslate } from "@/localisation/example";
 import { addSOSResponse, joinedSOSSchemaT } from "@/supabase/sos";
 import { sosResponseT, withoutIdT } from "@/types";
 import { getGoogleMapsDirectionURL } from "@/utils";
@@ -340,7 +339,7 @@ const Home = () => {
                 })}
               </ScrollView>
             )}
-            <ExampleTranslate />
+
             {user?.is_agent && !Boolean(availableSOS.length) && (
               <Center className="flex-1">
                 <Text className="text-success-0">No sos posted</Text>
