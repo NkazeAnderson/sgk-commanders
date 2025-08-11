@@ -1,20 +1,29 @@
 const ENV = process.env.environment || "development";
+const GOOGLESERVICEJSON = process.env.GOOGLESERVICEJSON ?? "./google-services.json"
+const GOOGLESERVICEPLIST = process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info.plist"
+
 
 const configByEnv = {
   development: {
     name: "SGK Commanders (Dev)",
     iosBundleIdentifier: "com.searockettech.sgkcommanders.dev",
     androidPackage: "com.searockettech.sgkcommanders.dev",
+    "googleServicesJson": process.env.GOOGLESERVICEJSON ?? "./google-services-dev.json",
+    "googleServicesPlist": process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info-dev.plist"
   },
   preview: {
     name: "SGK Commanders (Preview)",
     iosBundleIdentifier: "com.searockettech.sgkcommanders.preview",
     androidPackage: "com.searockettech.sgkcommanders.preview",
+    "googleServicesJson": process.env.GOOGLESERVICEJSON ?? "./google-services-preview.json",
+    "googleServicesPlist": process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info-preview.plist"
   },
   production: {
     name: "SGK Commanders",
     iosBundleIdentifier: "com.searockettech.sgkcommanders",
     androidPackage: "com.searockettech.sgkcommanders",
+    "googleServicesJson": process.env.GOOGLESERVICEJSON ?? "./google-services.json",
+    "googleServicesPlist": process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info.plist"
   },
 };
 
@@ -32,7 +41,11 @@ export default {
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": envConfig.iosBundleIdentifier
+      "bundleIdentifier": envConfig.iosBundleIdentifier,
+      "googleServicesFile": envConfig.googleServicesPlist,
+        "googleMaps": {
+          "apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY,
+        }
     },
     "android": {
       "adaptiveIcon": {
@@ -48,7 +61,11 @@ export default {
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": envConfig.androidPackage
+      "package": envConfig.androidPackage,
+       "googleServicesFile": envConfig.googleServicesJson,
+       "googleMaps": {
+          "apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY,
+        }
     },
     "web": {
       "bundler": "metro",
