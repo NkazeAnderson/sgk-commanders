@@ -43,9 +43,9 @@ export default {
       "supportsTablet": true,
       "bundleIdentifier": envConfig.iosBundleIdentifier,
       "googleServicesFile": envConfig.googleServicesPlist,
-        "googleMaps": {
-          "apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY,
-        }
+        "config": {
+          "googleMapsApiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -63,9 +63,11 @@ export default {
       ],
       "package": envConfig.androidPackage,
        "googleServicesFile": envConfig.googleServicesJson,
-       "googleMaps": {
-          "apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY,
-        }
+        "config": {
+        "googleMaps": {
+             "apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY
+          }
+      }
     },
     "web": {
       "bundler": "metro",
