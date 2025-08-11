@@ -41,6 +41,7 @@ import {
 } from "@/utils";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { ChevronUp, Send, X } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, Pressable, ScrollView, View } from "react-native";
@@ -357,6 +358,7 @@ const SOS = () => {
             )}
           </ScrollView>
         </SafeAreaView>
+        <StatusBar style="light" />
       </View>
     );
   }
@@ -379,7 +381,11 @@ const SOS = () => {
                     {sendingSOS ? "Sending" : "SOS"}
                   </Heading>
                 ) : (
-                  <MapAvatar user={user!} safe={user?.is_safe ?? undefined} />
+                  <MapAvatar
+                    user={user!}
+                    safe={user?.is_safe ?? undefined}
+                    size="lg"
+                  />
                 )}
               </Center>
             </Box>
@@ -420,6 +426,7 @@ const SOS = () => {
                       <MapAvatar
                         user={user!}
                         safe={user?.is_safe ?? undefined}
+                        size="lg"
                       />
                     </Box>
                   </Animated.View>

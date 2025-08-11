@@ -7,18 +7,20 @@ import { Center } from "./ui/center";
 import { HStack } from "./ui/hstack";
 import { Icon } from "./ui/icon";
 
-const UserAvatar = ({
+export const UserAvatar = ({
   user,
   rotationAngle,
   safe,
+  size,
 }: {
   user: userT;
+  size: "sm" | "lg";
   rotationAngle?: number;
   safe?: boolean;
 }) => {
   return (
     <Avatar
-      size={"lg"}
+      size={size}
       className={`bg-background-600 border-2 ${
         safe
           ? "border-green-600"
@@ -29,7 +31,7 @@ const UserAvatar = ({
           : ""
       }`}
     >
-      <AvatarFallbackText>{user.name}</AvatarFallbackText>
+      {!user.is_agent && <AvatarFallbackText>{user.name}</AvatarFallbackText>}
       <AvatarImage
         source={
           !user.is_agent
@@ -45,16 +47,18 @@ const MapAvatar = ({
   user,
   rotationAngle,
   safe,
+  size,
 }: {
   user: userT;
   rotationAngle?: number;
   safe?: boolean;
+  size: "sm" | "lg";
 }) => {
   const [width, setWidth] = useState(0);
   const inAgentMode = rotationAngle !== undefined;
 
   if (!inAgentMode) {
-    return <UserAvatar user={user} safe={safe} />;
+    return <UserAvatar user={user} safe={safe} size={size} />;
   }
   return (
     <Box
@@ -69,7 +73,12 @@ const MapAvatar = ({
           width: width,
         }}
       >
-        <UserAvatar user={user} safe={safe} rotationAngle={rotationAngle} />
+        <UserAvatar
+          user={user}
+          safe={safe}
+          rotationAngle={rotationAngle}
+          size={size}
+        />
       </Center>
 
       <HStack

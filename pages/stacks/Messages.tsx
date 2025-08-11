@@ -7,11 +7,12 @@ import { Text } from "@/components/ui/text";
 import { createMessage } from "@/supabase/messages";
 import { messageT } from "@/types";
 import { hookFormErrorHandler } from "@/utils";
-import { Redirect } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { Send } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Messages = () => {
   const {
@@ -25,6 +26,15 @@ const Messages = () => {
     messagesMethods: { messages, setMessages },
     settings,
   } = useAppContext();
+
+  const listRef = useRef<FlatList | null>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      listRef.current && listRef.current.scrollToEnd();
+    }, 1000);
+  }, []);
+
   const defaultCustomerSupportAgent: string | undefined = settings[
     "CustomerSupportAgent"
   ]
@@ -62,50 +72,57 @@ const Messages = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={80}
-      className="flex-1"
-    >
-      <View className="flex-1">
-        <FlatList
-          className="flex-1  px-4 bg-primary-950 py-4"
-          data={[...messages, ...pendingMessages]}
-          renderItem={({ item }) => (
-            <HStack className={user.id === item.sentBy ? " justify-end" : ""}>
-              <Box
-                className={`w-3/4 rounded-md ${
-                  item.sentBy === user.id ? "bg-primary-600" : "bg-primary-800"
-                }  p-2 my-1 `}
-              >
-                <Text className=" text-typography-50">{item.text}</Text>
-                <HStack className=" justify-end">
-                  {item.pending && (
-                    <Button variant="link">
-                      <ButtonSpinner className=" text-white" />
-                    </Button>
-                  )}
-                </HStack>
-              </Box>
-            </HStack>
-          )}
-        />
-      </View>
-      <View className="pb-12 pt-6 px-4 bg-primary-950">
-        <HStack space="lg" className="items-center justify-between">
-          <Box className=" flex-1">
-            <Input control={control} name="text" />
-          </Box>
-          <Button
-            onPress={handleSubmit(submit, hookFormErrorHandler)}
-            size="xl"
-            className="p-4"
-          >
-            <ButtonIcon as={Send} />
-          </Button>
-        </HStack>
-      </View>
-    </KeyboardAvoidingView>
+    <>
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={80}
+        className="flex-1 bg-primary-900"
+      >
+        <View className="flex-1">
+          <FlatList
+            className="flex-1  px-4 bg-primary-900 py-4"
+            data={[...messages, ...pendingMessages]}
+            renderItem={({ item }) => (
+              <HStack className={user.id === item.sentBy ? " justify-end" : ""}>
+                <Box
+                  className={`w-3/4 rounded-md ${
+                    item.sentBy === user.id
+                      ? "bg-primary-600"
+                      : "bg-primary-800"
+                  }  p-2 my-1 `}
+                >
+                  <Text className=" text-typography-50">{item.text}</Text>
+                  <HStack className=" justify-end">
+                    {item.pending && (
+                      <Button variant="link">
+                        <ButtonSpinner className=" text-white" />
+                      </Button>
+                    )}
+                  </HStack>
+                </Box>
+              </HStack>
+            )}
+            ListFooterComponent={() => <Box className="h-10"></Box>}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+        <SafeAreaView className="px-4 bg-primary-900" edges={["bottom"]}>
+          <HStack space="lg" className="items-center justify-between">
+            <Box className=" flex-1">
+              <Input control={control} name="text" />
+            </Box>
+            <Button
+              onPress={handleSubmit(submit, hookFormErrorHandler)}
+              size="lg"
+              className="p-4"
+            >
+              <ButtonIcon as={Send} />
+            </Button>
+          </HStack>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
+      <Stack.Screen options={{ title: "Customer Support" }} />
+    </>
   );
 };
 

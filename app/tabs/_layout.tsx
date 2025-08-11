@@ -129,6 +129,7 @@ const _layout = () => {
         //   backgroundColor: primaryColors["--color-primary-950"],
         // },
         headerShown: false,
+        animation: "none",
       }}
     >
       <Tabs.Screen

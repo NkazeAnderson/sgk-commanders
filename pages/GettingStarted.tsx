@@ -141,6 +141,7 @@ const GettingStarted = () => {
                 phone: 888,
               }}
               safe={userIsSafe}
+              size="lg"
             />
           </Animated.View>
 
@@ -158,6 +159,7 @@ const GettingStarted = () => {
                 is_agent: true,
               }}
               rotationAngle={userIsSafe ? undefined : 210} // 210}
+              size="lg"
             />
           </Animated.View>
 
@@ -175,6 +177,7 @@ const GettingStarted = () => {
                 is_agent: true,
               }}
               rotationAngle={userIsSafe ? undefined : 60}
+              size="lg"
             />
           </Animated.View>
         </Box>

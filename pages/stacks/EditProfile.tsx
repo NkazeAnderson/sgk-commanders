@@ -24,7 +24,7 @@ import {
 import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePickerAsset } from "expo-image-picker";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { ArrowRight, Camera, CircleUserRound } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -75,111 +75,114 @@ const EditProfile = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      className="px-4 flex-1 bg-primary-900"
-    >
-      <SafeAreaView className="flex-1">
-        <Center>
-          <Center className="w-36 aspect-square rounded-full bg-primary-200 relative">
-            {profilePictureAsset || user?.profile_picture ? (
-              <Avatar size="2xl">
-                <AvatarImage
-                  source={{
-                    uri: profilePictureAsset
-                      ? profilePictureAsset.uri
-                      : user?.profile_picture ?? "",
-                  }}
+    <>
+      <KeyboardAvoidingView
+        behavior="padding"
+        className="px-4 flex-1 bg-primary-900"
+      >
+        <SafeAreaView className="flex-1">
+          <Center>
+            <Center className="w-36 aspect-square rounded-full bg-primary-200 relative">
+              {profilePictureAsset || user?.profile_picture ? (
+                <Avatar size="2xl">
+                  <AvatarImage
+                    source={{
+                      uri: profilePictureAsset
+                        ? profilePictureAsset.uri
+                        : user?.profile_picture ?? "",
+                    }}
+                  />
+                </Avatar>
+              ) : (
+                <Icon
+                  className="w-20 h-20 text-primary-600"
+                  as={CircleUserRound}
                 />
-              </Avatar>
-            ) : (
-              <Icon
-                className="w-20 h-20 text-primary-600"
-                as={CircleUserRound}
-              />
-            )}
-            <Button
-              action={"primary"}
-              variant={"solid"}
-              size={"md"}
-              className="aspect-square rounded-full absolute bottom-4 -right-0"
-              onPress={async () => {
-                const res = await getImageFromGallery();
-                if (res) {
-                  setProfilePictureAsset(res);
-                }
-              }}
-            >
-              <ButtonIcon as={Camera} />
-            </Button>
-          </Center>
-        </Center>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Form className="py-6">
-            <Input
-              control={control}
-              name="name"
-              label="Name"
-              placeholder="Your name"
-              labelClassName="text-typography-100"
-              errors={errors}
-            />
-            <Input
-              control={control}
-              name="email"
-              label="Email"
-              placeholder="Your email"
-              labelClassName="text-typography-100"
-              errors={errors}
-            />
-            <Input
-              control={control}
-              name="phone"
-              label="Phone"
-              placeholder="Your phone"
-              labelClassName="text-typography-100"
-              disabled
-            />
-            <Input
-              control={control}
-              name="emergency_phone"
-              label="Emergency Phone"
-              placeholder="Optional phone incase of emergency"
-              labelClassName="text-typography-100"
-              errors={errors}
-              keyboardType="number-pad"
-            />
-            <Input
-              control={control}
-              name="home_address"
-              label="Home Address"
-              placeholder="Your address"
-              labelClassName="text-typography-100"
-              errors={errors}
-            />
-          </Form>
-
-          <VStack space="md" className="py-10 justify-end">
-            <Gradient className="rounded-md">
+              )}
               <Button
-                size="lg"
-                className="bg-transparent"
-                onPress={handleSubmit(submit, hookFormErrorHandler)}
-                disabled={isSubmitting}
+                action={"primary"}
+                variant={"solid"}
+                size={"md"}
+                className="aspect-square rounded-full absolute bottom-4 -right-0"
+                onPress={async () => {
+                  const res = await getImageFromGallery();
+                  if (res) {
+                    setProfilePictureAsset(res);
+                  }
+                }}
               >
-                <ButtonText>Submit</ButtonText>
-                {isSubmitting ? (
-                  <ButtonSpinner />
-                ) : (
-                  <ButtonIcon as={ArrowRight} />
-                )}
+                <ButtonIcon as={Camera} />
               </Button>
-            </Gradient>
-          </VStack>
-        </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+            </Center>
+          </Center>
+
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Form className="py-6">
+              <Input
+                control={control}
+                name="name"
+                label="Name"
+                placeholder="Your name"
+                labelClassName="text-typography-100"
+                errors={errors}
+              />
+              <Input
+                control={control}
+                name="email"
+                label="Email"
+                placeholder="Your email"
+                labelClassName="text-typography-100"
+                errors={errors}
+              />
+              <Input
+                control={control}
+                name="phone"
+                label="Phone"
+                placeholder="Your phone"
+                labelClassName="text-typography-100"
+                disabled
+              />
+              <Input
+                control={control}
+                name="emergency_phone"
+                label="Emergency Phone"
+                placeholder="Optional phone incase of emergency"
+                labelClassName="text-typography-100"
+                errors={errors}
+                keyboardType="number-pad"
+              />
+              <Input
+                control={control}
+                name="home_address"
+                label="Home Address"
+                placeholder="Your address"
+                labelClassName="text-typography-100"
+                errors={errors}
+              />
+            </Form>
+
+            <VStack space="md" className="py-10 justify-end">
+              <Gradient className="rounded-md">
+                <Button
+                  size="lg"
+                  className="bg-transparent"
+                  onPress={handleSubmit(submit, hookFormErrorHandler)}
+                  disabled={isSubmitting}
+                >
+                  <ButtonText>Submit</ButtonText>
+                  {isSubmitting ? (
+                    <ButtonSpinner />
+                  ) : (
+                    <ButtonIcon as={ArrowRight} />
+                  )}
+                </Button>
+              </Gradient>
+            </VStack>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
+      <Stack.Screen options={{ title: "Edit Profile" }} />
+    </>
   );
 };
 export default EditProfile;

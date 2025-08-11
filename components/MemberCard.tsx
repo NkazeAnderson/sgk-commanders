@@ -69,7 +69,7 @@ const MemberCard = ({
           </HStack>
         </Box>
       </HStack>
-      {manage && (
+      {manage && role !== "main" && (
         <HStack space="sm">
           <Button size="sm" action="negative">
             <ButtonIcon as={Trash} />

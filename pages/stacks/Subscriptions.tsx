@@ -22,7 +22,7 @@ import useToast from "@/hooks/useToast";
 import { supabase } from "@/supabase";
 import { groupT, paymentT } from "@/types";
 import { unknownErrorHandler } from "@/utils";
-import { Href, router, useLocalSearchParams } from "expo-router";
+import { Href, router, Stack, useLocalSearchParams } from "expo-router";
 import { CreditCard, Phone } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -64,12 +64,7 @@ const Subscriptions = () => {
 
   const adminGroups = groupKeys
     .map((item) => myGroups[item][0].group_id)
-    .filter(
-      (item) =>
-        user?.id === item.admin_id &&
-        item.subcription &&
-        item.subcriptionExpiration
-    );
+    .filter((item) => user?.id === item.admin_id);
   const targetGroup = adminGroups.find((item) => item.id === groupId);
   const targetSubscription = subscriptions.find(
     (item) => item.id === targetGroup?.subcription
@@ -127,7 +122,7 @@ const Subscriptions = () => {
 
   return (
     <>
-      <ScrollView className=" flex-1 bg-primary-950 p-4 gap-4">
+      <ScrollView className=" flex-1 bg-primary-900 p-4 gap-4">
         {groupId || userId ? (
           subscriptions
             .filter((item) =>
@@ -198,7 +193,9 @@ const Subscriptions = () => {
             ))
         ) : (
           <>
-            {!adminGroups.length ? (
+            {!adminGroups.filter(
+              (item) => item.subcription && item.subcriptionExpiration
+            ).length ? (
               <>
                 <Box className=" gap-4 pt-4 pb-10">
                   <Heading className=" text-primary-200">
@@ -211,23 +208,27 @@ const Subscriptions = () => {
                     group.
                   </Text>
                 </Box>
-                <Divider className="bg-primary-400" />
-                <Center className="px-4 py-10 gap-4">
-                  <Heading className="text-primary-50">
-                    You don't own a family
-                  </Heading>
-                  <Text className=" text-center text-typography-100">
-                    Create a family to have users you can manage and ensure
-                    their safety
-                  </Text>
-                  <Button
-                    onPress={() => {
-                      router.push("/stacks/members");
-                    }}
-                  >
-                    <ButtonText>Create a family</ButtonText>
-                  </Button>
-                </Center>
+                {!adminGroups.length && (
+                  <>
+                    <Divider className="bg-primary-400" />
+                    <Center className="px-4 py-10 gap-4">
+                      <Heading className="text-primary-50">
+                        You don't own a family
+                      </Heading>
+                      <Text className=" text-center text-typography-100">
+                        Create a family to have users you can manage and ensure
+                        their safety
+                      </Text>
+                      <Button
+                        onPress={() => {
+                          router.push("/stacks/members");
+                        }}
+                      >
+                        <ButtonText>Create a family</ButtonText>
+                      </Button>
+                    </Center>
+                  </>
+                )}
               </>
             ) : (
               adminGroups.map((item) => {
@@ -350,6 +351,7 @@ const Subscriptions = () => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+      <Stack.Screen options={{ title: "Subscription" }} />
     </>
   );
 };
@@ -430,6 +432,7 @@ function SimpleSubscriptionListCard({
                   ? router.setParams({ userId: item.id })
                   : router.setParams({ groupId: item.id, action: "renew" });
               }}
+              className=" rounded-full my-4"
             >
               <ButtonText>Pay</ButtonText>
             </Button>

@@ -39,12 +39,25 @@ export async function createGroup(group:withoutIdT<groupT>) {
     return await groupsTableRef.insert(group)
 }
 
+export async function editGroup(group:groupT) {
+    return await groupsTableRef.update({name: group.name}).eq("id", group.id)
+}
+
+export async function deleteGroup(group:groupT) {
+    return await groupsTableRef.delete().eq("id", group.id)
+}
+
 export async function createGroupMember(groupMember:withoutIdT<groupMemberT> & {
     phone:number
 }) {
     const {phone, ...rest} = groupMember
     const res = await groupMembersTableRef.insert(rest).select().single()
     res.data?.id && sendSMS({message:`You have been invited to join a family on SGK Commanders. Follow this link to accept: sgkcommanders://index?phone=${phone}&memberId=${res.data.id}`, phone})
+    return res
+}
+
+export async function deleteGroupMember(groupMember:groupMemberT) {
+    const res = await groupMembersTableRef.delete().eq("id", groupMember.id)
     return res
 }
 

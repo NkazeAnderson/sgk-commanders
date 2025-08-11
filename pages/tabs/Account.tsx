@@ -27,6 +27,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { supabase } from "@/supabase";
 import { Link } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import {
   ChevronRight,
   CircleUserRound,
@@ -275,6 +276,7 @@ const Account = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <StatusBar style="light" />
     </>
   );
 };

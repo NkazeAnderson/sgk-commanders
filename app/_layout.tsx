@@ -58,15 +58,17 @@ export default function RootLayout() {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1, display: "flex" }}>
-        <GluestackUIProvider mode="light">
-          <View className="flex-1 bg-gray-600">
+        <GluestackUIProvider mode="dark">
+          <View className="flex-1 bg-primary-900">
             <AppContextProvider>
-              <Stack screenOptions={{ headerShown: false }} />
+              <Stack
+                screenOptions={{ headerShown: false, animation: "none" }}
+              />
             </AppContextProvider>
           </View>
         </GluestackUIProvider>
       </GestureHandlerRootView>
-      <StatusBar style="light" />
+      <StatusBar style="light" translucent />
     </>
   );
 }

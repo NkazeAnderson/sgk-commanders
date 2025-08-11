@@ -8,7 +8,14 @@ import { hookFormErrorHandler } from "@/utils";
 import { groupMembersSchema, usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { ArrowRight, Plus, PlusCircle, X } from "lucide-react-native";
+import {
+  ArrowRight,
+  Pen,
+  Plus,
+  PlusCircle,
+  Trash,
+  X,
+} from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Animated, { SlideInRight } from "react-native-reanimated";
@@ -33,9 +40,13 @@ const schema = groupMembersSchema
 const GroupMembersList = ({
   members,
   manage,
+  editFunc,
+  deleteFunc,
 }: {
   members: groupMembersJoinedSchemaT[];
   manage?: boolean;
+  editFunc?: VoidFunction;
+  deleteFunc?: VoidFunction;
 }) => {
   if (!members.length) {
     return null;
@@ -90,6 +101,22 @@ const GroupMembersList = ({
         <Heading className="text-center text-primary-100 capitalize ">
           {group.name}
         </Heading>
+        {manage && (
+          <HStack space="md">
+            <Button variant="outline" size="xs" onPress={editFunc}>
+              <ButtonIcon as={Pen} />
+            </Button>
+            <Button
+              action="negative"
+              variant="outline"
+              size="xs"
+              onPress={deleteFunc}
+            >
+              <ButtonIcon as={Trash} />
+            </Button>
+          </HStack>
+        )}
+
         <HStack>
           <Text className="text-center text-typography-50 italic" size="sm">
             Subscription -{" "}
@@ -97,91 +124,69 @@ const GroupMembersList = ({
           </Text>
         </HStack>
       </Center>
-      {!subscription ? (
-        <Box className=" gap-4 py-4">
-          <Animated.View entering={SlideInRight.springify()}>
-            <HStack className=" justify-end">
-              <Button
-                action="positive"
-                className="rounded-l-3xl "
-                onPress={() => {
-                  router.push({
-                    pathname: "/stacks/subscriptions",
-                    params: { groupId: group.id },
-                  });
-                }}
-              >
-                <ButtonText>Pay Subscription Now </ButtonText>
+      {manage && subscription && user?.id === group.admin_id && (
+        <>
+          <HStack
+            className={`${
+              addNewMember ? " justify-center" : " justify-end"
+            } py-2 `}
+          >
+            {!addNewMember ? (
+              <Button onPress={toggleAddMember} className=" rounded-l-full">
+                <ButtonIcon as={Plus} />
+                <ButtonText>Add Member</ButtonText>
               </Button>
-            </HStack>
-          </Animated.View>
-        </Box>
-      ) : (
-        manage &&
-        user?.id === group.admin_id && (
-          <>
-            <HStack
-              className={`${
-                addNewMember ? " justify-center" : " justify-end"
-              } py-2 `}
-            >
-              {!addNewMember ? (
-                <Button onPress={toggleAddMember} className=" rounded-l-full">
-                  <ButtonIcon as={Plus} />
-                  <ButtonText>Add Member</ButtonText>
-                </Button>
-              ) : (
-                <Button
-                  onPress={toggleAddMember}
-                  action="negative"
-                  className=" rounded-full aspect-square"
-                >
-                  <ButtonIcon as={X} />
-                </Button>
-              )}
-            </HStack>
-            {addNewMember && (
-              <Animated.View entering={SlideInRight.mass(100)}>
-                <Form className="pb-6 px-4">
-                  <Input
-                    control={control}
-                    name="phone"
-                    label="Phone"
-                    placeholder="phone"
-                    labelClassName="text-typography-0"
-                    keyboardType="number-pad"
-                    errors={errors}
-                  />
-                  <Input
-                    control={control}
-                    name="role"
-                    label="Role"
-                    placeholder="Son"
-                    helperText="Example: Son"
-                    labelClassName="text-typography-0"
-                    errors={errors}
-                  />
-                  <Box className="">
-                    <Button
-                      onPress={handleSubmit(submit, hookFormErrorHandler)}
-                      disabled={isSubmitting}
-                    >
-                      <ButtonText>Submit</ButtonText>
-                      {!isSubmitting ? (
-                        <ButtonIcon as={PlusCircle} />
-                      ) : (
-                        <ButtonSpinner />
-                      )}
-                    </Button>
-                  </Box>
-                </Form>
-              </Animated.View>
+            ) : (
+              <Button
+                onPress={toggleAddMember}
+                action="negative"
+                className=" rounded-full aspect-square"
+              >
+                <ButtonIcon as={X} />
+              </Button>
             )}
-          </>
-        )
+          </HStack>
+          {addNewMember && (
+            <Animated.View entering={SlideInRight.mass(100)}>
+              <Form className="pb-6 px-4">
+                <Input
+                  control={control}
+                  name="phone"
+                  label="Phone"
+                  placeholder="phone"
+                  labelClassName="text-typography-0"
+                  keyboardType="number-pad"
+                  errors={errors}
+                />
+                <Input
+                  control={control}
+                  name="role"
+                  label="Role"
+                  placeholder="Son"
+                  helperText="Example: Son"
+                  labelClassName="text-typography-0"
+                  errors={errors}
+                />
+                <Box className="">
+                  <Button
+                    onPress={handleSubmit(submit, hookFormErrorHandler)}
+                    disabled={isSubmitting}
+                  >
+                    <ButtonText>Submit</ButtonText>
+                    {!isSubmitting ? (
+                      <ButtonIcon as={PlusCircle} />
+                    ) : (
+                      <ButtonSpinner />
+                    )}
+                  </Button>
+                </Box>
+              </Form>
+            </Animated.View>
+          )}
+        </>
       )}
       <HStack space="sm" className=" items-end">
-        <Heading className=" text-primary-0">{`Members`}</Heading>
+        <Heading className=" text-primary-0 px-2">{`Members`}</Heading>
         {manage && (
           <Heading className=" text-primary-0" size="xs">{`(${members.length}/${
             (subscription?.maximumSubAccounts

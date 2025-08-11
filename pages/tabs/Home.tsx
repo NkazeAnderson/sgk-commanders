@@ -19,6 +19,7 @@ import { addSOSResponse, joinedSOSSchemaT } from "@/supabase/sos";
 import { sosResponseT, withoutIdT } from "@/types";
 import { getGoogleMapsDirectionURL } from "@/utils";
 import { Link, router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import {
   Bell,
   CircleArrowRight,
@@ -28,17 +29,23 @@ import {
 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Platform,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import MapView, { MapMarker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+  MapCallout,
+  MapMarker,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 const Home = () => {
   const [showDrawer, setshowDrawer] = useState(true);
@@ -58,17 +65,18 @@ const Home = () => {
     };
   });
   const panGesture = Gesture.Pan()
-    .onBegin((e) => {
-      console.log(e);
-    })
-    .onUpdate((e) => {
-      if (e.translationY > 0) {
-        if (height.value !== 0) {
-          height.value -= 2;
+    .onBegin((e) => {})
+    .onUpdate(({ absoluteY }) => {
+      height.value = withSpring(
+        absoluteY >= windowsHeight - 100
+          ? 100
+          : absoluteY <= 200
+          ? windowsHeight - 200
+          : windowsHeight - absoluteY,
+        {
+          mass: 1,
         }
-      } else {
-        height.value += 2;
-      }
+      );
     });
 
   useEffect(() => {
@@ -81,7 +89,6 @@ const Home = () => {
         },
         2000
       );
-      markerRef.current && markerRef.current.forceUpdate();
     }
   }, [userLocation]);
 
@@ -99,16 +106,6 @@ const Home = () => {
       mapRef.current.setMapBoundaries(userLocation, activeSos.location);
     }
   }, [activeSos]);
-
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     setUserLocation((prev) => {
-  //       if (prev) {
-  //         return { ...prev, latitude: prev.latitude + 0.5 };
-  //       }
-  //     });
-  //   }, 5000);
-  // }, []);
 
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
@@ -131,7 +128,7 @@ const Home = () => {
   }
 
   return (
-    <Box className=" flex-1 relative">
+    <Box className=" flex-1 relative bg-primary-950">
       <View className=" flex-1 border relative">
         <MapView
           style={{
@@ -143,38 +140,46 @@ const Home = () => {
           showsBuildings
           provider={PROVIDER_GOOGLE}
         >
-          <MapMarker
-            ref={markerRef}
-            coordinate={
-              userLocation ?? {
-                latitude: 0,
-                longitude: 0,
+          {userLocation && (
+            <MapMarker
+              ref={markerRef}
+              coordinate={
+                userLocation ?? {
+                  latitude: 3.844119,
+                  longitude: 11.501346,
+                }
               }
-            }
-          >
-            <MapAvatar user={user!} safe={user?.is_safe ?? undefined} />
-            {user?.is_safe === false && (
-              <Text size="sm" className="text-red-600">
-                Not safe!
-              </Text>
-            )}
-          </MapMarker>
-
-          <MapMarker
-            className={!activeSos ? " hidden" : ""}
-            ref={markerRef}
-            coordinate={
-              activeSos?.location ?? {
-                latitude: 0,
-                longitude: 0,
+            >
+              <MapAvatar
+                user={user!}
+                safe={user?.is_safe ?? undefined}
+                size={Platform.OS === "android" ? "sm" : "lg"}
+              />
+              {user?.is_safe === false && (
+                <MapCallout>
+                  <Text size="sm" className="text-red-600 z-50">
+                    Not safe!
+                  </Text>
+                </MapCallout>
+              )}
+            </MapMarker>
+          )}
+          {activeSos && (
+            <MapMarker
+              className={!activeSos ? " hidden" : ""}
+              ref={markerRef}
+              coordinate={
+                activeSos?.location ?? {
+                  latitude: 3.844119,
+                  longitude: 11.501346,
+                }
               }
-            }
-          >
-            {activeSos && (
+            >
               <>
                 <MapAvatar
                   user={activeSos.sent_by}
                   safe={activeSos.sent_by.is_safe ?? undefined}
+                  size={Platform.OS === "android" ? "sm" : "lg"}
                 />
                 {activeSos.sent_by?.is_safe === false && (
                   <Text size="sm" className="text-red-600">
@@ -182,9 +187,8 @@ const Home = () => {
                   </Text>
                 )}
               </>
-            )}
-          </MapMarker>
-
+            </MapMarker>
+          )}
           <MapViewDirections
             origin={userLocation}
             destination={activeSos?.location}
@@ -348,6 +352,7 @@ const Home = () => {
           </ScrollView>
         </Animated.View>
       </View>
+      <StatusBar style="dark" />
     </Box>
   );
 };
