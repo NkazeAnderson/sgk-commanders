@@ -23,6 +23,7 @@ import { Divider } from "@/components/ui/divider";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
+import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { supabase } from "@/supabase";
@@ -45,6 +46,7 @@ const Account = () => {
   const [showModal, setShowModal] = useState(false);
   const {
     userMethods: { user },
+    languagesMethods: { language, setLanguage },
   } = useAppContext();
   const [loggingOut, setLoggingOut] = useState(false);
   function logOut() {
@@ -101,6 +103,49 @@ const Account = () => {
             </Box>
           </HStack>
           <Divider className="my-4" />
+          <Box>
+            <HStack className=" items-start justify-end" space="lg">
+              <Heading className=" text-primary-200" size="xs">
+                Language:
+              </Heading>
+              <TouchableOpacity
+                onPress={() => {
+                  setLanguage("en");
+                }}
+              >
+                <Image
+                  size="xs"
+                  source={require("@/assets/images/uk.png")}
+                  alt="english flag"
+                  className=" rounded-full w-8 h-8"
+                />
+                <Text
+                  className=" text-primary-50 text-center leading-none"
+                  size="sm"
+                >
+                  en
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setLanguage("fr");
+                }}
+              >
+                <Image
+                  size="xs"
+                  source={require("@/assets/images/fr.png")}
+                  alt="french flag"
+                  className=" rounded-full w-8 h-8"
+                />
+                <Text
+                  className=" text-primary-50 text-center leading-none"
+                  size="sm"
+                >
+                  fr
+                </Text>
+              </TouchableOpacity>
+            </HStack>
+          </Box>
           <VStack>
             <Link href={"/stacks/profile"} asChild>
               <TouchableOpacity>

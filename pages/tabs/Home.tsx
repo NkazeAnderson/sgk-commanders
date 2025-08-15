@@ -47,6 +47,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+
 const Home = () => {
   const [showDrawer, setshowDrawer] = useState(true);
   const { height: windowsHeight } = useWindowDimensions();

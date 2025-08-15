@@ -1,3 +1,4 @@
+import { useAppContext } from "@/components/context/AppContextProvider";
 import Gradient from "@/components/Gradient";
 import Logo from "@/components/Logo";
 import MapAvatar from "@/components/MapAvatar";
@@ -10,9 +11,11 @@ import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
 import { getStartedTexts } from "@/constants";
 import { Link } from "expo-router";
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, useWindowDimensions } from "react-native";
 import Animated, {
+  FadeInDown,
   runOnJS,
   runOnUI,
   useAnimatedStyle,
@@ -36,6 +39,9 @@ const GettingStarted = () => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const headingTextFlatlistRef = useRef<FlatList>(null);
   const [userIsSafe, setUserIsSafe] = useState<boolean>();
+  const {
+    languagesMethods: { t },
+  } = useAppContext();
 
   const originalLocations: demoUserT[] = [
     {
@@ -185,18 +191,22 @@ const GettingStarted = () => {
         <VStack className="flex-1 justify-between">
           <Center className="py-20">
             <Logo />
-            <Heading className="text-cyan-100 uppercase " size="xl">
-              SKG
-            </Heading>
+            <Box>
+              <Animated.View entering={FadeInDown.duration(2000)}>
+                <Heading className="text-cyan-100 uppercase " size="xl">
+                  SGK
+                </Heading>
+              </Animated.View>
+            </Box>
           </Center>
           <VStack className=" " space="md">
             <FlatList
               data={getStartedTexts}
               ref={headingTextFlatlistRef}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <Box className=" w-[100vw] p-2">
                   <Heading size="3xl" className=" text-center text-white">
-                    {item}
+                    {t(`getting_started:bannerText.${index}`)}
                   </Heading>
                 </Box>
               )}
@@ -239,14 +249,14 @@ const GettingStarted = () => {
               <Gradient className=" rounded-md">
                 <Link href={"/login"} asChild>
                   <Button size="lg" className=" bg-transparent">
-                    <ButtonText>Log In</ButtonText>
+                    <ButtonText>{_(t("login")).startCase()}</ButtonText>
                   </Button>
                 </Link>
               </Gradient>
               <Gradient className="rounded-md">
                 <Link href={"/signup"} asChild>
                   <Button size="lg" className=" bg-transparent">
-                    <ButtonText>Sign Up</ButtonText>
+                    <ButtonText>{_(t("signup")).startCase()}</ButtonText>
                   </Button>
                 </Link>
               </Gradient>

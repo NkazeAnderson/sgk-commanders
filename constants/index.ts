@@ -15,7 +15,7 @@ export const primaryColors = {
 
 export const defaultGradient = [ primaryColors["--color-primary-900"], primaryColors["--color-primary-800"]] as const
 
-export const getStartedTexts = [
+export const getStartedTexts: string[] = [
                 "Connect with your team and family anytime anywhere.",
                 "Smart location tracking for both work and home.",
                 "Ensure safety for loved ones and boost workplace efficiency.",
@@ -31,3 +31,5 @@ export const days = ["monday", "tuesday", "wednesday", "thursday", "saturday", "
 export const storageBuckets = {public: "public-media"} as const
 
 export const taraPaymentApps = [ "whatsappLink", "telegramLink", "dikaloLink" ] as const
+
+export const languages = ["en", "fr"] as const

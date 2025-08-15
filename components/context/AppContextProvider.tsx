@@ -1,3 +1,4 @@
+import useLanguage from "@/hooks/useLanguage";
 import useMessage from "@/hooks/useMessage";
 import useSOS from "@/hooks/useSOS";
 import useToast from "@/hooks/useToast";
@@ -24,6 +25,7 @@ type appContextT = {
   userMethods: ReturnType<typeof useUser>;
   sosMethods: ReturnType<typeof useSOS>;
   messagesMethods: ReturnType<typeof useMessage>;
+  languagesMethods: ReturnType<typeof useLanguage>;
   subscriptions: subscriptionT[];
   settings: settingsT["settings"];
 };
@@ -44,6 +46,7 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
   const userMethods = useUser();
   const sosMethods = useSOS();
   const messagesMethods = useMessage();
+  const languagesMethods = useLanguage();
   const toast = useToast();
   const { user } = userMethods;
 
@@ -120,6 +123,7 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
         messagesMethods,
         subscriptions,
         settings,
+        languagesMethods,
       }}
     >
       {props.children}
