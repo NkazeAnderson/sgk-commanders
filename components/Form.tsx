@@ -1,5 +1,4 @@
 import React, { FC, PropsWithChildren } from "react";
-import { useTranslation } from "react-i18next";
 import { VStack } from "./ui/vstack";
 
 const Form: FC<

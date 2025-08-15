@@ -13,7 +13,6 @@ import { AlertCircleIcon } from "lucide-react-native";
 import React from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { Box } from "./ui/box";
-import { useTranslation } from "react-i18next";
 
 type InputProps<T extends FieldValues> = {
   name: Path<T>;

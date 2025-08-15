@@ -1,5 +1,13 @@
 // i18n.js
 
+import form_en from "@/components/locale/en/form";
+import group_members_list_en from "@/components/locale/en/group_members_list";
+import input_en from "@/components/locale/en/input";
+import member_card_en from "@/components/locale/en/member_card";
+import form_fr from "@/components/locale/fr/form";
+import group_members_list_fr from "@/components/locale/fr/group_members_list";
+import input_fr from "@/components/locale/fr/input";
+import member_card_fr from "@/components/locale/fr/member_card";
 import account_en from "@/pages/locale/en/account";
 import edit_profile_en from "@/pages/locale/en/edit_profile";
 import getting_started_en from "@/pages/locale/en/getting_started";
@@ -28,14 +36,6 @@ import signup_fr from "@/pages/locale/fr/signup";
 import sos_fr from "@/pages/locale/fr/sos";
 import subscriptions_fr from "@/pages/locale/fr/subscriptions";
 import verify_code_fr from "@/pages/locale/fr/verify_code";
-import form_en from "@/components/locale/en/form";
-import input_en from "@/components/locale/en/input";
-import group_members_list_en from "@/components/locale/en/group_members_list";
-import member_card_en from "@/components/locale/en/member_card";
-import form_fr from "@/components/locale/fr/form";
-import input_fr from "@/components/locale/fr/input";
-import group_members_list_fr from "@/components/locale/fr/group_members_list";
-import member_card_fr from "@/components/locale/fr/member_card";
 import { languageT } from '@/types';
 import * as Localization from 'expo-localization';
 import i18n from 'i18next';
