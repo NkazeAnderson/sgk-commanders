@@ -5,5 +5,7 @@ export default {
     "0": getStartedTexts[0],
     "1": getStartedTexts[1],
     "2": getStartedTexts[2],
-  }
+  },
+  login: "Login",
+  signup: "Sign Up"
 };

@@ -64,16 +64,16 @@ const Profile = () => {
         </Center>
         {!myGroups && (
           <HStack className=" items-center justify-center py-4" space="md">
-            <Text className=" text-primary-0">My Subscription:</Text>
+            <Text className=" text-primary-0">{t("mySubscription")}</Text>
             <Text
               bold
               className={`${expired ? " text-error-500" : "text-success-500"}`}
             >
-              {expired ? "Expired" : "Active"}
+              {expired ? t("expired") : t("active")}
             </Text>
             <Link href={`/stacks/subscriptions?userId=${user?.id}`} asChild>
               <Button size="sm" className=" rounded-full ml-2">
-                <ButtonText>Subscribe</ButtonText>
+                <ButtonText>{t("subscribe")}</ButtonText>
                 <ButtonIcon as={Coins} />
               </Button>
             </Link>
@@ -83,33 +83,37 @@ const Profile = () => {
         <ScrollView>
           <VStack space="lg">
             <Box>
-              <Heading className=" text-primary-0">Phone</Heading>
+              <Heading className=" text-primary-0">{t("phone")}</Heading>
               <Text className=" text-typography-300">+237 {user?.phone}</Text>
             </Box>
             {Boolean(user?.emergency_phone) && (
               <Box>
-                <Heading className=" text-primary-0">Emergency Phone</Heading>
+                <Heading className=" text-primary-0">
+                  {t("emergencyPhone")}
+                </Heading>
                 <Text className=" text-typography-300">
                   +237 {user?.emergency_phone}
                 </Text>
               </Box>
             )}
             <Box>
-              <Heading className=" text-primary-0">Email</Heading>
+              <Heading className=" text-primary-0">{t("email")}</Heading>
               <Text className=" text-typography-300">{user?.email}</Text>
             </Box>
             <Box>
-              <Heading className=" text-primary-0">Home Address</Heading>
+              <Heading className=" text-primary-0">{t("homeAddress")}</Heading>
               <Text className=" text-typography-300">{user?.home_address}</Text>
             </Box>
             <Box>
-              <Heading className=" text-primary-0">Account Type</Heading>
+              <Heading className=" text-primary-0">{t("accountType")}</Heading>
               <Text className=" text-typography-300">
-                {user?.is_agent ? "Agent" : "Client"}
+                {user?.is_agent ? t("agent") : t("client")}
               </Text>
             </Box>
             {Boolean(groupKeys.length) && !user?.is_agent && (
-              <Heading className=" text-primary-500">Groups & Families</Heading>
+              <Heading className=" text-primary-500">
+                {t("groupsAndFamilies")}
+              </Heading>
             )}
             {Boolean(groupKeys.length) &&
               !user?.is_agent &&
@@ -122,15 +126,17 @@ const Profile = () => {
                     <Box>
                       <Heading className=" text-primary-0">
                         {membership.group_id.is_organisation
-                          ? "Organisation"
-                          : "Family"}
+                          ? t("organisation")
+                          : t("family")}
                       </Heading>
                       <Text className=" text-typography-300">
                         {membership.group_id.name}
                       </Text>
                     </Box>
                     <Box>
-                      <Heading className=" text-primary-0">My Role</Heading>
+                      <Heading className=" text-primary-0">
+                        {t("myRole")}
+                      </Heading>
                       <Text className=" text-typography-300 capitalize">
                         {membership.role}
                       </Text>

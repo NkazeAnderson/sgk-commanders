@@ -170,14 +170,14 @@ const Subscriptions = () => {
                     <HStack space="md" className=" items-center">
                       <Box className="w-1 aspect-square bg-primary-500 rounded-full "></Box>
                       <Text className=" text-typography-50">
-                        1 Principal account
+                        {t("principalAccount")}
                       </Text>
                     </HStack>
                     {item.maximumSubAccounts > 0 && (
                       <HStack space="md" className=" items-center">
                         <Box className="w-1 aspect-square bg-primary-500 rounded-full "></Box>
                         <Text className=" text-typography-50">
-                          {item.maximumSubAccounts} Sub accounts
+                          {t("subAccounts", { count: item.maximumSubAccounts })}
                         </Text>
                       </HStack>
                     )}
@@ -187,7 +187,7 @@ const Subscriptions = () => {
                         setValue("subscription", item.id!);
                       }}
                     >
-                      <ButtonText>Select</ButtonText>
+                      <ButtonText>{t("select")}</ButtonText>
                     </Button>
                   </VStack>
                 </Gradient>
@@ -201,13 +201,11 @@ const Subscriptions = () => {
               <>
                 <Box className=" gap-4 pt-4 pb-10">
                   <Heading className=" text-primary-200">
-                    Personal Account subscription
+                    {t("personalAccountSubscription")}
                   </Heading>
                   <SimpleSubscriptionListCard item={user!} />
                   <Text className=" text-secondary-500" italic size="sm">
-                    Your personal account subscription is only used if all your
-                    group subscriptions are expired or you are not part of a
-                    group.
+                    {t("personalAccountNote")}
                   </Text>
                 </Box>
                 {!adminGroups.length && (
@@ -215,18 +213,17 @@ const Subscriptions = () => {
                     <Divider className="bg-primary-400" />
                     <Center className="px-4 py-10 gap-4">
                       <Heading className="text-primary-50">
-                        You don't own a family
+                        {t("noFamily")}
                       </Heading>
                       <Text className=" text-center text-typography-100">
-                        Create a family to have users you can manage and ensure
-                        their safety
+                        {t("createFamilyDesc")}
                       </Text>
                       <Button
                         onPress={() => {
                           router.push("/stacks/members");
                         }}
                       >
-                        <ButtonText>Create a family</ButtonText>
+                        <ButtonText>{t("createFamily")}</ButtonText>
                       </Button>
                     </Center>
                   </>
@@ -252,7 +249,7 @@ const Subscriptions = () => {
         <DrawerContent className="rounded-b-3xl bg-primary-900 h-[60vh]">
           <DrawerHeader className="py-10">
             <Heading size="xl" className="text-primary-500">
-              Enter payment details
+              {t("enterPaymentDetails")}
             </Heading>
             <Button
               action="negative"
@@ -261,7 +258,7 @@ const Subscriptions = () => {
               }}
               className="self-end"
             >
-              <ButtonText>Close</ButtonText>
+              <ButtonText>{t("close")}</ButtonText>
             </Button>
           </DrawerHeader>
 
@@ -273,14 +270,14 @@ const Subscriptions = () => {
                     control={control}
                     name="months"
                     keyboardType="number-pad"
-                    label="Months"
+                    label={t("months")}
                     labelClassName="text-typography-50"
                   />
                 </Box>
                 <Box className=" flex-[2]">
                   <HStack className=" items-end justify-center" space="xs">
                     <Heading size="md" className=" text-typography-50">
-                      FCFA
+                      {t("fcfa")}
                     </Heading>
                     <Text className=" text-typography-50">
                       {selectedSubscription && months
@@ -291,7 +288,7 @@ const Subscriptions = () => {
                 </Box>
               </HStack>
               <Box>
-                <Text className="text-typography-50">Pay with</Text>
+                <Text className="text-typography-50">{t("payWith")}</Text>
                 <HStack space="xl">
                   <Button
                     variant={payWith !== "phone" ? "outline" : "solid"}
@@ -302,7 +299,7 @@ const Subscriptions = () => {
                     isDisabled={isSubmitting}
                   >
                     <ButtonIcon as={Phone} />
-                    <ButtonText>MoMo</ButtonText>
+                    <ButtonText>{t("momo")}</ButtonText>
                   </Button>
                   <Button
                     variant={payWith !== "card" ? "outline" : "solid"}
@@ -314,7 +311,7 @@ const Subscriptions = () => {
                     isDisabled={isSubmitting}
                   >
                     <ButtonIcon as={CreditCard} />
-                    <ButtonText>Card</ButtonText>
+                    <ButtonText>{t("card")}</ButtonText>
                   </Button>
                 </HStack>
               </Box>
@@ -323,7 +320,7 @@ const Subscriptions = () => {
                   control={control}
                   name="phone"
                   keyboardType="number-pad"
-                  label="Phone"
+                  label={t("phone")}
                   labelClassName="text-typography-50"
                 />
               )}
@@ -335,7 +332,7 @@ const Subscriptions = () => {
               className="self-end"
               isDisabled={isSubmitting}
             >
-              <ButtonText>Pay Now!</ButtonText>
+              <ButtonText>{t("payNow")}</ButtonText>
             </Button>
             <Box
               className=" absolute"
@@ -346,7 +343,7 @@ const Subscriptions = () => {
             >
               <Center>
                 <Heading className=" text-primary-500 capitalize" size="3xl">
-                  {`${selectedSubscription?.name} plan`}
+                  {t("plan", { plan: selectedSubscription?.name })}
                 </Heading>
               </Center>
             </Box>
@@ -375,6 +372,7 @@ function SimpleSubscriptionListCard({
     day: "2-digit",
     year: "numeric",
   });
+  const { t } = useTranslation("subscriptions");
   return (
     <VStack className=" border border-primary-200 rounded-2xl p-2" space="md">
       <Box className=" flex-1 gap-2">
@@ -382,12 +380,12 @@ function SimpleSubscriptionListCard({
           {item.name}
         </Heading>
         <Heading size="2xl" className=" text-primary-500 capitalize">
-          {`${subscription?.name} Plan`}
+          {t("plan", { plan: subscription?.name })}
         </Heading>
         <HStack className=" items-center">
           {expired ? (
             <>
-              <Text className="text-primary-0">Expired on: </Text>
+              <Text className="text-primary-0">{t("expiredOn")}</Text>
               <Text className="text-error-500">
                 {dateFormater.format(new Date(item.subcriptionExpiration!))}
               </Text>
@@ -395,7 +393,7 @@ function SimpleSubscriptionListCard({
           ) : (
             <>
               <Text size="lg" className="text-primary-0">
-                Expires on:{" "}
+                {t("expiresOn")}
               </Text>
               <Text className="text-success-500">
                 {dateFormater.format(new Date(item.subcriptionExpiration!))}
@@ -404,12 +402,12 @@ function SimpleSubscriptionListCard({
           )}
         </HStack>
         <HStack space="sm" className="items-center">
-          <Text className="text-primary-0">Principal Accounts:</Text>
+          <Text className="text-primary-0">{t("principalAccounts")}</Text>
           <Text className="text-typography-0">01</Text>
         </HStack>
         {myGroups[item.id] && (
           <HStack space="sm" className="items-center">
-            <Text className="text-primary-0">Available Sub Accounts:</Text>
+            <Text className="text-primary-0">{t("availableSubAccounts")}</Text>
             <Text className="text-typography-0">
               {myGroups && subscription
                 ? ` ${
@@ -426,7 +424,7 @@ function SimpleSubscriptionListCard({
         {expired ? (
           <>
             <Text className=" text-error-500 text-end" bold>
-              Expired
+              {t("expired")}
             </Text>
             <Button
               onPress={() => {
@@ -436,7 +434,7 @@ function SimpleSubscriptionListCard({
               }}
               className=" rounded-full my-4"
             >
-              <ButtonText>Pay</ButtonText>
+              <ButtonText>{t("pay")}</ButtonText>
             </Button>
           </>
         ) : (
@@ -452,10 +450,12 @@ function SimpleSubscriptionListCard({
                   : router.setParams({ groupId: item.id, action: "upgrade" });
               }}
             >
-              <ButtonText className=" text-success-500">Upgrade</ButtonText>
+              <ButtonText className=" text-success-500">
+                {t("upgrade")}
+              </ButtonText>
             </Button>
             <Text className=" text-success-500" bold>
-              Active
+              {t("active")}
             </Text>
           </>
         )}

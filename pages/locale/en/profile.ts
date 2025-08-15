@@ -1,5 +1,20 @@
 export default {
   heading: "Profile",
   edit: "Edit",
-  subscriptionExpired: "Subscription expired"
+  subscriptionExpired: "Subscription expired",
+  mySubscription: "My Subscription:",
+  expired: "Expired",
+  active: "Active",
+  subscribe: "Subscribe",
+  phone: "Phone",
+  emergencyPhone: "Emergency Phone",
+  email: "Email",
+  homeAddress: "Home Address",
+  accountType: "Account Type",
+  agent: "Agent",
+  client: "Client",
+  groupsAndFamilies: "Groups & Families",
+  organisation: "Organisation",
+  family: "Family",
+  myRole: "My Role"
 };
