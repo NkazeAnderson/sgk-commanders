@@ -5,6 +5,7 @@ import { Avatar, AvatarFallbackText, AvatarImage } from "./ui/avatar";
 import { Box } from "./ui/box";
 import { Button, ButtonIcon } from "./ui/button";
 import { Heading } from "./ui/heading";
+import { useTranslation } from "react-i18next";
 import { HStack } from "./ui/hstack";
 import { Icon } from "./ui/icon";
 import { Text } from "./ui/text";
@@ -18,12 +19,13 @@ const MemberCard = ({
   role: string;
   user?: userT;
 }) => {
+  const { t } = useTranslation('member_card');
   if (!user) {
     return (
       <HStack>
         <Icon className=" text-warning-100" as={Info} />
         <Text className=" text-typography-200">
-          Pending invitation for {role.toLowerCase()}
+          {t('pendingInvitation', { role: role.toLowerCase() })}
         </Text>
       </HStack>
     );
@@ -48,7 +50,7 @@ const MemberCard = ({
           </Heading>
           <HStack className=" items-center  mb-1" space="xs">
             <Text className={`text-typography-100`} size="sm">
-              Role:
+              {t('roleLabel')}
             </Text>
             <Text className={`text-secondary-100 lowercase`}>{role}</Text>
           </HStack>
@@ -64,7 +66,7 @@ const MemberCard = ({
                 !user.is_safe ? "text-error-100" : "text-success-100"
               } `}
             >
-              {user.is_safe ? "In Safety" : "Needs rescue"}
+              {user.is_safe ? t('inSafety') : t('needsRescue')}
             </Text>
           </HStack>
         </Box>

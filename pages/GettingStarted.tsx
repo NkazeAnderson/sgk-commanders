@@ -1,4 +1,3 @@
-import { useAppContext } from "@/components/context/AppContextProvider";
 import Gradient from "@/components/Gradient";
 import Logo from "@/components/Logo";
 import MapAvatar from "@/components/MapAvatar";
@@ -13,6 +12,7 @@ import { getStartedTexts } from "@/constants";
 import { Link } from "expo-router";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, useWindowDimensions } from "react-native";
 import Animated, {
   FadeInDown,
@@ -39,9 +39,7 @@ const GettingStarted = () => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const headingTextFlatlistRef = useRef<FlatList>(null);
   const [userIsSafe, setUserIsSafe] = useState<boolean>();
-  const {
-    languagesMethods: { t },
-  } = useAppContext();
+  const { t } = useTranslation("getting_started");
 
   const originalLocations: demoUserT[] = [
     {
@@ -206,7 +204,7 @@ const GettingStarted = () => {
               renderItem={({ item, index }) => (
                 <Box className=" w-[100vw] p-2">
                   <Heading size="3xl" className=" text-center text-white">
-                    {t(`getting_started:bannerText.${index}`)}
+                    {t(`bannerText.${index}`)}
                   </Heading>
                 </Box>
               )}

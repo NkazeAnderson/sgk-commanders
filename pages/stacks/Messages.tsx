@@ -127,7 +127,7 @@ const Messages = () => {
           </HStack>
         </SafeAreaView>
       </KeyboardAvoidingView>
-      <Stack.Screen options={{ title: "Customer Support" }} />
+  <Stack.Screen options={{ title: t("customerSupportTitle") }} />
     </>
   );
 };

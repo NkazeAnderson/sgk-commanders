@@ -18,6 +18,7 @@ import {
 } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import Animated, { SlideInRight } from "react-native-reanimated";
 import { z } from "zod";
 import { useAppContext } from "./context/AppContextProvider";
@@ -48,6 +49,7 @@ const GroupMembersList = ({
   editFunc?: VoidFunction;
   deleteFunc?: VoidFunction;
 }) => {
+  const { t } = useTranslation("group_members_list");
   if (!members.length) {
     return null;
   }
@@ -119,10 +121,10 @@ const GroupMembersList = ({
 
         <HStack className=" items-center justify-center" space="sm">
           <Text className="text-center text-typography-50 italic">
-            Subscription -
+            {t("subscriptionLabel")}
           </Text>
           <Text className="text-center text-typography-50 italic" size="sm">
-            {!subscription ? "No subscription" : subscription.name}
+            {!subscription ? t("noSubscription") : subscription.name}
           </Text>
         </HStack>
       </Center>
@@ -136,7 +138,7 @@ const GroupMembersList = ({
             {!addNewMember ? (
               <Button onPress={toggleAddMember} className=" rounded-l-full">
                 <ButtonIcon as={Plus} />
-                <ButtonText>Add Member</ButtonText>
+                <ButtonText>{t("addMember")}</ButtonText>
               </Button>
             ) : (
               <Button
@@ -154,8 +156,8 @@ const GroupMembersList = ({
                 <Input
                   control={control}
                   name="phone"
-                  label="Phone"
-                  placeholder="phone"
+                  label={t("phone")}
+                  placeholder={t("phonePlaceholder")}
                   labelClassName="text-typography-0"
                   keyboardType="number-pad"
                   errors={errors}
@@ -163,9 +165,9 @@ const GroupMembersList = ({
                 <Input
                   control={control}
                   name="role"
-                  label="Role"
-                  placeholder="Son"
-                  helperText="Example: Son"
+                  label={t("role")}
+                  placeholder={t("rolePlaceholder")}
+                  helperText={t("roleHelper")}
                   labelClassName="text-typography-0"
                   errors={errors}
                 />
@@ -174,7 +176,7 @@ const GroupMembersList = ({
                     onPress={handleSubmit(submit, hookFormErrorHandler)}
                     disabled={isSubmitting}
                   >
-                    <ButtonText>Submit</ButtonText>
+                    <ButtonText>{t("submit")}</ButtonText>
                     {!isSubmitting ? (
                       <ButtonIcon as={PlusCircle} />
                     ) : (
@@ -188,7 +190,7 @@ const GroupMembersList = ({
         </>
       )}
       <HStack space="sm" className=" items-end">
-        <Heading className=" text-primary-0 px-2">{`Members`}</Heading>
+        <Heading className=" text-primary-0 px-2">{t("membersLabel")}</Heading>
         {manage && (
           <Heading className=" text-primary-0" size="xs">{`(${members.length}/${
             (subscription?.maximumSubAccounts
@@ -212,7 +214,7 @@ const GroupMembersList = ({
             <Animated.View entering={SlideInRight.springify()}>
               <HStack className=" justify-end items-center" space="lg">
                 <Text className=" text-typography-50" italic size="sm">
-                  Limit Reached
+                  {t("limitReached")}
                 </Text>
                 <Icon className="text-typography-50 w-3 h-3" as={ArrowRight} />
                 <Button
@@ -225,7 +227,7 @@ const GroupMembersList = ({
                     });
                   }}
                 >
-                  <ButtonText>Upgrade Plan Now</ButtonText>
+                  <ButtonText>{t("upgradePlanNow")}</ButtonText>
                 </Button>
               </HStack>
             </Animated.View>
@@ -236,7 +238,7 @@ const GroupMembersList = ({
           <Animated.View entering={SlideInRight.springify().delay(2000)}>
             <HStack className=" justify-end items-center" space="lg">
               <Text className=" text-typography-50" italic size="sm">
-                Subscription expired
+                {t("subscriptionExpired")}
               </Text>
               <Icon className="text-typography-50 w-3 h-3" as={ArrowRight} />
               <Button
@@ -252,7 +254,7 @@ const GroupMembersList = ({
                   });
                 }}
               >
-                <ButtonText>Pay Subscription</ButtonText>
+                <ButtonText>{t("paySubscription")}</ButtonText>
               </Button>
             </HStack>
           </Animated.View>

@@ -28,6 +28,14 @@ import signup_fr from "@/pages/locale/fr/signup";
 import sos_fr from "@/pages/locale/fr/sos";
 import subscriptions_fr from "@/pages/locale/fr/subscriptions";
 import verify_code_fr from "@/pages/locale/fr/verify_code";
+import form_en from "@/components/locale/en/form";
+import input_en from "@/components/locale/en/input";
+import group_members_list_en from "@/components/locale/en/group_members_list";
+import member_card_en from "@/components/locale/en/member_card";
+import form_fr from "@/components/locale/fr/form";
+import input_fr from "@/components/locale/fr/input";
+import group_members_list_fr from "@/components/locale/fr/group_members_list";
+import member_card_fr from "@/components/locale/fr/member_card";
 import { languageT } from '@/types';
 import * as Localization from 'expo-localization';
 import i18n from 'i18next';
@@ -52,6 +60,10 @@ const resources:Record<languageT, Record<string, any>> = {
     account: account_en,
     home: home_en,
     sos: sos_en,
+    form: form_en,
+    input: input_en,
+    group_members_list: group_members_list_en,
+    member_card: member_card_en,
   },
   fr: {
     common: common_fr,
@@ -69,6 +81,10 @@ const resources:Record<languageT, Record<string, any>> = {
     account: account_fr,
     home: home_fr,
     sos: sos_fr,
+    form: form_fr,
+    input: input_fr,
+    group_members_list: group_members_list_fr,
+    member_card: member_card_fr,
   },
 };
 
@@ -94,6 +110,10 @@ i18n
     'account',
     'home',
     'sos',
+    'form',
+    'input',
+    'group_members_list',
+    'member_card',
   ], // list of namespaces you plan to use
     defaultNS: 'common',  
     lng: languageCode || "en" , // Set initial language based on device locale
