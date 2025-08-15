@@ -6,6 +6,7 @@ import { Text } from "@/components/ui/text";
 import { notificationT } from "@/types";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 import Animated, { SlideInRight } from "react-native-reanimated";
 
@@ -13,6 +14,7 @@ const Notifications = () => {
   const {
     userMethods: { user },
   } = useAppContext();
+  const { t } = useTranslation("notifications");
   const [notifications, setNotifications] = useState<notificationT[]>([
     {
       id: "1",
@@ -53,7 +55,7 @@ const Notifications = () => {
           </Animated.View>
         ))}
       </ScrollView>
-      <Stack.Screen options={{ title: "Notifications" }} />
+      <Stack.Screen options={{ title: t("heading") }} />
     </>
   );
 };

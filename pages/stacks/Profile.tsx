@@ -13,11 +13,13 @@ import { VStack } from "@/components/ui/vstack";
 import { Link, router, Stack } from "expo-router";
 import { CircleUserRound, Coins, Pen } from "lucide-react-native";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 const Profile = () => {
   const {
     userMethods: { user, myGroups },
   } = useAppContext();
+  const { t } = useTranslation("profile");
 
   const expired = user?.subcriptionExpiration
     ? new Date() > new Date(user.subcriptionExpiration)
@@ -141,7 +143,7 @@ const Profile = () => {
       </View>
       <Stack.Screen
         options={{
-          title: "Profile",
+          title: t("heading"),
         }}
       />
     </>

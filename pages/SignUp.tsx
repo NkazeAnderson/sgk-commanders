@@ -31,6 +31,7 @@ import { Link, router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
@@ -40,6 +41,7 @@ const schema = usersSchema.omit({
   subcriptionExpiration: true,
 });
 const SignUp = () => {
+  const { t } = useTranslation("signup");
   const { phone, groupId } = useLocalSearchParams<{
     phone?: string;
     groupId?: string;
@@ -98,7 +100,7 @@ const SignUp = () => {
         <Center className=" items-stretch">
           <VStack space="md" className=" items-center">
             <Heading size="2xl" className=" text-primary-100">
-              Sign Up
+              {t("heading")}
             </Heading>
             <Box className=" w-1/4">
               <Divider className="bg-background-400 " />
@@ -149,24 +151,24 @@ const SignUp = () => {
             <Input
               control={control}
               name="name"
-              label="Name"
-              placeholder="Your name"
+              label={t("nameLabel")}
+              placeholder={t("namePlaceholder")}
               labelClassName="text-typography-100"
               errors={errors}
             />
             <Input
               control={control}
               name="email"
-              label="Email"
-              placeholder="johndoe@gmail.com"
+              label={t("emailLabel")}
+              placeholder={t("emailPlaceholder")}
               labelClassName="text-typography-100"
               errors={errors}
             />
             <Input
               control={control}
               name="phone"
-              label="Phone"
-              placeholder="677777777"
+              label={t("phoneLabel")}
+              placeholder={t("phonePlaceholder")}
               labelClassName="text-typography-100"
               keyboardType="number-pad"
               errors={errors}
@@ -174,8 +176,8 @@ const SignUp = () => {
             <Input
               control={control}
               name="home_address"
-              label="Home Address"
-              placeholder="Your home address"
+              label={t("homeAddressLabel")}
+              placeholder={t("homeAddressPlaceholder")}
               labelClassName="text-typography-100"
               errors={errors}
             />
@@ -194,13 +196,13 @@ const SignUp = () => {
             </Checkbox>
             <Box className="w-10/12">
               <Text className=" text-typography-400">
-                By signing up, you agree to our{" "}
+                {t("acceptTerms")}{" "}
                 <Link className="text-primary-600" href={"/"}>
-                  Privacy
+                  {t("privacy")}
                 </Link>{" "}
                 and{" "}
                 <Link className="text-primary-600" href={"/"}>
-                  Terms of service
+                  {t("terms")}
                 </Link>
               </Text>
             </Box>
@@ -213,7 +215,7 @@ const SignUp = () => {
                 disabled={isSubmitting}
                 onPress={handleSubmit(subbmitForm, hookFormErrorHandler)}
               >
-                <ButtonText>Sign Up</ButtonText>
+                <ButtonText>{t("signUp")}</ButtonText>
                 {isSubmitting ? (
                   <ButtonSpinner />
                 ) : (
@@ -222,10 +224,9 @@ const SignUp = () => {
               </Button>
             </Gradient>
             <Text className=" text-typography-400 text-center">
-              {" "}
-              Already have an account?{" "}
+              {t("alreadyAccount")}{" "}
               <Link href={"/login"} className=" text-primary-500 font-bold">
-                Sign In
+                {t("signIn")}
               </Link>{" "}
             </Text>
           </VStack>

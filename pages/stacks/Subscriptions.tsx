@@ -26,9 +26,11 @@ import { Href, router, Stack, useLocalSearchParams } from "expo-router";
 import { CreditCard, Phone } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 
 const Subscriptions = () => {
+  const { t } = useTranslation("subscriptions");
   const { groupId, userId, action } = useLocalSearchParams<{
     groupId?: string;
     userId?: string;
@@ -351,7 +353,7 @@ const Subscriptions = () => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-      <Stack.Screen options={{ title: "Subscription" }} />
+      <Stack.Screen options={{ title: t("heading") }} />
     </>
   );
 };

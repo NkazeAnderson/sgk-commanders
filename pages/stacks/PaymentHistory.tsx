@@ -9,10 +9,12 @@ import { paymentT } from "@/types";
 import { Stack } from "expo-router";
 import { DollarSign } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList } from "react-native";
 
 const PaymentHistory = () => {
   const [payments, setPayments] = useState<paymentT[]>([]);
+  const { t } = useTranslation("payment_history");
   useEffect(() => {
     getpayments().then((res) => {
       if (Array.isArray(res.data)) {
@@ -41,13 +43,15 @@ const PaymentHistory = () => {
                 </Center>
                 <Box className=" flex-1">
                   <Heading className=" text-primary-100">
-                    {item.phone ? "MOMO" : "Credit Card"}
+                    {item.phone ? t("momo") : t("creditCard")}
                   </Heading>
                   <Heading className=" text-primary-500 " size="xl">
                     FCFA {item.amount.toLocaleString()}
                   </Heading>
                   <Text className=" text-typography-100">
-                    Date: {new Date(item.date!).toLocaleDateString()}
+                    {t("date", {
+                      date: new Date(item.date!).toLocaleDateString(),
+                    })}
                   </Text>
                 </Box>
                 <Box>
@@ -65,7 +69,13 @@ const PaymentHistory = () => {
                     }`}
                     bold
                   >
-                    {item.status || ""}
+                    {item.status === "pending"
+                      ? t("statusPending")
+                      : item.status === "success"
+                      ? t("statusSuccess")
+                      : item.status === "failed"
+                      ? t("statusFailed")
+                      : ""}
                   </Text>
                 </Box>
               </HStack>
@@ -75,7 +85,7 @@ const PaymentHistory = () => {
           ListFooterComponent={() => <Box className="h-12"></Box>}
         />
       </Box>
-      <Stack.Screen options={{ title: "Payment History" }} />
+      <Stack.Screen options={{ title: t("heading") }} />
     </>
   );
 };

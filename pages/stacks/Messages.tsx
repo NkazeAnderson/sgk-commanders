@@ -11,6 +11,7 @@ import { Redirect, Stack } from "expo-router";
 import { Send } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,6 +22,7 @@ const Messages = () => {
     formState: { isSubmitting },
     reset,
   } = useForm<{ text: string }>();
+  const { t } = useTranslation("messages");
   const {
     userMethods: { user },
     messagesMethods: { messages, setMessages },
@@ -109,7 +111,11 @@ const Messages = () => {
         <SafeAreaView className="px-4 bg-primary-900" edges={["bottom"]}>
           <HStack space="lg" className="items-center justify-between">
             <Box className=" flex-1">
-              <Input control={control} name="text" />
+              <Input
+                control={control}
+                name="text"
+                placeholder={t("placeholder")}
+              />
             </Box>
             <Button
               onPress={handleSubmit(submit, hookFormErrorHandler)}

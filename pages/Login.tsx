@@ -24,6 +24,7 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { ArrowLeft, Check, Lock } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, TextInput } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,6 +34,7 @@ const steps = ["credential", "code"] as const;
 
 const Login = () => {
   const { phone } = useLocalSearchParams<{ phone?: string }>();
+  const { t } = useTranslation("login");
   const [code, setCode] = useState("");
   const [pending, setPending] = useState(false);
   const phoneForm = useForm({
@@ -112,7 +114,7 @@ const Login = () => {
         <Center className=" items-stretch">
           <VStack space="md" className=" items-center">
             <Heading size="2xl" className=" text-primary-100">
-              Sign In
+              {t("heading")}
             </Heading>
             <Box className=" w-1/4">
               <Divider className="bg-background-400 " />
@@ -132,8 +134,8 @@ const Login = () => {
                     <Input
                       control={phoneForm.control}
                       name="phone"
-                      label="Phone"
-                      placeholder="Your phone"
+                      label={t("phoneLabel")}
+                      placeholder={t("phonePlaceholder")}
                       labelClassName="text-typography-100"
                       disabled={Boolean(phone)}
                       keyboardType="number-pad"
@@ -146,7 +148,7 @@ const Login = () => {
                         onPress={changeStep}
                         disabled={phoneForm.formState.isSubmitting}
                       >
-                        <ButtonText>Sign In</ButtonText>
+                        <ButtonText>{t("signIn")}</ButtonText>
                         {!phoneForm.formState.isSubmitting ? (
                           <ButtonIcon as={Lock} />
                         ) : (
@@ -199,7 +201,7 @@ const Login = () => {
                         className="bg-transparent"
                         disabled={pending}
                       >
-                        <ButtonText>Confirm Code</ButtonText>
+                        <ButtonText>{t("confirmCode")}</ButtonText>
                         {!pending ? (
                           <ButtonIcon as={Check} />
                         ) : (
@@ -216,7 +218,7 @@ const Login = () => {
                       }}
                     >
                       <ButtonIcon as={ArrowLeft} />
-                      <ButtonText>Go Back</ButtonText>
+                      <ButtonText>{t("goBack")}</ButtonText>
                     </Button>
                   </Form>
                 );
@@ -230,11 +232,11 @@ const Login = () => {
 
           <HStack space="sm" className="py-5 justify-center items-center">
             <Text className=" text-typography-400 text-center py-7">
-              No account yet?
+              {t("noAccount")}
             </Text>
             <Link href={"/signup"} asChild>
               <Button variant="link">
-                <ButtonText>Sign up</ButtonText>
+                <ButtonText>{t("signUp")}</ButtonText>
               </Button>
             </Link>
           </HStack>

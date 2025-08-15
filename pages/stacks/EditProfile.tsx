@@ -28,6 +28,7 @@ import { router, Stack } from "expo-router";
 import { ArrowRight, Camera, CircleUserRound } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const EditProfile = () => {
@@ -46,6 +47,7 @@ const EditProfile = () => {
     resolver: zodResolver(usersSchema),
     defaultValues: user ?? {},
   });
+  const { t } = useTranslation("edit_profile");
 
   async function submit(data: userT) {
     try {
@@ -121,32 +123,32 @@ const EditProfile = () => {
               <Input
                 control={control}
                 name="name"
-                label="Name"
-                placeholder="Your name"
+                label={t("nameLabel")}
+                placeholder={t("nameLabel")}
                 labelClassName="text-typography-100"
                 errors={errors}
               />
               <Input
                 control={control}
                 name="email"
-                label="Email"
-                placeholder="Your email"
+                label={t("emailLabel")}
+                placeholder={t("emailLabel")}
                 labelClassName="text-typography-100"
                 errors={errors}
               />
               <Input
                 control={control}
                 name="phone"
-                label="Phone"
-                placeholder="Your phone"
+                label={t("phoneLabel")}
+                placeholder={t("phoneLabel")}
                 labelClassName="text-typography-100"
                 disabled
               />
               <Input
                 control={control}
                 name="emergency_phone"
-                label="Emergency Phone"
-                placeholder="Optional phone incase of emergency"
+                label={t("phoneLabel")}
+                placeholder={t("phoneLabel")}
                 labelClassName="text-typography-100"
                 errors={errors}
                 keyboardType="number-pad"
@@ -154,8 +156,8 @@ const EditProfile = () => {
               <Input
                 control={control}
                 name="home_address"
-                label="Home Address"
-                placeholder="Your address"
+                label={t("homeAddressLabel")}
+                placeholder={t("homeAddressLabel")}
                 labelClassName="text-typography-100"
                 errors={errors}
               />
@@ -169,7 +171,7 @@ const EditProfile = () => {
                   onPress={handleSubmit(submit, hookFormErrorHandler)}
                   disabled={isSubmitting}
                 >
-                  <ButtonText>Submit</ButtonText>
+                  <ButtonText>{t("save")}</ButtonText>
                   {isSubmitting ? (
                     <ButtonSpinner />
                   ) : (
@@ -181,7 +183,7 @@ const EditProfile = () => {
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>
-      <Stack.Screen options={{ title: "Edit Profile" }} />
+      <Stack.Screen options={{ title: t("heading") }} />
     </>
   );
 };

@@ -31,6 +31,7 @@ import { Stack } from "expo-router";
 import { ArrowRight, X } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -45,6 +46,7 @@ const Members = () => {
   const [groupToDelete, setGroupToDelete] = useState<groupT>();
   const [groupToEdit, setGroupToEdit] = useState<groupT>();
 
+  const { t } = useTranslation("members");
   function toggleCreateFamily() {
     setCreateFamily((prev) => !prev);
   }
@@ -134,14 +136,14 @@ const Members = () => {
                   </Center>
                   <Form>
                     <Heading className=" text-center text-typography-100">
-                      Create a family
+                      {t("addMember")}
                     </Heading>
                     <Input
-                      label="Family name"
+                      label={t("groupNameLabel")}
                       control={createFamilyForm.control}
                       name="name"
                       labelClassName="text-typography-50"
-                      returnKeyLabel="Add"
+                      returnKeyLabel={t("create")}
                       returnKeyType="send"
                     />
                     <Button
@@ -151,7 +153,7 @@ const Members = () => {
                         hookFormErrorHandler
                       )}
                     >
-                      <ButtonText>Submit</ButtonText>
+                      <ButtonText>{t("create")}</ButtonText>
                       {!createFamilyForm.formState.isSubmitting ? (
                         <ButtonIcon as={ArrowRight} />
                       ) : (
@@ -162,9 +164,9 @@ const Members = () => {
                 </Animated.View>
               ) : (
                 <>
-                  <Text>You are not a member of a family or organisation</Text>
+                  <Text>{t("heading")}</Text>
                   <Button onPress={toggleCreateFamily}>
-                    <ButtonText>Create a family</ButtonText>
+                    <ButtonText>{t("addMember")}</ButtonText>
                   </Button>
                 </>
               )}
@@ -181,16 +183,14 @@ const Members = () => {
         <ModalBackdrop />
         <ModalContent className=" bg-error-100 bo">
           <ModalHeader>
-            <Heading size="lg">Delete Group</Heading>
+            <Heading size="lg">{t("delete")}</Heading>
             <ModalCloseButton>
               <Icon as={CloseIcon} />
             </ModalCloseButton>
           </ModalHeader>
           <ModalBody>
             {groupToDelete && (
-              <Text className=" text-typography-900">
-                {`You are about to delete ${groupToDelete.name}. Are you sure you want to proceed?`}
-              </Text>
+              <Text className=" text-typography-900">{t("confirmDelete")}</Text>
             )}
           </ModalBody>
           <ModalFooter>
@@ -202,7 +202,7 @@ const Members = () => {
                 setGroupToDelete(undefined);
               }}
             >
-              <ButtonText>Cancel</ButtonText>
+              <ButtonText>{t("delete")}</ButtonText>
             </Button>
             <Button
               size="sm"
@@ -217,7 +217,7 @@ const Members = () => {
                   });
               }}
             >
-              <ButtonText>Delete</ButtonText>
+              <ButtonText>{t("delete")}</ButtonText>
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -231,22 +231,20 @@ const Members = () => {
         <ModalBackdrop />
         <ModalContent className=" bg-error-100 bo">
           <ModalHeader>
-            <Heading size="lg">Edit Group</Heading>
+            <Heading size="lg">{t("edit")}</Heading>
             <ModalCloseButton>
               <Icon as={CloseIcon} />
             </ModalCloseButton>
           </ModalHeader>
           <ModalBody>
             {groupToEdit && (
-              <Text className=" text-typography-900">
-                {`Edit ${groupToEdit.name}`}
-              </Text>
+              <Text className=" text-typography-900">{t("edit")}</Text>
             )}
             <Input
               control={editFamilyForm.control}
               name="name"
               type="text"
-              label="Group name"
+              label={t("groupNameLabel")}
             />
           </ModalBody>
           <ModalFooter>
@@ -258,7 +256,7 @@ const Members = () => {
                 setGroupToEdit(undefined);
               }}
             >
-              <ButtonText>Cancel</ButtonText>
+              <ButtonText>{t("edit")}</ButtonText>
             </Button>
             <Button
               size="sm"
@@ -271,12 +269,12 @@ const Members = () => {
                 });
               }, hookFormErrorHandler)}
             >
-              <ButtonText>Edit</ButtonText>
+              <ButtonText>{t("edit")}</ButtonText>
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Stack.Screen options={{ title: "Groups & Families" }} />
+      <Stack.Screen options={{ title: t("heading") }} />
     </>
   );
 };

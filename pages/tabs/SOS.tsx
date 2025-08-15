@@ -44,6 +44,7 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ChevronUp, Send, X } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, ScrollView, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -59,6 +60,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 const SOS = () => {
   const rippleScale = useSharedValue(1);
+  const { t } = useTranslation("sos");
   const rippleOpacity = useSharedValue(0.5);
   const avatarTranslation = useSharedValue(0);
   const sosBottomPostion = useSharedValue(0);
@@ -378,7 +380,7 @@ const SOS = () => {
               >
                 {user?.is_safe ? (
                   <Heading size="xl" className=" text-typography-300">
-                    {sendingSOS ? "Sending" : "SOS"}
+                    {sendingSOS ? t("sendSOS") : t("heading")}
                   </Heading>
                 ) : (
                   <MapAvatar

@@ -40,10 +40,12 @@ import {
   Users,
 } from "lucide-react-native";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Share, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Account = () => {
   const [showModal, setShowModal] = useState(false);
+  const { t } = useTranslation("account");
   const {
     userMethods: { user },
     languagesMethods: { language, setLanguage },
@@ -106,7 +108,7 @@ const Account = () => {
           <Box>
             <HStack className=" items-start justify-end" space="lg">
               <Heading className=" text-primary-200" size="xs">
-                Language:
+                {t("language")}:
               </Heading>
               <TouchableOpacity
                 onPress={() => {
@@ -162,7 +164,7 @@ const Account = () => {
                       size="lg"
                       className="text-typography-100 font-medium "
                     >
-                      Profile
+                      {t("heading")}
                     </Text>
                   </HStack>
                   <Icon className="text-typography-400" as={ChevronRight} />
@@ -183,7 +185,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          Groups & Families
+                          {t("settings")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -205,7 +207,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          Subscriptions
+                          {t("settings")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -227,7 +229,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          Payment history
+                          {t("settings")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -249,7 +251,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          Contact Support
+                          {t("settings")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -268,7 +270,7 @@ const Account = () => {
                 <HStack space="xl" className="items-center ">
                   <Icon className="text-primary-600 w-8 h-8" as={LogOut} />
                   <Text size="lg" className="text-typography-100 font-medium ">
-                    {loggingOut ? "Signing Out..." : "Sign Out"}
+                    {loggingOut ? t("logout") + "..." : t("logout")}
                   </Text>
                 </HStack>
                 <Icon className="text-typography-400" as={ChevronRight} />
@@ -287,7 +289,7 @@ const Account = () => {
         <ModalBackdrop />
         <ModalContent className=" bg-error-100 bo">
           <ModalHeader>
-            <Heading size="lg">Sign Out</Heading>
+            <Heading size="lg">{t("logout")}</Heading>
             <ModalCloseButton>
               <Icon as={CloseIcon} />
             </ModalCloseButton>

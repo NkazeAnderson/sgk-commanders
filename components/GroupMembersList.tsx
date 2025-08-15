@@ -117,9 +117,11 @@ const GroupMembersList = ({
           </HStack>
         )}
 
-        <HStack>
+        <HStack className=" items-center justify-center" space="sm">
+          <Text className="text-center text-typography-50 italic">
+            Subscription -
+          </Text>
           <Text className="text-center text-typography-50 italic" size="sm">
-            Subscription -{" "}
             {!subscription ? "No subscription" : subscription.name}
           </Text>
         </HStack>

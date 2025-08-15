@@ -28,6 +28,7 @@ import {
   Users,
 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Platform,
   ScrollView,
@@ -50,6 +51,7 @@ import Animated, {
 
 const Home = () => {
   const [showDrawer, setshowDrawer] = useState(true);
+  const { t } = useTranslation("home");
   const { height: windowsHeight } = useWindowDimensions();
   const {
     userMethods: { userLocation, user, myGroups, setUserLocation },
@@ -237,7 +239,7 @@ const Home = () => {
                 <Divider className="w-20 p-1 rounded-full" />
               </Center>
 
-              <Heading className="text-typography-100">SGK Commanders</Heading>
+              <Heading className="text-typography-100">{t("welcome")}</Heading>
             </VStack>
           </View>
         </GestureDetector>
