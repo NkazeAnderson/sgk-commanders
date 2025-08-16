@@ -7,6 +7,7 @@ import { Center } from "@/components/ui/center";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
+import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { getStartedTexts } from "@/constants";
 import { Link } from "expo-router";
@@ -114,6 +115,8 @@ const GettingStarted = () => {
       });
     return () => {};
   }, [activeHeadingTextIndex]);
+
+  const env = process.env.environment || "development";
   return (
     <Box className=" flex flex-1 bg-background-50">
       <Image
@@ -195,6 +198,14 @@ const GettingStarted = () => {
                   SGK
                 </Heading>
               </Animated.View>
+              {
+                // env !== "production"
+                true && (
+                  <Text size="xs" className="text-success-500  capitalize" bold>
+                    {env}
+                  </Text>
+                )
+              }
             </Box>
           </Center>
           <VStack className=" " space="md">
