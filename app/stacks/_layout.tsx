@@ -4,10 +4,11 @@ import { Link, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ChevronLeft } from "lucide-react-native";
 import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const _layout = () => {
   return (
-    <>
+    <SafeAreaView className=" flex-1 bg-primary-900" edges={["bottom"]}>
       <Stack
         screenOptions={{
           headerStyle: {
@@ -28,7 +29,7 @@ const _layout = () => {
         }}
       />
       <StatusBar style="dark" />
-    </>
+    </SafeAreaView>
   );
 };
 

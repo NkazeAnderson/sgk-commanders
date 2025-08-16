@@ -164,7 +164,7 @@ const Account = () => {
                       size="lg"
                       className="text-typography-100 font-medium "
                     >
-                      {t("heading")}
+                      {t("profile")}
                     </Text>
                   </HStack>
                   <Icon className="text-typography-400" as={ChevronRight} />
@@ -185,7 +185,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          {t("settings")}
+                          {t("groupsAndFamilies")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -207,7 +207,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          {t("settings")}
+                          {t("subscriptions")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -229,7 +229,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          {t("settings")}
+                          {t("paymentHistory")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -251,7 +251,7 @@ const Account = () => {
                           size="lg"
                           className="text-typography-100 font-medium "
                         >
-                          {t("settings")}
+                          {t("contactSupport")}
                         </Text>
                       </HStack>
                       <Icon className="text-typography-400" as={ChevronRight} />
@@ -295,11 +295,7 @@ const Account = () => {
             </ModalCloseButton>
           </ModalHeader>
           <ModalBody>
-            <Text className=" text-typography-900">
-              You are about to sign out from SGK Commanders. You won't be able
-              to get real time security updates anymore. Are you sure you want
-              to proceed?
-            </Text>
+            <Text className=" text-typography-900">{t("signOutWarning")}</Text>
           </ModalBody>
           <ModalFooter>
             <Button
@@ -310,7 +306,7 @@ const Account = () => {
                 setShowModal(false);
               }}
             >
-              <ButtonText>Cancel</ButtonText>
+              <ButtonText>{t("cancel")}</ButtonText>
             </Button>
             <Button
               size="sm"
@@ -318,7 +314,7 @@ const Account = () => {
               className="border-0"
               onPress={logOut}
             >
-              <ButtonText>Sign Out</ButtonText>
+              <ButtonText>{t("signOut")}</ButtonText>
             </Button>
           </ModalFooter>
         </ModalContent>

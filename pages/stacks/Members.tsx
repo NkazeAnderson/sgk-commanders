@@ -202,7 +202,7 @@ const Members = () => {
                 setGroupToDelete(undefined);
               }}
             >
-              <ButtonText>{t("delete")}</ButtonText>
+              <ButtonText>{t("cancel")}</ButtonText>
             </Button>
             <Button
               size="sm"
@@ -222,6 +222,7 @@ const Members = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
       <Modal
         isOpen={groupToEdit !== undefined}
         onClose={() => {
@@ -250,13 +251,13 @@ const Members = () => {
           <ModalFooter>
             <Button
               size="sm"
-              action="primary"
+              action="negative"
               className="mr-3"
               onPress={() => {
                 setGroupToEdit(undefined);
               }}
             >
-              <ButtonText>{t("edit")}</ButtonText>
+              <ButtonText>{t("cancel")}</ButtonText>
             </Button>
             <Button
               size="sm"

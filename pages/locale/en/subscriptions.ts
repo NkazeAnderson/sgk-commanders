@@ -17,7 +17,7 @@ export default {
   pay: "Pay",
   fcfa: "FCFA",
   principalAccount: "1 Principal account",
-  subAccounts: "{count} Sub accounts",
+  subAccounts: "{{count}} Sub accounts",
   payWith: "Pay with",
   momo: "MoMo",
   card: "Card",
@@ -29,5 +29,5 @@ export default {
   principalAccounts: "Principal Accounts:",
   availableSubAccounts: "Available Sub Accounts:",
   upgradePlan: "Upgrade",
-  plan: "{plan} plan"
+  plan: "{{plan}} plan"
 };
