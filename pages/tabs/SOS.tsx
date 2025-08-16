@@ -232,7 +232,7 @@ const SOS = () => {
 
           </Box> */}
             <Icon className=" text-success-500 w-10 h-10" as={CircleCheck} />
-            <Text>No Active SOS mission</Text>
+            <Text>{t("noActiveSOSMission")}</Text>
           </Center>
         </View>
       );
@@ -241,7 +241,7 @@ const SOS = () => {
       <View className="flex flex-1  bg-primary-950 px-4">
         <SafeAreaView className="flex-1 gap-4">
           <Heading size="xl" className=" text-primary-200 text-center py-4">
-            Current SOS Mission
+            {t("currentSOSMission")}
           </Heading>
           <ScrollView className=" gap-4">
             <Center>
@@ -259,7 +259,7 @@ const SOS = () => {
             </Center>
             {Boolean(sosData.message) && (
               <Box>
-                <Heading className=" text-primary-50">Message</Heading>
+                <Heading className=" text-primary-50">{t("message")}</Heading>
                 <Text className=" text-typography-0">{sosData.message}</Text>
               </Box>
             )}
@@ -278,7 +278,7 @@ const SOS = () => {
                     }
                   }}
                 >
-                  <ButtonText>Go</ButtonText>
+                  <ButtonText>{t("go")}</ButtonText>
                   <ButtonIcon as={CircleArrowRight} />
                 </Button>
                 <Button
@@ -287,7 +287,7 @@ const SOS = () => {
                     setShowSendReport(true);
                   }}
                 >
-                  <ButtonText>Mark as resolved</ButtonText>
+                  <ButtonText>{t("markAsResolved")}</ButtonText>
                   <ButtonIcon as={CircleCheck} />
                 </Button>
               </HStack>
@@ -304,7 +304,9 @@ const SOS = () => {
                     <ButtonIcon as={X} />
                   </Button>
                 </Center>
-                <Heading className=" text-primary-50 my-2">Report</Heading>
+                <Heading className=" text-primary-50 my-2">
+                  {t("report")}
+                </Heading>
                 <Form space="lg">
                   <Textarea className=" text-typography-0">
                     <TextareaInput
@@ -312,7 +314,7 @@ const SOS = () => {
                       onChangeText={(text) => {
                         setReportMessage(text);
                       }}
-                      placeholder="Report message"
+                      placeholder={t("reportMessagePlaceholder")}
                       className=" text-typography-0"
                       selectionColor={"white"}
                       style={{ color: "white" }}
@@ -340,14 +342,14 @@ const SOS = () => {
 
                   <Box className="pr-[30%]">
                     <Button variant="outline" onPress={addImages}>
-                      <ButtonText>Add Image</ButtonText>
+                      <ButtonText>{t("addImage")}</ButtonText>
                       <ButtonIcon as={ImageIcon} />
                     </Button>
                   </Box>
 
                   <Box className=" my-4">
                     <Button onPress={sendReport}>
-                      <ButtonText>Upload Report</ButtonText>
+                      <ButtonText>{t("uploadReport")}</ButtonText>
                       {submitting ? (
                         <ButtonSpinner />
                       ) : (
@@ -413,7 +415,7 @@ const SOS = () => {
           <Center className="pb-20 gap-2">
             {user?.is_safe === false ? (
               <Heading className=" text-success-600">
-                Help is on the way
+                {t("helpOnTheWay")}
               </Heading>
             ) : (
               <>
@@ -434,7 +436,7 @@ const SOS = () => {
                   </Animated.View>
                 </GestureDetector>
                 <Heading className=" text-typography-100">
-                  Slide into SOS mode
+                  {t("slideIntoSOSMode")}
                 </Heading>
               </>
             )}
@@ -462,7 +464,7 @@ const SOS = () => {
           <Form className="w-3/4">
             <Textarea className=" bg-primary-950 rounded-lg border-primary-500 ">
               <TextareaInput
-                placeholder="Add Message to SOS notification"
+                placeholder={t("addMessageToSOSNotification")}
                 className="!text-typography-100 "
                 onChangeText={(text) => {
                   setMessage(text);
@@ -485,7 +487,7 @@ const SOS = () => {
                   }
                 }}
               >
-                <ButtonText>Send Message</ButtonText>
+                <ButtonText>{t("sendMessage")}</ButtonText>
                 <ButtonIcon as={Send} />
               </Button>
             </Gradient>
