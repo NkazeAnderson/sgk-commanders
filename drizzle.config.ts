@@ -13,9 +13,11 @@ const prompt = Prompt()
  }
  else  if(environment.toLowerCase() === "s"){
    dotenv.config({path:"./.env.staging"})
+      console.log("used staging");
  }
  else  if(environment.toLowerCase() === "p"){
    dotenv.config({path:"./.env.production"})
+      console.log("used production");
  }
  else {
   throw new Error("Unsupported environment");
@@ -23,6 +25,8 @@ const prompt = Prompt()
 if (!process.env.DATABASE_URL) {
    throw new Error("DATABASE_URL not found in env");
  }
+ console.log(process.env.DATABASE_URL);
+ 
 
 export default defineConfig({
   out: './drizzle',

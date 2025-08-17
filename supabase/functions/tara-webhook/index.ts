@@ -3,8 +3,8 @@
 // This enables autocomplete, go to definition, etc.
 
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
-import { createClient } from 'npm:@supabase/supabase-js@2'
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from 'npm:@supabase/supabase-js@2';
 // {
 //   "businessId": "ubRBeAcIjm",
 //   "paymentId": "8050bd6d-7148-4141-97e0-52578ef8ebe1",
@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
    const { status, paymentId} = await req.json()
   
    const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '', 
-   Deno.env.get('SERVICEROLEKEY') ?? '') ;
+   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '') ;
    
   const { data: {by, group, months, date, subscription}, error } = await supabase.from('payments').update({status: status=== "SUCCESS" ? "success":"failed"}).eq("id", paymentId).select().single()
 
