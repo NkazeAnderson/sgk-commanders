@@ -6,24 +6,12 @@ const GOOGLESERVICEPLIST = process.env.GOOGLESERVICEPLIST ?? "./GoogleService-In
 const configByEnv = {
   development: {
     name: "SGK Commanders (Dev)",
-    iosBundleIdentifier: "com.searockettech.sgkcommanders.dev",
-    androidPackage: "com.searockettech.sgkcommanders.dev",
-    "googleServicesJson": process.env.GOOGLESERVICEJSON ?? "./google-services-dev.json",
-    "googleServicesPlist": process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info-dev.plist"
   },
   preview: {
     name: "SGK Commanders (Preview)",
-    iosBundleIdentifier: "com.searockettech.sgkcommanders.preview",
-    androidPackage: "com.searockettech.sgkcommanders.preview",
-    "googleServicesJson": process.env.GOOGLESERVICEJSON ?? "./google-services-preview.json",
-    "googleServicesPlist": process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info-preview.plist"
   },
   production: {
     name: "SGK Commanders",
-    iosBundleIdentifier: "com.searockettech.sgkcommanders",
-    androidPackage: "com.searockettech.sgkcommanders",
-    "googleServicesJson": process.env.GOOGLESERVICEJSON ?? "./google-services.json",
-    "googleServicesPlist": process.env.GOOGLESERVICEPLIST ?? "./GoogleService-Info.plist"
   },
 };
 
@@ -41,8 +29,8 @@ export default {
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": envConfig.iosBundleIdentifier,
-      "googleServicesFile": envConfig.googleServicesPlist,
+      "bundleIdentifier": "com.searockettech.sgkcommanders",
+      "googleServicesFile": GOOGLESERVICEPLIST,
         "config": {
           "googleMapsApiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY
       }
@@ -61,8 +49,8 @@ export default {
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": envConfig.androidPackage,
-       "googleServicesFile": envConfig.googleServicesJson,
+      "package": "com.searockettech.sgkcommanders",
+       "googleServicesFile": GOOGLESERVICEJSON,
         "config": {
         "googleMaps": {
              "apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY
