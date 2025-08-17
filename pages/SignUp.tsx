@@ -24,7 +24,7 @@ import { VStack } from "@/components/ui/vstack";
 import { userModes } from "@/constants";
 import { supabase } from "@/supabase";
 import { userModesT } from "@/types";
-import { hookFormErrorHandler } from "@/utils";
+import { hookFormErrorHandler, unknownErrorHandler } from "@/utils";
 import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, useLocalSearchParams } from "expo-router";
@@ -77,7 +77,9 @@ const SignUp = () => {
       phone: `237${data.phone}`,
       options: { shouldCreateUser: true, data },
     });
-    console.log({ dataRes, error });
+    if (error) {
+      unknownErrorHandler(error);
+    }
 
     if (!error) {
       router.push(`/login?phone=${data.phone}`);
