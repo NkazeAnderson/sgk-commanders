@@ -15,6 +15,10 @@
       "channel": "preview",
       "environment": "preview"
     },
+    "staging": {
+      "channel": "preview",
+      "environment": "preview"
+    },
     "main": {
       "distribution": "internal",
       "channel": "preview",
@@ -29,13 +33,13 @@
   "submit": {
     "production": {
       "android": {
-        "serviceAccountKeyPath": "Google-PlayStore-Service-Account",
+        "serviceAccountKeyPath": "Google-PlayStore-Service-Account.json",
         "track": "production"
       }
     },
     "preview": {
       "android": {
-        "serviceAccountKeyPath": "Google-PlayStore-Service-Account",
+        "serviceAccountKeyPath": "Google-PlayStore-Service-Account.json",
         "track": "internal"
       }
     }
