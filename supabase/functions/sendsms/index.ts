@@ -32,6 +32,7 @@ Deno.serve(async (req) => {
     }
 
     // Twilio credentials from environment variables
+ console.log(TWILIO_ACCOUNT_ID , TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER);
  
     if (!TWILIO_ACCOUNT_ID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) {
       return new Response(
@@ -62,6 +63,7 @@ Deno.serve(async (req) => {
 
     if (!twilioRes.ok) {
       const errorText = await twilioRes.text();
+      
       return new Response(
         JSON.stringify({ error: "Failed to send SMS", details: errorText }),
         { status: 500, headers: { "Content-Type": "application/json" } }

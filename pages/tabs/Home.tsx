@@ -1,3 +1,14 @@
+import { CloseIcon, Icon } from "@/components/ui/icon";
+import {
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@/components/ui/modal";
+
 import { useAppContext } from "@/components/context/AppContextProvider";
 import GroupMembersList from "@/components/GroupMembersList";
 import MapAvatar from "@/components/MapAvatar";
@@ -6,7 +17,6 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar";
-
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
@@ -15,9 +25,16 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { commonAsyncKey } from "@/constants";
+import useToast from "@/hooks/useToast";
+import { updateGroupInviteStatus } from "@/supabase/groups";
 import { addSOSResponse, joinedSOSSchemaT } from "@/supabase/sos";
-import { sosResponseT, withoutIdT } from "@/types";
-import { getGoogleMapsDirectionURL } from "@/utils";
+import { groupInvitationDataT, sosResponseT, withoutIdT } from "@/types";
+import {
+  deleteFromAsycStore,
+  getFromAsycStore,
+  getGoogleMapsDirectionURL,
+} from "@/utils";
 import { Link, router, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -48,8 +65,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-
 const Home = () => {
+  const [lastGroupInvitation, setLastGroupInvitation] =
+    useState<groupInvitationDataT>();
   const [showDrawer, setshowDrawer] = useState(true);
   const { t } = useTranslation("home");
   const { height: windowsHeight } = useWindowDimensions();
@@ -67,6 +85,8 @@ const Home = () => {
       height: height.value,
     };
   });
+
+  const toast = useToast();
   const panGesture = Gesture.Pan()
     .onBegin((e) => {})
     .onUpdate(({ absoluteY }) => {
@@ -83,6 +103,12 @@ const Home = () => {
     });
 
   useEffect(() => {
+    getFromAsycStore(commonAsyncKey.groupInvitation).then((res) => {
+      res && setLastGroupInvitation(JSON.parse(res));
+    });
+  }, []);
+
+  useEffect(() => {
     if (userLocation && mapRef.current) {
       mapRef.current.animateToRegion(
         {
@@ -94,7 +120,6 @@ const Home = () => {
       );
     }
   }, [userLocation]);
-
   useEffect(() => {
     if (activeSos && userLocation && mapRef.current) {
       // mapRef.current.animateToRegion(
@@ -109,7 +134,6 @@ const Home = () => {
       mapRef.current.setMapBoundaries(userLocation, activeSos.location);
     }
   }, [activeSos]);
-
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
   const availableSOS = sos.filter((item) => {
@@ -128,6 +152,27 @@ const Home = () => {
     setActiveSos(sos);
     setLastSosResponse(res.data);
     setSubmitting(false);
+  }
+
+  async function updateGroupInvitationStatus(status: boolean) {
+    setSubmitting(true);
+    if (user?.phone == lastGroupInvitation?.phone) {
+      const res = await updateGroupInviteStatus(
+        user?.id!,
+        lastGroupInvitation?.membership_id!,
+        status
+      );
+      console.log(res);
+
+      !res.error && toast.show({ message: "Invited group invitation" });
+    } else {
+      toast.show({
+        message: "Account not linked to expected phone number",
+        status: "error",
+      });
+    }
+    setSubmitting(false);
+    deleteFromAsycStore(commonAsyncKey.groupInvitation);
   }
 
   return (
@@ -360,7 +405,60 @@ const Home = () => {
         </View>
         <StatusBar style="dark" />
       </Box>
-      <Tabs.Screen options={{ title: t("dashboard") }} />
+
+      <Modal
+        isOpen={!!lastGroupInvitation}
+        onClose={() => {
+          setLastGroupInvitation(undefined);
+        }}
+      >
+        <ModalBackdrop />
+        <ModalContent className=" bg-primary-900">
+          <ModalHeader>
+            <Heading size="lg" className="text-primary-500">
+              Group Invitation
+            </Heading>
+            <ModalCloseButton>
+              <Icon className="text-typography-50" as={CloseIcon} />
+            </ModalCloseButton>
+          </ModalHeader>
+          <ModalBody>
+            <Text className=" text-typography-50">
+              You have been invited to join a group
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              size="sm"
+              action="negative"
+              className="mr-3"
+              onPress={async () => {
+                await updateGroupInvitationStatus(false);
+                setLastGroupInvitation(undefined);
+              }}
+            >
+              <ButtonText>Reject Invite</ButtonText>
+            </Button>
+            <Button
+              size="sm"
+              action="positive"
+              className="border-0"
+              onPress={async () => {
+                await updateGroupInvitationStatus(true);
+                setLastGroupInvitation(undefined);
+              }}
+            >
+              <ButtonText>Accept Invite</ButtonText>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Tabs.Screen
+        options={{
+          title: t("dashboard"),
+        }}
+      />
     </>
   );
 };

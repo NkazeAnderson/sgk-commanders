@@ -1,6 +1,6 @@
 import { tables } from "@/constants"
 import { groupMemberT, groupT, withoutIdT } from "@/types"
-import { parseDatabaseResponse, sendSMS } from "@/utils"
+import { parseDatabaseResponse } from "@/utils"
 import { groupMembersSchema, groupsSchema, usersSchema } from "@/zodSchema"
 import { z } from "zod"
 import { supabase } from "."
@@ -52,7 +52,16 @@ export async function createGroupMember(groupMember:withoutIdT<groupMemberT> & {
 }) {
     const {phone, ...rest} = groupMember
     const res = await groupMembersTableRef.insert(rest).select().single()
-    res.data?.id && sendSMS({message:`You have been invited to join a family on SGK Commanders. Follow this link to accept: sgkcommanders://index?phone=${phone}&memberId=${res.data.id}`, phone})
+   if ( res.data?.id ){
+    const smsres =  await supabase.functions.invoke("sendsms", {
+            body: {
+              phone: String(phone),
+              message: `You have been invited to join a family on SGK Commanders. Click the link below to accept the invitation: sgkcommanders://./?phone=${phone}&membership_id=${res.data.id}`,
+            },
+          });
+          console.log(smsres);
+        }
+        
     return res
 }
 
@@ -61,8 +70,8 @@ export async function deleteGroupMember(groupMember:groupMemberT) {
     return res
 }
 
-export async function acceptGroupInvite(userId:string, membership_id:string) {
-        const member:Partial<groupMemberT> = {member_id: userId, invitation_accepted:true}
-       const res = await groupMembersTableRef.update(member).eq("id", membership_id)
-       return res
+export async function updateGroupInviteStatus(userId:string, membership_id:string, acceptance:boolean) {
+    const member:Partial<groupMemberT> = {member_id: userId, invitation_accepted:acceptance}
+    const res = await groupMembersTableRef.update(member).eq("id", membership_id.trim()).select().single()   
+    return res
 }

@@ -19,11 +19,6 @@
       "channel": "preview",
       "environment": "preview"
     },
-    "main": {
-      "distribution": "internal",
-      "channel": "preview",
-      "environment": "preview"
-    },
     "production": {
       "autoIncrement": true,
       "channel": "production",
@@ -37,7 +32,7 @@
         "track": "production"
       }
     },
-    "preview": {
+    "staging": {
       "android": {
         "serviceAccountKeyPath": "Google-PlayStore-Service-Account.json",
         "track": "internal"

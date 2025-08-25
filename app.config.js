@@ -87,7 +87,8 @@ export default {
         }
       ],
       "expo-web-browser",
-      "expo-localization"
+      "expo-localization",
+       "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

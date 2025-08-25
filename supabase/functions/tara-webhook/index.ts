@@ -5,6 +5,8 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { notificationMessageT} from "../_shared/types.ts"
+import { sendPushNotification} from "../_shared/utils.ts"
 // {
 //   "businessId": "ubRBeAcIjm",
 //   "paymentId": "8050bd6d-7148-4141-97e0-52578ef8ebe1",
@@ -23,7 +25,9 @@ Deno.serve(async (req) => {
    const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '', 
    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '') ;
    
-  const { data: {by, group, months, date, subscription}, error } = await supabase.from('payments').update({status: status=== "SUCCESS" ? "success":"failed"}).eq("id", paymentId).select().single()
+  const { data: {by, group, months, date, subscription} } = await supabase.from('payments').update({status: status=== "SUCCESS" ? "success":"failed"}).eq("id", paymentId).select().single()
+  const userRes = await  supabase.from("users").select().eq("id", by)
+  const deviceIds: string[] = userRes.data && typeof userRes.data  === "object" && "deviceIds" in userRes.data && Array.isArray(userRes.data?.deviceIds)  ? userRes.data?.deviceIds as string[]  :[]
 
    if (status=== "SUCCESS") {
     const nextExpirationDate = new Date(date)
@@ -34,6 +38,19 @@ Deno.serve(async (req) => {
               await supabase.from('users').update({subcription:subscription,
             subcriptionExpiration:nextExpirationDate
             }).eq("id", by)
+    
+   }
+   else {
+    
+          deviceIds.forEach((item) => {
+            const notificationMessage:notificationMessageT = {
+                to:item,
+                title:"Payment Failed",
+                body:"Your subscription payment failed",
+                data:{paymentId}
+            }
+            sendPushNotification(notificationMessage)
+          });
    }
 
   return new Response(

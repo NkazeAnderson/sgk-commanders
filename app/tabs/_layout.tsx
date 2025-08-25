@@ -7,21 +7,95 @@ import { Icon } from "@/components/ui/icon";
 import { primaryColors, tables } from "@/constants";
 import { registerToPostgresChanges } from "@/supabase/realtime";
 import { joinedSOSSchemaT } from "@/supabase/sos";
-import { getUserById } from "@/supabase/users";
-import { groupT } from "@/types";
+import { getUserById, updateUser } from "@/supabase/users";
 import { getUserLocation, unknownErrorHandler } from "@/utils";
 import { sosSchema, usersSchema } from "@/zodSchema";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 
-const cachedGroups: groupT[] = [];
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+//@eslint-ignore
+import "@/localisation/i18n";
+import { Platform } from "react-native";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
+// async function sendPushNotification(expoPushToken: string) {
+//   const message = {
+//     to: expoPushToken,
+//     sound: "default",
+//     title: "Original Title",
+//     body: "And here is the body!",
+//     data: { someData: "goes here" },
+//   };
+
+// }
+
+function handleRegistrationError(errorMessage: string) {
+  alert(errorMessage);
+  throw new Error(errorMessage);
+}
+
+async function registerForPushNotificationsAsync() {
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== "granted") {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  if (finalStatus !== "granted") {
+    handleRegistrationError(
+      "Permission not granted to get push token for push notification!"
+    );
+    return;
+  }
+  const projectId =
+    Constants?.expoConfig?.extra?.eas?.projectId ??
+    Constants?.easConfig?.projectId;
+  if (!projectId) {
+    handleRegistrationError("Project ID not found");
+  }
+  try {
+    const pushTokenString = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId,
+      })
+    ).data;
+    console.log(pushTokenString);
+    return pushTokenString;
+  } catch (e: unknown) {
+    handleRegistrationError(`${e}`);
+  }
+}
 
 const _layout = () => {
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState<
+    Notifications.Notification | undefined
+  >(undefined);
   const {
     userMethods: { setUserLocation, user, setUser, myGroups, setMyGroups },
     sosMethods: { setSos },
   } = useAppContext();
+  console.log({ expoPushToken, notification });
+
   const [
     postgresChangesRegistrationStatus,
     setPostgresChangesRegistrationStatus,
@@ -35,15 +109,32 @@ const _layout = () => {
         console.error("Error getting user location:", err);
       });
 
-    // setInterval(() => {
-    //   console.log({ postgresChangesRegistrationStatus });
+    registerForPushNotificationsAsync()
+      .then((token) => {
+        console.log({ user, token });
 
-    //   postgresChangesRegistrationStatus === false &&
-    //     postgresChangesChannel.unsubscribe().then(() => {
-    //       console.log("Retrying real time subscription");
-    //       setPostgresChangesRegistrationStatus(undefined);
-    //     });
-    // }, 5000);
+        user &&
+          token &&
+          !(user?.deviceIds ?? []).includes(token) &&
+          updateUser({
+            id: user.id,
+            deviceIds: [...(user?.deviceIds ?? []), token],
+          }).then((res) => {
+            console.log(res);
+          });
+      })
+      .catch((error: any) => console.log(error));
+
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        setNotification(notification);
+      }
+    );
+
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
   }, []);
 
   useEffect(() => {

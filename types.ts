@@ -17,3 +17,4 @@ export type paymentT =z.infer<typeof paymentsSchema>
 export type settingsT =z.infer<typeof settingsSchema>
 export type languageT =typeof languages[number]
 export type withoutIdT<T> = Omit<T, "id">
+export type groupInvitationDataT = {phone:string, membership_id:string}

@@ -1,4 +1,5 @@
 import { locationT } from "@/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
@@ -91,4 +92,17 @@ export const getDistanceInMeters = (
 
 export function getGoogleMapsDirectionURL(start:locationT, end:locationT) {
     return `https://www.google.com/maps/dir/?api=1&origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}` as Href
+}           
+
+export const saveToAsycStore = async (key:string, value: Record<string, any>|string)=>{
+   AsyncStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value))
+}
+
+export const getFromAsycStore = async(key:string)=>{
+  const value = await AsyncStorage.getItem(key)
+  return value
+}
+
+export const deleteFromAsycStore = async(key:string)=>{
+  await AsyncStorage.removeItem(key)
 }

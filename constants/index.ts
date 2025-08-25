@@ -33,3 +33,7 @@ export const storageBuckets = {public: "public-media"} as const
 export const taraPaymentApps = [ "whatsappLink", "telegramLink", "dikaloLink" ] as const
 
 export const languages = ["en", "fr"] as const
+
+export const commonAsyncKey = {
+    groupInvitation:"groupInvitation"
+  } as const

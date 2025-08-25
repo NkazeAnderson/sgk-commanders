@@ -4,47 +4,41 @@ import "@/global.css";
 import useToast from "@/hooks/useToast";
 import "@/localisation/i18n";
 import { supabase } from "@/supabase";
-import { acceptGroupInvite } from "@/supabase/groups";
 import { useFonts } from "expo-font";
 import * as Linking from "expo-linking";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 //@eslint-ignore
+import { commonAsyncKey } from "@/constants";
 import "@/localisation/i18n";
+import { saveToAsycStore } from "@/utils";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const url = Linking.useURL();
+  const url = Linking.useLinkingURL();
   const toast = useToast();
+  console.log(url);
 
   if (url) {
     const { queryParams } = Linking.parse(url);
 
-    if (queryParams && queryParams.phone && queryParams.membership_id) {
-      supabase.auth.getUser().then((res) => {
-        if (res.data?.user?.phone === queryParams.phone) {
-          acceptGroupInvite(
-            res.data.user?.id!,
-            queryParams.membership_id as string
-          ).then((res) => {
-            !res.error && toast.show({ message: "Invited group invitation" });
-          });
-        } else {
-          try {
-            supabase.auth.signOut();
-          } catch (error) {}
-          toast.show({
-            message: "Account not linked to expected phone number",
-            status: "error",
-          });
-        }
+    if (queryParams?.phone && queryParams.membership_id) {
+      saveToAsycStore(commonAsyncKey.groupInvitation, queryParams).then(() => {
+        console.log("saved");
       });
+      setTimeout(() => {
+        supabase.auth.getUser().then((res) => {
+          if (res) {
+            router.push("/tabs");
+          }
+        });
+      }, 5000);
     }
   }
 
