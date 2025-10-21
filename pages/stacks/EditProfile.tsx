@@ -13,7 +13,6 @@ import { Center } from "@/components/ui/center";
 import { Icon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import useToast from "@/hooks/useToast";
-import { usersSchema } from "@/supabase/functions/_shared/zodSchema";
 import { uploadBase64ImageToSupabase } from "@/supabase/pictures";
 import { updateUser } from "@/supabase/users";
 import { userT } from "@/types";
@@ -22,6 +21,7 @@ import {
   hookFormErrorHandler,
   unknownErrorHandler,
 } from "@/utils";
+import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router, Stack } from "expo-router";

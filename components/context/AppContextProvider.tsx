@@ -53,8 +53,12 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
   useEffect(() => {
     //supabase.auth.signOut();
     supabase.auth.onAuthStateChange((event, session) => {
+      console.log({ session });
+
       if (session?.user) {
         getUserById(session.user.id).then(({ data, error }) => {
+          console.log({ data });
+
           if (data) {
             userMethods.setUser(data as userT);
             event === "SIGNED_IN" &&

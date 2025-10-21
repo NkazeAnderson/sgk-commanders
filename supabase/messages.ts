@@ -1,6 +1,7 @@
 import { tables } from "@/constants";
 import { messageT, userT, withoutIdT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
+import { messagesSchema } from "@/zodSchema";
 import { supabase } from ".";
 
 const messageTableRef = supabase.from(tables.messages)

@@ -1,4 +1,4 @@
-import { notificationTypes } from "./constant.ts";
+import { notificationTypes } from "./constant";
 
 export type notificationTypesCodesT = keyof typeof notificationTypes
 

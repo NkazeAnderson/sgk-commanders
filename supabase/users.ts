@@ -1,6 +1,7 @@
 import { tables } from "@/constants";
 import { userT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
+import { usersSchema } from "@/zodSchema";
 import { supabase } from ".";
 
 const userTableRef = supabase.from(tables.users)

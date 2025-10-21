@@ -25,6 +25,7 @@ import { userModes } from "@/constants";
 import { supabase } from "@/supabase";
 import { userModesT } from "@/types";
 import { hookFormErrorHandler, unknownErrorHandler } from "@/utils";
+import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { languages, userModes } from "./constants";
-import { groupMembersSchema, groupsSchema, messagesSchema, notificationsSchema, paymentsSchema, settingsSchema, sosResponseSchema, sosSchema, subscriptionsSchema, usersSchema } from "./supabase/functions/_shared/zodSchema";
+import { groupMembersSchema, groupsSchema, messagesSchema, notificationsSchema, paymentsSchema, settingsSchema, sosResponseSchema, sosSchema, subscriptionsSchema, usersSchema } from "./zodSchema";
 
 export type userModesT = typeof userModes[number]
 export type locationT = {longitude:number, latitude:number}
