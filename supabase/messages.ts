@@ -1,5 +1,4 @@
-import { tables } from "@/supabase/functions/_shared/constant";
-import { messagesSchema } from "@/supabase/functions/_shared/zodSchema";
+import { tables } from "@/constants";
 import { messageT, userT, withoutIdT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
 import { supabase } from ".";

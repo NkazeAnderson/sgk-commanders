@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { tables } from "@/supabase/functions/_shared/constant";
 import { sosResponseSchema, sosSchema, usersSchema } from "@/supabase/functions/_shared/zodSchema";
+=======
+import { tables } from "@/constants";
+>>>>>>> parent of b4a3173 (refactored sign in and up features)
 import { sosResponseT, sosT, withoutIdT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
 import { z } from "zod";

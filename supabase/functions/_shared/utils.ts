@@ -1,6 +1,6 @@
-import { notificationMessageT } from "./types";
+import { notificationMessageT } from "./types.ts";
 
-export async function sendPushNotification(message:notificationMessageT) {
+async function sendPushNotification(message:notificationMessageT) {
     await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {

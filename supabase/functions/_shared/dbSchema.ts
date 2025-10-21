@@ -1,5 +1,5 @@
-import { tables } from "@/supabase/functions/_shared/constant";
 import { boolean, date, integer, json, pgEnum, pgTable, time, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { tables } from "./constants";
 
 // const userRolesEnum = pgEnum('user_roles', userRoles);
 

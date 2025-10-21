@@ -136,7 +136,7 @@ const Members = () => {
                   </Center>
                   <Form>
                     <Heading className=" text-center text-typography-100">
-                      {"Add a group"}
+                      {t("addMember")}
                     </Heading>
                     <Input
                       label={t("groupNameLabel")}
@@ -164,14 +164,9 @@ const Members = () => {
                 </Animated.View>
               ) : (
                 <>
-                  <Heading size="sm" className=" text-typography-100">
-                    {t("heading")}
-                  </Heading>
-                  <Text>
-                    Lets begin by creating a group to add members in.{" "}
-                  </Text>
+                  <Text>{t("heading")}</Text>
                   <Button onPress={toggleCreateFamily}>
-                    <ButtonText>{"Create a group"}</ButtonText>
+                    <ButtonText>{t("addMember")}</ButtonText>
                   </Button>
                 </>
               )}

@@ -57,7 +57,7 @@ const MemberCard = ({
           <HStack space="sm" className=" items-center">
             <Icon
               className={` ${
-                !user.is_safe ? "text-error-500" : "text-success-100"
+                !user.is_safe ? "text-error-100" : "text-success-100"
               } `}
               as={user.is_safe ? CheckCircle : Siren}
             />
