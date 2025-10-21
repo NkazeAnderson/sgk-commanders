@@ -1,14 +1,11 @@
 import AppContextProvider from "@/components/context/AppContextProvider";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
-import useToast from "@/hooks/useToast";
 import "@/localisation/i18n";
-import { supabase } from "@/supabase";
 import { useFonts } from "expo-font";
 import * as Linking from "expo-linking";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
@@ -22,29 +19,21 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
   const url = Linking.useLinkingURL();
-  const toast = useToast();
-  console.log(url);
 
   if (url) {
     const { queryParams } = Linking.parse(url);
 
     if (queryParams?.phone && queryParams.membership_id) {
-      saveToAsycStore(commonAsyncKey.groupInvitation, queryParams).then(() => {
-        console.log("saved");
-      });
-      setTimeout(() => {
-        supabase.auth.getUser().then((res) => {
-          if (res) {
-            router.push("/tabs");
-          }
-        });
-      }, 5000);
+      saveToAsycStore(commonAsyncKey.groupInvitation, queryParams);
+      // setTimeout(() => {
+      //   supabase.auth.getUser().then((res) => {
+      //     if (res) {
+      //       router.push("/tabs");
+      //     }
+      //   });
+      // }, 5000);
     }
   }
-
-  useEffect(() => {
-    // loaded && router.push("/tabs/sos");
-  }, [loaded]);
 
   if (!loaded) {
     return null;

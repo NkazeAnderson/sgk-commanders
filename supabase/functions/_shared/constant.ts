@@ -4,3 +4,6 @@ export const notificationTypes ={
     "AR": "agent response",
     "GMR": "group member rescued"
     } as const
+
+
+export const tables = {users:"users", groups:"groups", "group_members":"group_members", "sos":"sos","sos_responses":"sos_responses", "agent_duty":"agent_duty", group_member_invites:"group_member_invites", messages:"messages", notifications:"notifications", subscriptions:"subscriptions", payments:"payments", settings:"settings"  } as const

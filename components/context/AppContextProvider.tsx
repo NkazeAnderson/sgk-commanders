@@ -52,26 +52,27 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
 
   useEffect(() => {
     //supabase.auth.signOut();
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        getUserById(session.user.id).then(({ data, error }) => {
+        let success = false;
+        console.log("userID", session.user.id);
+
+        async function getUserFromDB() {
+          const { data, error } = await getUserById(session?.user.id!);
           if (data) {
             userMethods.setUser(data as userT);
+            success = true;
             event === "SIGNED_IN" &&
               toast.show({ message: "Successfully signed in" });
             router.push("/tabs");
           } else if (error) {
             unknownErrorHandler(error);
           }
-        });
-        getSubscriptions().then((res) => {
-          if (Array.isArray(res.data)) {
-            setSubscriptions(res.data);
-          }
-        });
-        getSettings().then((res) => {
-          res && setSettings(res);
-        });
+        }
+        getUserFromDB();
+        const interval = setInterval(() => {
+          success ? clearInterval(interval) : getUserFromDB();
+        }, 3000);
       }
       if (event === "SIGNED_OUT") {
         console.log("signout");
@@ -83,14 +84,25 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!sosMethods.sos.length && user?.is_agent) {
-      getAllSOS().then((res) => {
-        if (res.data && Array.isArray(res.data)) {
-          sosMethods.setSos(res.data);
+    if (user) {
+      getSubscriptions().then((res) => {
+        if (Array.isArray(res.data)) {
+          setSubscriptions(res.data);
         }
       });
+      getSettings().then((res) => {
+        res && setSettings(res);
+      });
     }
+
     if (user?.is_agent) {
+      if (!sosMethods.sos.length) {
+        getAllSOS().then((res) => {
+          if (res.data && Array.isArray(res.data)) {
+            sosMethods.setSos(res.data);
+          }
+        });
+      }
       getMyLastResponse(user.id)
         .then((res) => {
           res.data && sosMethods.setLastSosResponse(res.data);
@@ -99,6 +111,7 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
           unknownErrorHandler(e);
         });
     }
+
     if (user && !messagesMethods.messages.length) {
       getMessages(user)
         .then((res) => {

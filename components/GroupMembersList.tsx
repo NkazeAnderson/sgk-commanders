@@ -121,70 +121,67 @@ const GroupMembersList = ({
           </Text>
         </HStack>
       </Center>
-      {
-        //manage && subscription && user?.id === group.admin_id
-        true && (
-          <>
-            <HStack
-              className={`${
-                addNewMember ? " justify-center" : " justify-end"
-              } py-2 `}
-            >
-              {!addNewMember ? (
-                <Button onPress={toggleAddMember} className=" rounded-l-full">
-                  <ButtonIcon as={Plus} />
-                  <ButtonText>{t("addMember")}</ButtonText>
-                </Button>
-              ) : (
-                <Button
-                  onPress={toggleAddMember}
-                  action="negative"
-                  className=" rounded-full aspect-square"
-                >
-                  <ButtonIcon as={X} />
-                </Button>
-              )}
-            </HStack>
-            {addNewMember && (
-              <Animated.View entering={SlideInRight.mass(100)}>
-                <Form className="pb-6 px-4">
-                  <Input
-                    control={control}
-                    name="phone"
-                    label={t("phone")}
-                    placeholder={t("phonePlaceholder")}
-                    labelClassName="text-typography-0"
-                    keyboardType="number-pad"
-                    errors={errors}
-                  />
-                  <Input
-                    control={control}
-                    name="role"
-                    label={t("role")}
-                    placeholder={t("rolePlaceholder")}
-                    helperText={t("roleHelper")}
-                    labelClassName="text-typography-0"
-                    errors={errors}
-                  />
-                  <Box className="">
-                    <Button
-                      onPress={handleSubmit(submit, hookFormErrorHandler)}
-                      disabled={isSubmitting}
-                    >
-                      <ButtonText>{t("submit")}</ButtonText>
-                      {!isSubmitting ? (
-                        <ButtonIcon as={PlusCircle} />
-                      ) : (
-                        <ButtonSpinner />
-                      )}
-                    </Button>
-                  </Box>
-                </Form>
-              </Animated.View>
+      {manage && subscription && user?.id === group.admin_id && (
+        <>
+          <HStack
+            className={`${
+              addNewMember ? " justify-center" : " justify-end"
+            } py-2 `}
+          >
+            {!addNewMember ? (
+              <Button onPress={toggleAddMember} className=" rounded-l-full">
+                <ButtonIcon as={Plus} />
+                <ButtonText>{t("addMember")}</ButtonText>
+              </Button>
+            ) : (
+              <Button
+                onPress={toggleAddMember}
+                action="negative"
+                className=" rounded-full aspect-square"
+              >
+                <ButtonIcon as={X} />
+              </Button>
             )}
-          </>
-        )
-      }
+          </HStack>
+          {addNewMember && (
+            <Animated.View entering={SlideInRight.mass(100)}>
+              <Form className="pb-6 px-4">
+                <Input
+                  control={control}
+                  name="phone"
+                  label={t("phone")}
+                  placeholder={t("phonePlaceholder")}
+                  labelClassName="text-typography-0"
+                  keyboardType="number-pad"
+                  errors={errors}
+                />
+                <Input
+                  control={control}
+                  name="role"
+                  label={t("role")}
+                  placeholder={t("rolePlaceholder")}
+                  helperText={t("roleHelper")}
+                  labelClassName="text-typography-0"
+                  errors={errors}
+                />
+                <Box className="">
+                  <Button
+                    onPress={handleSubmit(submit, hookFormErrorHandler)}
+                    disabled={isSubmitting}
+                  >
+                    <ButtonText>{t("submit")}</ButtonText>
+                    {!isSubmitting ? (
+                      <ButtonIcon as={PlusCircle} />
+                    ) : (
+                      <ButtonSpinner />
+                    )}
+                  </Button>
+                </Box>
+              </Form>
+            </Animated.View>
+          )}
+        </>
+      )}
       <HStack space="sm" className=" items-end">
         <Heading className=" text-primary-0 px-2">{t("membersLabel")}</Heading>
         {manage && (

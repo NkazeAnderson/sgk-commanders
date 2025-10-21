@@ -94,7 +94,6 @@ const _layout = () => {
     userMethods: { setUserLocation, user, setUser, myGroups, setMyGroups },
     sosMethods: { setSos },
   } = useAppContext();
-  console.log({ expoPushToken, notification });
 
   const [
     postgresChangesRegistrationStatus,
@@ -138,6 +137,8 @@ const _layout = () => {
   }, []);
 
   useEffect(() => {
+    console.log({ postgresChangesRegistrationStatus });
+
     postgresChangesRegistrationStatus === undefined &&
       registerToPostgresChanges(
         (payload) => {
@@ -198,6 +199,8 @@ const _layout = () => {
           }
         },
         (registered) => {
+          console.log({ registered });
+
           setPostgresChangesRegistrationStatus(registered);
         }
       );
@@ -251,11 +254,13 @@ const _layout = () => {
                 } `}
               >
                 <Gradient
-                  className="w-full h-full rounded-full overflow-hidden"
+                  className={`w-full h-full rounded-full overflow-hidden ${
+                    !focused && " border border-info-500"
+                  }`}
                   start={{ x: 0, y: 1 }}
                   end={{ x: 0.4, y: 0 }}
                 >
-                  <Center className="w-full h-full">
+                  <Center className="w-full h-full ">
                     {user?.is_agent ? (
                       <Icon className=" text-typography-0" as={Siren} />
                     ) : (

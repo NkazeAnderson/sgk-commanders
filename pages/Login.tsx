@@ -20,7 +20,7 @@ import { supabase } from "@/supabase";
 import { hookFormErrorHandler } from "@/utils";
 import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft, Check, Lock } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -92,8 +92,10 @@ const Login = () => {
 
   async function confirmCode() {
     setPending(true);
+    console.log(phoneForm.getValues("phone"));
+
     const res = await supabase.auth.verifyOtp({
-      phone: `237${phoneForm.getValues("phone")}`,
+      phone: `237${phoneForm.getValues("phone")}`.trim(),
       token: code,
       type: "sms",
     });
@@ -161,12 +163,20 @@ const Login = () => {
               } else {
                 return (
                   <Form space="2xl" className="pb-10 pt-20 px-4 w-[100vw]">
+                    <Text className=" text-typography-100 text-center text-sm">
+                      Confirm the code sent to 6 ***{" "}
+                      {phoneForm.getValues("phone")?.toString().substring(5)}
+                    </Text>
                     <Box className="relative ">
                       <HStack space="md" className="px-[10%] ">
                         {["", "", "", "", "", ""].map((item, index) => (
                           <Box
                             key={index}
-                            className=" border-2 rounded-lg flex-1 flex items-center justify-center aspect-square border-primary-900 bg-background-100"
+                            className={` border-2 rounded-lg flex-1 flex items-center justify-center aspect-square ${
+                              code.length === index
+                                ? "border-info-500 border-4"
+                                : "border-primary-900"
+                            } bg-background-100`}
                           >
                             <Heading
                               size="sm"
@@ -215,6 +225,7 @@ const Login = () => {
                       variant="link"
                       onPress={() => {
                         setStep(0);
+                        router.setParams({ phone: "" });
                       }}
                     >
                       <ButtonIcon as={ArrowLeft} />

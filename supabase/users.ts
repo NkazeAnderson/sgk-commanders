@@ -1,4 +1,4 @@
-import { tables } from "@/constants";
+import { tables } from "@/supabase/functions/_shared/constant";
 import { userT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
 import { usersSchema } from "@/zodSchema";
@@ -11,17 +11,17 @@ export async function createUser(user:userT ) {
 }
 
 export async function getUserByEmail(email:string) {
-  const res =  await userTableRef.select("*").eq("email", email).single();
+  const res =  await userTableRef.select("*").eq("email", email).limit(1).single();
     return parseDatabaseResponse(res, usersSchema);
 }
 
 export async function getUserByPhone(phone:number) {
-  const res =  await userTableRef.select("*").eq("phone", phone).single();
+  const res =  await userTableRef.select("*").eq("phone", phone).limit(1).single();
     return parseDatabaseResponse(res, usersSchema);
 }
 
 export async function getUserById(id:string) {
-   const res = await userTableRef.select("*").eq("id", id).single()
+   const res = await userTableRef.select("*").eq("id", id).limit(1).single()
     return parseDatabaseResponse(res, usersSchema);
 }
 

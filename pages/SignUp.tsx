@@ -21,15 +21,16 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { userModes } from "@/constants";
+import useToast from "@/hooks/useToast";
 import { supabase } from "@/supabase";
-import { userModesT } from "@/types";
+import { getUserByEmail, getUserByPhone } from "@/supabase/users";
+import { userT } from "@/types";
 import { hookFormErrorHandler, unknownErrorHandler } from "@/utils";
 import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
@@ -42,9 +43,8 @@ const schema = usersSchema.omit({
 });
 const SignUp = () => {
   const { t } = useTranslation("signup");
-  const { phone, groupId } = useLocalSearchParams<{
+  const { phone } = useLocalSearchParams<{
     phone?: string;
-    groupId?: string;
   }>();
   const {
     control,
@@ -52,45 +52,41 @@ const SignUp = () => {
     formState: { errors, isSubmitting },
     setValue,
     reset,
+    watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       phone: phone ? parseInt(phone) : undefined,
+      accepted_terms: true,
     },
   });
-  const [userMode, setUserMode] = useState<userModesT>(userModes[0]);
-  const password = "123456789"; //Math.random().toString(36).slice(-8); // Generate a random password
-  function changeMode(index: number) {
-    setUserMode(userModes[index]);
-  }
-  // useEffect(() => {
-  //   supabase.auth
-  //     .signInWithOtp({
-  //       phone: "237683403750",
-  //     })
-  //     .then((res) => console.log(res))
-  //     .catch((e) => console.log(e));
-  // }, []);
+
+  const toast = useToast();
+  const acceptedterms = watch("accepted_terms");
 
   const subbmitForm = async (data: z.infer<typeof schema>) => {
+    const { data: userByEmail } = await getUserByEmail(data.email);
+    const { data: userByPhone } = await getUserByPhone(data.phone);
+    const userData = (userByEmail as userT) || (userByPhone as userT);
+    if (userData) {
+      toast.show({
+        message: `User already exist. Login with 6 **** ${userData.phone
+          .toString()
+          .substring(5)}`,
+        status: "error",
+      });
+    }
     const { data: dataRes, error } = await supabase.auth.signInWithOtp({
-      phone: `237${data.phone}`,
-      options: { shouldCreateUser: true, data },
+      phone: !userData ? `237${data.phone}` : `237${userData.phone}`,
+      options: !userData ? { shouldCreateUser: true, data } : undefined,
     });
+
     if (error) {
       unknownErrorHandler(error);
-    }
-
-    if (!error) {
+    } else {
       router.push(`/login?phone=${data.phone}`);
       reset();
     }
-    // if (dataRes.user) {
-    //   const { error } = await supabase
-    //     .from(tables.users)
-    //     .insert({ ...data, id: dataRes.user.id });
-    //   console.log({ error });
-    // }
   };
 
   return (
@@ -107,47 +103,9 @@ const SignUp = () => {
             <Box className=" w-1/4">
               <Divider className="bg-background-400 " />
             </Box>
-            {/* <Text className="py-2 text-typography-100">Join As</Text> */}
           </VStack>
         </Center>
-        {/* <HStack>
-          <Button
-            className={`flex-1 rounded-l-xl rounded-r-none ${
-              userMode === userModes[0]
-                ? "bg-primary-600 elevation-lg"
-                : " bg-primary-800"
-            }`}
-            onPress={() => {
-              changeMode(0);
-            }}
-          >
-            <ButtonText>{userModes[0]}</ButtonText>
-          </Button>
-          <Button
-            className={`px-6 rounded-none border-x border-background-100 ${
-              userMode === userModes[1]
-                ? "bg-primary-600 elevation-lg"
-                : " bg-primary-800"
-            }`}
-            onPress={() => {
-              changeMode(1);
-            }}
-          >
-            <ButtonText>{userModes[1]}</ButtonText>
-          </Button>
-          <Button
-            className={`flex-1 rounded-r-xl rounded-l-none ${
-              userMode === userModes[2]
-                ? "bg-primary-600 elevation-lg"
-                : " bg-primary-800"
-            }`}
-            onPress={() => {
-              changeMode(2);
-            }}
-          >
-            <ButtonText>{userModes[2]}</ButtonText>
-          </Button>
-        </HStack> */}
+
         <ScrollView showsVerticalScrollIndicator={false}>
           <Form className="py-6">
             <Input
@@ -189,6 +147,7 @@ const SignUp = () => {
               size={"md"}
               value="checkbox-id"
               onChange={(value) => setValue("accepted_terms", value)}
+              isChecked={acceptedterms}
             >
               <CheckboxIndicator
                 className={`${errors.accepted_terms && "!border-red-500"}`}

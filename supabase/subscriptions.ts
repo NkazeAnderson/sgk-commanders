@@ -1,4 +1,4 @@
-import { tables } from "@/constants";
+import { tables } from "@/supabase/functions/_shared/constant";
 import { parseDatabaseResponse } from "@/utils";
 import { subscriptionsSchema } from "@/zodSchema";
 import { supabase } from ".";

@@ -12,6 +12,7 @@ import {
 import { useAppContext } from "@/components/context/AppContextProvider";
 import GroupMembersList from "@/components/GroupMembersList";
 import MapAvatar from "@/components/MapAvatar";
+import MemberCard from "@/components/MemberCard";
 import {
   Avatar,
   AvatarFallbackText,
@@ -120,6 +121,7 @@ const Home = () => {
       );
     }
   }, [userLocation]);
+
   useEffect(() => {
     if (activeSos && userLocation && mapRef.current) {
       // mapRef.current.animateToRegion(
@@ -134,6 +136,7 @@ const Home = () => {
       mapRef.current.setMapBoundaries(userLocation, activeSos.location);
     }
   }, [activeSos]);
+
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
   const availableSOS = sos.filter((item) => {
@@ -306,99 +309,103 @@ const Home = () => {
               showsVerticalScrollIndicator={false}
               className=" flex-1 py-4"
             >
-              {Boolean(groupsKeys.length) && myGroups && !user?.is_agent && (
-                <ScrollView>
-                  {groupsKeys.map((item) => {
-                    const members = myGroups[item];
-                    return <GroupMembersList key={item} members={members} />;
-                  })}
-                </ScrollView>
-              )}
-              {!Boolean(groupsKeys.length) && !user?.is_agent && (
-                <Center className=" gap-4">
-                  <Box className=" w-full">
-                    <Heading className=" text-primary-500 capitalize text-center">
-                      {user?.name}
-                    </Heading>
-                  </Box>
-                  <Link href={"/stacks/members"} asChild>
-                    <Button>
-                      <ButtonIcon as={Users} />
-                      <ButtonText>{t("addFamilyMembers")}</ButtonText>
-                    </Button>
-                  </Link>
-                </Center>
-              )}
-              {user?.is_agent && Boolean(availableSOS.length) && (
-                <ScrollView>
-                  {availableSOS.map((item) => {
-                    return (
-                      <TouchableOpacity
-                        key={item.id}
-                        onPress={() => {
-                          router.push("/tabs/sos");
-                        }}
-                      >
-                        <HStack space="sm" className=" items-center p-2">
-                          <Avatar>
-                            <AvatarFallbackText>
-                              {item.sent_by.name}
-                            </AvatarFallbackText>
-                            <AvatarImage
-                              source={{
-                                uri: item.sent_by.profile_picture ?? "/",
-                              }}
-                            />
-                          </Avatar>
-                          <Box className="flex-grow">
-                            <Heading className=" text-typography-100 capitalize">
-                              {item.sent_by.name}
-                            </Heading>
-                            <Text size="sm">{item.message}</Text>
-                          </Box>
-                          <HStack space="sm">
-                            <Button
-                              action={
-                                activeSos && activeSos.id === item.id
-                                  ? "positive"
-                                  : "primary"
-                              }
-                              onPress={(e) => {
-                                e.stopPropagation();
-                                !activeSos
-                                  ? interveneSOS(
-                                      {
-                                        sos: item.id!,
-                                        response_by: user.id!,
-                                      },
-                                      item
-                                    )
-                                  : userLocation
-                                  ? router.navigate(
-                                      getGoogleMapsDirectionURL(
-                                        userLocation,
-                                        activeSos.location
-                                      )
-                                    )
-                                  : null;
-                              }}
-                            >
-                              <ButtonIcon
-                                as={activeSos ? CircleArrowRight : Siren}
-                              />
-                            </Button>
-                          </HStack>
-                        </HStack>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-              )}
-
-              {user?.is_agent && !Boolean(availableSOS.length) && (
-                <Center className="flex-1">
-                  <Text className="text-success-0">{t("noSOSPosted")}</Text>
-                </Center>
+              {user?.is_agent ? (
+                <>
+                  {Boolean(availableSOS.length) ? (
+                    <ScrollView>
+                      {availableSOS.map((item) => {
+                        return (
+                          <TouchableOpacity
+                            key={item.id}
+                            onPress={() => {
+                              router.push("/tabs/sos");
+                            }}
+                          >
+                            <HStack space="sm" className=" items-center p-2">
+                              <Avatar>
+                                <AvatarFallbackText>
+                                  {item.sent_by.name}
+                                </AvatarFallbackText>
+                                <AvatarImage
+                                  source={{
+                                    uri: item.sent_by.profile_picture ?? "/",
+                                  }}
+                                />
+                              </Avatar>
+                              <Box className="flex-grow">
+                                <Heading className=" text-typography-100 capitalize">
+                                  {item.sent_by.name}
+                                </Heading>
+                                <Text size="sm">{item.message}</Text>
+                              </Box>
+                              <HStack space="sm">
+                                <Button
+                                  action={
+                                    activeSos && activeSos.id === item.id
+                                      ? "positive"
+                                      : "primary"
+                                  }
+                                  onPress={(e) => {
+                                    e.stopPropagation();
+                                    !activeSos
+                                      ? interveneSOS(
+                                          {
+                                            sos: item.id!,
+                                            response_by: user.id!,
+                                          },
+                                          item
+                                        )
+                                      : userLocation
+                                      ? router.navigate(
+                                          getGoogleMapsDirectionURL(
+                                            userLocation,
+                                            activeSos.location
+                                          )
+                                        )
+                                      : null;
+                                  }}
+                                >
+                                  <ButtonIcon
+                                    as={activeSos ? CircleArrowRight : Siren}
+                                  />
+                                </Button>
+                              </HStack>
+                            </HStack>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  ) : (
+                    <Center className="flex-1">
+                      <Text className="text-success-0">{t("noSOSPosted")}</Text>
+                    </Center>
+                  )}
+                </>
+              ) : (
+                <>
+                  {Boolean(groupsKeys.length) ? (
+                    <ScrollView>
+                      {groupsKeys.map((item) => {
+                        const members = myGroups[item];
+                        return (
+                          <GroupMembersList key={item} members={members} />
+                        );
+                      })}
+                    </ScrollView>
+                  ) : (
+                    <Center className=" gap-4">
+                      <Box className=" w-full">
+                        <MemberCard user={user} role={"Main"} />
+                      </Box>
+                      <Link href={"/stacks/members"} asChild>
+                        <Button>
+                          <ButtonIcon as={Users} />
+                          <ButtonText>{t("addFamilyMembers")}</ButtonText>
+                        </Button>
+                      </Link>
+                    </Center>
+                  )}
+                </>
               )}
             </ScrollView>
           </Animated.View>

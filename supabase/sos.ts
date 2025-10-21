@@ -1,4 +1,4 @@
-import { tables } from "@/constants";
+import { tables } from "@/supabase/functions/_shared/constant";
 import { sosResponseT, sosT, withoutIdT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
 import { sosResponseSchema, sosSchema, usersSchema } from "@/zodSchema";
