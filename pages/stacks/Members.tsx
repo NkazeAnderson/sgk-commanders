@@ -22,10 +22,10 @@ import {
 } from "@/components/ui/modal";
 import { Text } from "@/components/ui/text";
 import useToast from "@/hooks/useToast";
+import { groupsSchema } from "@/supabase/functions/_shared/zodSchema";
 import { createGroup, deleteGroup, editGroup } from "@/supabase/groups";
 import { groupT, withoutIdT } from "@/types";
 import { hookFormErrorHandler, unknownErrorHandler } from "@/utils";
-import { groupsSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack } from "expo-router";
 import { ArrowRight, X } from "lucide-react-native";

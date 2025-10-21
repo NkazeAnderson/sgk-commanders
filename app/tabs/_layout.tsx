@@ -4,12 +4,12 @@ import { Box } from "@/components/ui/box";
 import { Center } from "@/components/ui/center";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
-import { primaryColors, tables } from "@/constants";
+import { primaryColors } from "@/constants";
+import { sosSchema, usersSchema } from "@/supabase/functions/_shared/zodSchema";
 import { registerToPostgresChanges } from "@/supabase/realtime";
 import { joinedSOSSchemaT } from "@/supabase/sos";
 import { getUserById, updateUser } from "@/supabase/users";
 import { getUserLocation, unknownErrorHandler } from "@/utils";
-import { sosSchema, usersSchema } from "@/zodSchema";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 //@eslint-ignore
 import "@/localisation/i18n";
+import { tables } from "@/supabase/functions/_shared/constant";
 import { Platform } from "react-native";
 
 Notifications.setNotificationHandler({

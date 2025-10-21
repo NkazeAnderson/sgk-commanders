@@ -1,7 +1,7 @@
 import { tables } from "@/supabase/functions/_shared/constant";
+import { sosResponseSchema, sosSchema, usersSchema } from "@/supabase/functions/_shared/zodSchema";
 import { sosResponseT, sosT, withoutIdT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
-import { sosResponseSchema, sosSchema, usersSchema } from "@/zodSchema";
 import { z } from "zod";
 import { supabase } from ".";
 

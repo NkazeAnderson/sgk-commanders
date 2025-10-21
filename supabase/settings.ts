@@ -1,5 +1,5 @@
 import { tables } from "@/supabase/functions/_shared/constant";
-import { settingsSchema } from "@/zodSchema";
+import { settingsSchema } from "@/supabase/functions/_shared/zodSchema";
 import { supabase } from ".";
 
 const settingsTableRef = supabase.from(tables.settings)

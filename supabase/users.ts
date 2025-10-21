@@ -1,7 +1,7 @@
 import { tables } from "@/supabase/functions/_shared/constant";
+import { usersSchema } from "@/supabase/functions/_shared/zodSchema";
 import { userT } from "@/types";
 import { parseDatabaseResponse } from "@/utils";
-import { usersSchema } from "@/zodSchema";
 import { supabase } from ".";
 
 const userTableRef = supabase.from(tables.users)

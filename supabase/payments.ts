@@ -1,6 +1,6 @@
 import { tables } from "@/supabase/functions/_shared/constant";
+import { paymentsSchema } from "@/supabase/functions/_shared/zodSchema";
 import { parseDatabaseResponse } from "@/utils";
-import { paymentsSchema } from "@/zodSchema";
 import { supabase } from ".";
 
 const paymentsTableRef = supabase.from(tables.payments)

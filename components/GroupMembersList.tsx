@@ -1,10 +1,13 @@
 import useToast from "@/hooks/useToast";
 import {
+  groupMembersSchema,
+  usersSchema,
+} from "@/supabase/functions/_shared/zodSchema";
+import {
   createGroupMember,
   groupMembersJoinedSchemaT,
 } from "@/supabase/groups";
 import { hookFormErrorHandler } from "@/utils";
-import { groupMembersSchema, usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import {

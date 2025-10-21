@@ -1,7 +1,7 @@
 import { tables } from "@/supabase/functions/_shared/constant"
+import { groupMembersSchema, groupsSchema, usersSchema } from "@/supabase/functions/_shared/zodSchema"
 import { groupMemberT, groupT, withoutIdT } from "@/types"
 import { parseDatabaseResponse } from "@/utils"
-import { groupMembersSchema, groupsSchema, usersSchema } from "@/zodSchema"
 import { z } from "zod"
 import { supabase } from "."
 
