@@ -61,6 +61,15 @@ const Account = () => {
     <>
       <Box className="flex-1 bg-primary-950">
         <SafeAreaView className="px-4">
+          <Button
+            onPress={async () => {
+              await supabase.functions.invoke("sos", {
+                body: { action: "Create" },
+              });
+            }}
+          >
+            <ButtonText>SOS Test</ButtonText>
+          </Button>
           <HStack space="md" className=" items-center">
             <Avatar size={"lg"}>
               <AvatarFallbackText>{user?.name}</AvatarFallbackText>
@@ -279,7 +288,6 @@ const Account = () => {
           </VStack>
         </SafeAreaView>
       </Box>
-
       <Modal
         isOpen={showModal}
         onClose={() => {
