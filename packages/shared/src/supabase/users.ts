@@ -10,6 +10,11 @@ export async function createUser(user:userT ) {
    return await userTableRef.insert(user)
 }
 
+export async function getUsers(email:string) {
+  const res =  await userTableRef.select("*");
+    return usersSchema.array().parse(res.data)
+}
+
 export async function getUserByEmail(email:string) {
   const res =  await userTableRef.select("*").eq("email", email).single();
     return parseDatabaseResponse(res, usersSchema);

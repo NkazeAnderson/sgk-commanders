@@ -4,19 +4,19 @@ import { GroupMembersTable, GroupsTable, MessagesTable, NotificationsTable, Paym
 export const usersSchema = createInsertSchema(usersTable,
     {
         //@ts-ignore
-        email:(schema)=> schema.email().min(1, "Email is required").max(255, "Email must be less than 255 characters").toLowerCase(),
-        phone:(schema)=> schema
-        //@ts-ignore
-        .min(600000000, "Phone number too short. Cameroon only.")
-        .max(699999999, "Phone number too longs. Cameroon only."),
-        //@ts-ignore
-        home_address:(schema) => schema.min(10, "Too short").max(50, "Too long"),
-        accepted_terms:(schema) => schema.refine(val => val, "You must accept the terms and conditions"),
-        name:(schema)=>schema,
-        emergency_phone: (schema)=> schema
-        //@ts-ignore
-        .min(600000000, "Phone number too short. Cameroon only.")
-        .max(699999999, "Phone number too longs. Cameroon only."),
+        // email:(schema)=> schema.email().min(1, "Email is required").max(255, "Email must be less than 255 characters").toLowerCase(),
+        // phone:(schema)=> schema
+        // //@ts-ignore
+        // .min(600000000, "Phone number too short. Cameroon only.")
+        // .max(699999999, "Phone number too longs. Cameroon only."),
+        // //@ts-ignore
+        // home_address:(schema) => schema.min(10, "Too short").max(50, "Too long"),
+        // accepted_terms:(schema) => schema.refine(val => val, "You must accept the terms and conditions"),
+        // name:(schema)=>schema,
+        // emergency_phone: (schema)=> schema
+        // //@ts-ignore
+        // .min(600000000, "Phone number too short. Cameroon only.")
+        //.max(699999999, "Phone number too longs. Cameroon only."),
     id:(schema)=>schema.refine(item=>String(item))
 })
 

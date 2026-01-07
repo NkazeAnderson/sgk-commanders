@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
-import type { User } from "@/types";
 import { users as mockUsers } from "@/mockdata";
+import React from "react";
+import type { userT } from "sgk-commanders-shared";
+import { supabase } from "sgk-commanders-shared";
 
 type UsersContextValue = {
-  users: User[];
+  users: userT[];
   loading: boolean;
   refresh: () => Promise<void>;
-  addUser: (user: User) => Promise<User | null>;
-  updateUser: (id: string, data: Partial<User>) => Promise<User | null>;
+  addUser: (user: userT) => Promise<userT | null>;
+  updateUser: (id: string, data: Partial<userT>) => Promise<userT | null>;
   deleteUser: (id: string) => Promise<boolean>;
 };
 
@@ -28,18 +29,16 @@ export function UsersProvider({
   initialData,
 }: {
   children: React.ReactNode;
-  initialData?: User[];
+  initialData?: userT[];
 }) {
-  const [users, setUsers] = React.useState<User[]>(initialData ?? []);
+  const [users, setUsers] = React.useState<userT[]>(initialData ?? []);
   const [loading, setLoading] = React.useState(false);
 
   async function refresh() {
     setLoading(true);
     try {
-      const res = await fetch("/api/users");
-      if (!res.ok) throw new Error("Failed to fetch users");
-      const json = await res.json();
-      setUsers(json.users ?? mockUsers);
+      const res = await supabase.users.getUsers("");
+      res.data && Array.isArray(res.data) && setUsers(res.data ?? []);
     } catch (err) {
       console.error("Failed to refresh users:", err);
       setUsers(mockUsers);
@@ -58,7 +57,7 @@ export function UsersProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function addUser(user: User) {
+  async function addUser(user: userT) {
     // Optimistic update
     setUsers((s) => [user, ...s]);
     try {
@@ -71,7 +70,7 @@ export function UsersProvider({
       const json = await res.json();
       // replace optimistic user (match by id)
       setUsers((s) => [json.user, ...s.filter((u) => u.id !== json.user.id)]);
-      return json.user as User;
+      return json.user as userT;
     } catch (err) {
       console.error("Failed to add user:", err);
       // revert
@@ -80,7 +79,7 @@ export function UsersProvider({
     }
   }
 
-  async function updateUser(id: string, data: Partial<User>) {
+  async function updateUser(id: string, data: Partial<userT>) {
     const prev = users;
     setUsers((s) => s.map((u) => (u.id === id ? { ...u, ...data } : u)));
     try {
@@ -92,7 +91,7 @@ export function UsersProvider({
       if (!res.ok) throw new Error("Failed to update user");
       const json = await res.json();
       setUsers((s) => s.map((u) => (u.id === id ? json.user : u)));
-      return json.user as User;
+      return json.user as userT;
     } catch (err) {
       console.error("Failed to update user:", err);
       // revert
