@@ -1,6 +1,5 @@
 "use client";
 
-import { users as mockUsers } from "@/mockdata";
 import React from "react";
 import type { userT } from "sgk-commanders-shared";
 import { supabase } from "sgk-commanders-shared";
@@ -37,11 +36,11 @@ export function UsersProvider({
   async function refresh() {
     setLoading(true);
     try {
-      const res = await supabase.users.getUsers("");
-      res.data && Array.isArray(res.data) && setUsers(res.data ?? []);
+      const res = await supabase.users.getUsers();
+      setUsers(res ?? []);
     } catch (err) {
       console.error("Failed to refresh users:", err);
-      setUsers(mockUsers);
+      // setUsers(mockUsers);
     } finally {
       setLoading(false);
     }
@@ -61,16 +60,10 @@ export function UsersProvider({
     // Optimistic update
     setUsers((s) => [user, ...s]);
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      });
-      if (!res.ok) throw new Error("Failed to add user");
-      const json = await res.json();
+      const created = await supabase.users.createUser(user);
       // replace optimistic user (match by id)
-      setUsers((s) => [json.user, ...s.filter((u) => u.id !== json.user.id)]);
-      return json.user as userT;
+      setUsers((s) => [created, ...s.filter((u) => u.id !== created.id)]);
+      return created as userT;
     } catch (err) {
       console.error("Failed to add user:", err);
       // revert
@@ -83,15 +76,9 @@ export function UsersProvider({
     const prev = users;
     setUsers((s) => s.map((u) => (u.id === id ? { ...u, ...data } : u)));
     try {
-      const res = await fetch("/api/users", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, data }),
-      });
-      if (!res.ok) throw new Error("Failed to update user");
-      const json = await res.json();
-      setUsers((s) => s.map((u) => (u.id === id ? json.user : u)));
-      return json.user as userT;
+      const updated = await supabase.users.updateUser({ id, ...data });
+      setUsers((s) => s.map((u) => (u.id === id ? updated : u)));
+      return updated as userT;
     } catch (err) {
       console.error("Failed to update user:", err);
       // revert
@@ -104,12 +91,7 @@ export function UsersProvider({
     const prev = users;
     setUsers((s) => s.filter((u) => u.id !== id));
     try {
-      const res = await fetch("/api/users", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      if (!res.ok) throw new Error("Failed to delete user");
+      await supabase.users.deleteUser(id);
       return true;
     } catch (err) {
       console.error("Failed to delete user:", err);

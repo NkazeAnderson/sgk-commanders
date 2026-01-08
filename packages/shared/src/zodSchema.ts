@@ -1,38 +1,134 @@
-import { createInsertSchema } from 'drizzle-zod';
-import { GroupMembersTable, GroupsTable, MessagesTable, NotificationsTable, PaymentsTable, SettingsTable, SOSResponsesTable, SOSTable, SubscriptionsTable, usersTable } from './dbSchema.js';
+import { z } from "zod";
 
-export const usersSchema = createInsertSchema(usersTable,
-    {
-        //@ts-ignore
-        // email:(schema)=> schema.email().min(1, "Email is required").max(255, "Email must be less than 255 characters").toLowerCase(),
-        // phone:(schema)=> schema
-        // //@ts-ignore
-        // .min(600000000, "Phone number too short. Cameroon only.")
-        // .max(699999999, "Phone number too longs. Cameroon only."),
-        // //@ts-ignore
-        // home_address:(schema) => schema.min(10, "Too short").max(50, "Too long"),
-        // accepted_terms:(schema) => schema.refine(val => val, "You must accept the terms and conditions"),
-        // name:(schema)=>schema,
-        // emergency_phone: (schema)=> schema
-        // //@ts-ignore
-        // .min(600000000, "Phone number too short. Cameroon only.")
-        //.max(699999999, "Phone number too longs. Cameroon only."),
-    id:(schema)=>schema.refine(item=>String(item))
-})
+/**
+ * Pure Zod schemas that correspond to the DB schema defined in `dbSchema.ts`.
+ * These are plain `z.object` schemas (no drizzle helpers) and aim to match types,
+ * required/optional semantics and simple constraints (lengths, ints, UUIDs).
+ */
 
-export const groupMembersSchema = createInsertSchema(GroupMembersTable, {id:(schema)=>schema.refine(item=>String(item))})
-export const groupsSchema = createInsertSchema(GroupsTable, {id:(schema)=>schema.refine(item=>String(item))})
+export const subscriptionGroupEnum = z.enum(["individuals", "groups", "organisations"]);
+export const paymentStatusEnum = z.enum(["pending", "failed", "success"]);
 
-export const sosSchema = createInsertSchema(SOSTable, {id:(schema)=>schema.refine(item=>String(item))})
+const locationSchema = z.object({
+  longitude: z.number(),
+  latitude: z.number(),
+});
 
-export const sosResponseSchema = createInsertSchema(SOSResponsesTable, {id:(schema)=>schema.refine(item=>String(item))})
+export const subscriptionsSchema = z.object({
+  id: z.string().uuid(), // defaultRandom in DB
+  name: z.string().min(1).max(50),
+  price: z.number().int(),
+  maximumSubAccounts: z.number().int(),
+  is_defualt: z.boolean().nullable().optional(),
+  for: subscriptionGroupEnum.nullable().optional().default("individuals"),
+});
+export type Subscription = z.infer<typeof subscriptionsSchema>;
 
-export const messagesSchema = createInsertSchema(MessagesTable, {id:(schema)=>schema.refine(item=>String(item))})
+export const usersSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1).max(255),
+  email: z.string().email().max(255),
+  phone: z.number().int(),
+  emergency_phone: z.number().int().nullable().optional(),
+  home_address: z.string().min(1).max(225),
+  accepted_terms: z.boolean(),
+  last_known_location: locationSchema.nullable().optional(),
+  created_at: z.string().nullable().optional(), // DB timestamp defaultNow
+  is_safe: z.boolean().nullable().optional().default(true),
+  is_agent: z.boolean().nullable().optional().default(false),
+  profile_picture: z.string().nullable().optional(),
+  deviceIds: z.array(z.string()).nullable().optional(),
+  subcription: z.string().uuid(),
+  subcriptionExpiration: z.string().nullable().optional(), // date string
+});
+export type User = z.infer<typeof usersSchema>;
 
-export const notificationsSchema = createInsertSchema(NotificationsTable, {id:(schema)=>schema.refine(item=>String(item))})
+export const groupsSchema = z.object({
+  id: z.string().uuid(),
+  admin_id: z.string().uuid(),
+  is_organisation: z.boolean().nullable().optional().default(false),
+  name: z.string().min(1),
+  subcription: z.string().uuid().nullable().optional(),
+  subcriptionExpiration: z.string().nullable().optional(),
+});
+export type Group = z.infer<typeof groupsSchema>;
 
-export const subscriptionsSchema = createInsertSchema(SubscriptionsTable,{id:(schema)=>schema.refine(item=>String(item))})
+export const groupMembersSchema = z.object({
+  id: z.string().uuid(),
+  group_id: z.string().uuid(),
+  member_id: z.string().uuid().nullable().optional(),
+  role: z.string().min(1).max(50),
+  invitation_accepted: z.boolean().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+});
+export type GroupMember = z.infer<typeof groupMembersSchema>;
 
-export const paymentsSchema = createInsertSchema(PaymentsTable, {id:(schema)=>schema.refine(item=>String(item))})
+export const sosSchema = z.object({
+  id: z.string().uuid(),
+  sent_by: z.string().uuid(),
+  message: z.string().nullable().optional(),
+  resolved: z.boolean().nullable().optional(),
+  created_at: z.string().nullable().optional(),
+  updated_at: z.string().nullable().optional(),
+  location: locationSchema,
+});
+export type SOS = z.infer<typeof sosSchema>;
 
-export const settingsSchema = createInsertSchema(SettingsTable)
+export const sosResponseSchema = z.object({
+  id: z.string().uuid(),
+  sos: z.string().uuid(),
+  response_by: z.string().uuid(),
+  description: z.string().nullable().optional(),
+  images: z.array(z.string()).nullable().optional(),
+  created_at: z.string().nullable().optional(),
+});
+export type SOSResponse = z.infer<typeof sosResponseSchema>;
+
+export const agentDutiesSchema = z.object({
+  id: z.string().uuid(),
+  agent_id: z.string().uuid(),
+  assigned_location: locationSchema,
+  purpose: z.string().nullable().optional(),
+  days: z.array(z.string()).min(1),
+  start_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/, "Invalid time format"),
+  end_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/, "Invalid time format"),
+  active: z.boolean().nullable().optional().default(true),
+  created_at: z.string().nullable().optional(),
+});
+export type AgentDuty = z.infer<typeof agentDutiesSchema>;
+
+export const messagesSchema = z.object({
+  id: z.string().uuid(),
+  text: z.string().min(1),
+  sentTo: z.string().uuid(),
+  sentBy: z.string().uuid(),
+  created_at: z.string().nullable().optional(),
+});
+export type Message = z.infer<typeof messagesSchema>;
+
+export const notificationsSchema = z.object({
+  id: z.string().uuid(),
+  text: z.string().min(1),
+  userId: z.string().uuid(),
+});
+export type Notification = z.infer<typeof notificationsSchema>;
+
+export const settingsSchema = z.object({
+  settings: z.record(z.union([z.string(), z.number(), z.boolean()])),
+  index: z.number().int().nullable().optional().default(0),
+});
+export type Settings = z.infer<typeof settingsSchema>;
+
+export const paymentsSchema = z.object({
+  id: z.string().uuid(),
+  subscription: z.string().uuid(),
+  by: z.string().uuid(),
+  amount: z.number().int(),
+  phone: z.number().int().nullable().optional(),
+  status: paymentStatusEnum.nullable().optional().default("pending"),
+  date: z.string().nullable().optional(),
+  months: z.number().int().nullable().optional().default(1),
+  group: z.string().uuid().nullable().optional(),
+});
+export type Payment = z.infer<typeof paymentsSchema>;
+

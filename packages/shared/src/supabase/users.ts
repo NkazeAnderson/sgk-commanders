@@ -1,41 +1,49 @@
 import { tables } from "../constants.js";
-import type { userT } from "../types.js";
+import type { User } from "../zodSchema.js";
 import { usersSchema } from "../zodSchema.js";
 import { supabase } from "./instance.js";
-import { parseDatabaseResponse } from "./utils.js";
 
 const userTableRef = supabase.from(tables.users)
 
-export async function createUser(user:userT ) {
-   return await userTableRef.insert(user)
+export async function createUser(user:User ){
+  const { data, error } = await userTableRef.insert(user).select().single();
+  if (error) throw error;
+  return usersSchema.parse(data)
 }
 
-export async function getUsers(email:string) {
+export async function getUsers() {
   const res =  await userTableRef.select("*");
-    return usersSchema.array().parse(res.data)
+  if (res.error) throw res.error;
+  return usersSchema.array().parse(res.data ?? []);
 }
 
 export async function getUserByEmail(email:string) {
   const res =  await userTableRef.select("*").eq("email", email).single();
-    return parseDatabaseResponse(res, usersSchema);
+  if (res.error) throw res.error;
+  return usersSchema.parse(res.data);
 }
 
 export async function getUserByPhone(phone:number) {
   const res =  await userTableRef.select("*").eq("phone", phone).single();
-    return parseDatabaseResponse(res, usersSchema);
+  if (res.error) throw res.error;
+  return usersSchema.parse(res.data);
 }
 
 export async function getUserById(id:string) {
    const res = await userTableRef.select("*").eq("id", id).single()
-    return parseDatabaseResponse(res, usersSchema);
+   if (res.error) throw res.error;
+   return usersSchema.parse(res.data);
 }
 
-export async function updateUser( user:Partial<userT> & {id:string}) {
+export async function updateUser( user:Partial<User> & {id:string}) {
     const {id, ...rest} = user; // Exclude id from the update
-    const res = await userTableRef.update(rest).eq("id", id);
-    return res
+    const { data, error } = await userTableRef.update(rest).eq("id", id).select().single();
+    if (error) throw error;
+    return usersSchema.parse(data);
 }
 
 export async function deleteUser(id:string) {
-    return await userTableRef.delete().eq("id", id);
+    const { error } = await userTableRef.delete().eq("id", id);
+    if (error) throw error;
+    return true;
 }

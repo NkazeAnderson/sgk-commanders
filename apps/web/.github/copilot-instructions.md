@@ -20,6 +20,7 @@
   - use `cn(buttonVariants({ variant, size, className }))` for classes
 - `lib/utils.ts` — `cn` helper; prefer this instead of manual class merges.
 - `tsconfig.json` — path alias `@/*` maps to repo root; prefer imports like `@/components` or `@/lib`.
+- Data access: **Frontends should call shared Supabase helpers directly** from `sgk-commanders-shared` (e.g., `supabase.users.getUsers()`, `supabase.users.createUser()`) instead of calling local API routes. Initialize the public client with `setUpSupabase()` (see `apps/web/components/SupabaseClientInit.tsx`). The `/api/users` route is deprecated.
 - `eslint.config.mjs` — uses Next.js recommended rules; run `npm run lint` to check linting.
 
 ## Scripts / workflows
