@@ -21,11 +21,7 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { userModes } from "@/constants";
-import { supabase } from "@/supabase";
-import { userModesT } from "@/types";
 import { hookFormErrorHandler, unknownErrorHandler } from "@/utils";
-import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
@@ -34,7 +30,16 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  constants,
+  supabase,
+  userModesT,
+  zodSchemas,
+} from "sgk-commanders-shared";
 import { z } from "zod";
+
+const { userModes } = constants;
+const { usersSchema } = zodSchemas;
 const schema = usersSchema.omit({
   id: true,
   subcription: true,
@@ -73,10 +78,12 @@ const SignUp = () => {
   // }, []);
 
   const subbmitForm = async (data: z.infer<typeof schema>) => {
-    const { data: dataRes, error } = await supabase.auth.signInWithOtp({
-      phone: `237${data.phone}`,
-      options: { shouldCreateUser: true, data },
-    });
+    const { data: dataRes, error } = await supabase.supabase.auth.signInWithOtp(
+      {
+        phone: `237${data.phone}`,
+        options: { shouldCreateUser: true, data },
+      }
+    );
     if (error) {
       unknownErrorHandler(error);
     }

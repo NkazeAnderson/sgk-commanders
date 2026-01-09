@@ -13,15 +13,11 @@ import { Center } from "@/components/ui/center";
 import { Icon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import useToast from "@/hooks/useToast";
-import { uploadBase64ImageToSupabase } from "@/supabase/pictures";
-import { updateUser } from "@/supabase/users";
-import { userT } from "@/types";
 import {
   getImageFromGallery,
   hookFormErrorHandler,
   unknownErrorHandler,
 } from "@/utils";
-import { usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router, Stack } from "expo-router";
@@ -31,6 +27,11 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase, userT, zodSchemas } from "sgk-commanders-shared";
+
+const { uploadBase64ImageToSupabase } = supabase.pictures;
+const { updateUser } = supabase.users;
+const { usersSchema } = zodSchemas;
 const EditProfile = () => {
   const [profilePictureAsset, setProfilePictureAsset] =
     useState<ImagePickerAsset>();

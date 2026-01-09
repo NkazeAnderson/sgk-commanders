@@ -1,5 +1,5 @@
-import { messageT } from "@/types";
 import { useState } from "react";
+import { messageT } from "sgk-commanders-shared";
 
 const useMessage = () => {
   const [messages, setMessages] = useState<messageT[]>([]);

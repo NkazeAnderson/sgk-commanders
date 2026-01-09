@@ -3,7 +3,6 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import useToast from "@/hooks/useToast";
 import "@/localisation/i18n";
-import { supabase } from "@/supabase";
 import { useFonts } from "expo-font";
 import * as Linking from "expo-linking";
 import { router, Stack } from "expo-router";
@@ -12,6 +11,7 @@ import { useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { supabase } from "sgk-commanders-shared";
 //@eslint-ignore
 import { commonAsyncKey } from "@/constants";
 import "@/localisation/i18n";

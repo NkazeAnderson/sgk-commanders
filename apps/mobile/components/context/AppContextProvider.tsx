@@ -3,13 +3,6 @@ import useMessage from "@/hooks/useMessage";
 import useSOS from "@/hooks/useSOS";
 import useToast from "@/hooks/useToast";
 import { useUser } from "@/hooks/useUser";
-import { supabase } from "@/supabase";
-import { getMessages } from "@/supabase/messages";
-import { getSettings } from "@/supabase/settings";
-import { getAllSOS, getMyLastResponse } from "@/supabase/sos";
-import { getSubscriptions } from "@/supabase/subscriptions";
-import { getUserById } from "@/supabase/users";
-import { settingsT, subscriptionT, userT } from "@/types";
 import { unknownErrorHandler } from "@/utils";
 import { router } from "expo-router";
 import React, {
@@ -20,6 +13,18 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import {
+  settingsT,
+  subscriptionT,
+  supabase,
+  userT,
+} from "sgk-commanders-shared";
+
+const { getMessages } = supabase.messages;
+const { getSettings } = supabase.settings;
+const { getAllSOS, getMyLastResponse } = supabase.sos;
+const { getSubscriptions } = supabase.subscriptions;
+const { getUserById } = supabase.users;
 
 type appContextT = {
   userMethods: ReturnType<typeof useUser>;

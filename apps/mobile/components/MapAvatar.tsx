@@ -1,6 +1,6 @@
-import { userT } from "@/types";
 import { ArrowRight } from "lucide-react-native";
 import React, { useState } from "react";
+import { userT } from "sgk-commanders-shared";
 import { Avatar, AvatarFallbackText, AvatarImage } from "./ui/avatar";
 import { Box } from "./ui/box";
 import { Center } from "./ui/center";

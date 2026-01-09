@@ -26,7 +26,6 @@ import { Icon } from "@/components/ui/icon";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { supabase } from "@/supabase";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -43,6 +42,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Share, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "sgk-commanders-shared";
 const Account = () => {
   const [showModal, setShowModal] = useState(false);
   const { t } = useTranslation("account");

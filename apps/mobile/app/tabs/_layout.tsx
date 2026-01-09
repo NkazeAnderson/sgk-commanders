@@ -5,14 +5,16 @@ import { Center } from "@/components/ui/center";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
 import { primaryColors } from "@/constants";
-import { registerToPostgresChanges } from "@/supabase/realtime";
-import { joinedSOSSchemaT } from "@/supabase/sos";
-import { getUserById, updateUser } from "@/supabase/users";
 import { getUserLocation, unknownErrorHandler } from "@/utils";
-import { sosSchema, usersSchema } from "@/zodSchema";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
+import { supabase, zodSchemas } from "sgk-commanders-shared";
+
+const { registerToPostgresChanges } = supabase.realtime;
+const { joinedSOSSchemaT } = supabase.sos;
+const { getUserById, updateUser } = supabase.users;
+const { sosSchema, usersSchema } = zodSchemas;
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";

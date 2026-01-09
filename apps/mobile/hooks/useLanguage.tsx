@@ -1,7 +1,7 @@
 import { changeLanguage } from "@/localisation/i18n";
-import { languageT } from "@/types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { languageT } from "sgk-commanders-shared";
 
 const useLanguage = () => {
   const [language, setLanguage] = useState<languageT>("fr");

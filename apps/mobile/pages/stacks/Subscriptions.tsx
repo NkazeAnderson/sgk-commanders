@@ -19,8 +19,6 @@ import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import useToast from "@/hooks/useToast";
-import { supabase } from "@/supabase";
-import { groupT, paymentT } from "@/types";
 import { unknownErrorHandler } from "@/utils";
 import { Href, router, Stack, useLocalSearchParams } from "expo-router";
 import { CreditCard, Phone } from "lucide-react-native";
@@ -28,6 +26,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
+import { groupT, paymentT, supabase } from "sgk-commanders-shared";
 
 const Subscriptions = () => {
   const { t } = useTranslation("subscriptions");

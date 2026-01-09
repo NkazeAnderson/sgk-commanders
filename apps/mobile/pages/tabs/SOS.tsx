@@ -31,9 +31,6 @@ import { Modal } from "@/components/ui/modal";
 import { Text } from "@/components/ui/text";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { primaryColors } from "@/constants";
-import { uploadBase64ImageToSupabase } from "@/supabase/pictures";
-import { addMessageToSOS, createSOS, resolveSOS } from "@/supabase/sos";
-import { sosT, withoutIdT } from "@/types";
 import {
   getGoogleMapsDirectionURL,
   getImageFromGallery,
@@ -58,6 +55,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { sosT, supabase, withoutIdT } from "sgk-commanders-shared";
+
+const { uploadBase64ImageToSupabase } = supabase.pictures;
+const { addMessageToSOS, createSOS, resolveSOS } = supabase.sos;
 const SOS = () => {
   const rippleScale = useSharedValue(1);
   const { t } = useTranslation("sos");
