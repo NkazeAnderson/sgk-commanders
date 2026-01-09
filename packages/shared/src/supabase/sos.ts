@@ -6,7 +6,9 @@ import { supabase } from "./instance.js";
 import { parseDatabaseResponse } from "./utils.js";
 
 export const joinedSOSSchema = sosSchema.extend({sent_by: usersSchema})
+export const joinedSOSResponseSchema = sosResponseSchema.extend({sos:joinedSOSSchema, response_by: usersSchema})
 export type joinedSOSSchemaT = z.infer<typeof joinedSOSSchema>
+export type joinedSOSResponseT = z.infer<typeof joinedSOSResponseSchema>
 const sosTableRef = supabase.from(tables.sos)
 const sosResponseTableRef = supabase.from(tables.sos_responses)
 
@@ -25,6 +27,18 @@ export async function addMessageToSOS({id, message}:{id:string, message:string})
 export async function getAllSOS() {
    const res = await sosTableRef.select("*, sent_by (*)")
    return parseDatabaseResponse(res, joinedSOSSchema)
+}
+
+export async function getSOSs() {
+   const res = await sosTableRef.select("*, sent_by (*)")
+   if (res.error) throw res.error
+   return joinedSOSSchema.array().parse(res.data)
+}
+
+export async function getSOSResponses() {
+   const res = await sosResponseTableRef.select("*, response_by(*), sos (*,  sent_by (*))")
+   if (res.error) throw res.error
+   return joinedSOSResponseSchema.array().parse(res.data)
 }
 
 export async function addSOSResponse(data:withoutIdT<sosResponseT>) {

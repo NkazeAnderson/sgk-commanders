@@ -38,25 +38,25 @@ export const usersSchema = z.object({
   is_agent: z.boolean().nullable().optional().default(false),
   profile_picture: z.string().nullable().optional(),
   deviceIds: z.array(z.string()).nullable().optional(),
-  subcription: z.string().uuid(),
+  subcription: z.string().uuid().describe("references a subscribtion in the subscriptions table"),
   subcriptionExpiration: z.string().nullable().optional(), // date string
 });
 export type User = z.infer<typeof usersSchema>;
 
 export const groupsSchema = z.object({
   id: z.string().uuid(),
-  admin_id: z.string().uuid(),
+  admin_id: z.string().uuid().describe("references a user in the users table"),
   is_organisation: z.boolean().nullable().optional().default(false),
   name: z.string().min(1),
-  subcription: z.string().uuid().nullable().optional(),
+  subcription: z.string().uuid().nullable().optional().describe("references a subscribtion in the subscriptions table"),
   subcriptionExpiration: z.string().nullable().optional(),
 });
 export type Group = z.infer<typeof groupsSchema>;
 
 export const groupMembersSchema = z.object({
   id: z.string().uuid(),
-  group_id: z.string().uuid(),
-  member_id: z.string().uuid().nullable().optional(),
+  group_id: z.string().uuid().describe("references a group in the groups table"),
+  member_id: z.string().uuid().nullable().optional().describe("references a user in the users table"),
   role: z.string().min(1).max(50),
   invitation_accepted: z.boolean().nullable().optional(),
   created_at: z.string().nullable().optional(),
@@ -65,7 +65,7 @@ export type GroupMember = z.infer<typeof groupMembersSchema>;
 
 export const sosSchema = z.object({
   id: z.string().uuid(),
-  sent_by: z.string().uuid(),
+  sent_by: z.string().uuid().describe("References a user in the user table"),
   message: z.string().nullable().optional(),
   resolved: z.boolean().nullable().optional(),
   created_at: z.string().nullable().optional(),
@@ -76,8 +76,8 @@ export type SOS = z.infer<typeof sosSchema>;
 
 export const sosResponseSchema = z.object({
   id: z.string().uuid(),
-  sos: z.string().uuid(),
-  response_by: z.string().uuid(),
+  sos: z.string().uuid().describe("References an alert/sos in the sos table"),
+  response_by: z.string().uuid().describe("References a user in the users table"),
   description: z.string().nullable().optional(),
   images: z.array(z.string()).nullable().optional(),
   created_at: z.string().nullable().optional(),

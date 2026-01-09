@@ -1,42 +1,41 @@
 "use client";
 
-import * as React from "react";
-import { useState, useMemo } from "react";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import {
-  Trash,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useUsers } from "@/components/users/UsersContext";
+import { cn } from "@/lib/utils";
+import type { User } from "@/types";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
   Edit,
+  Funnel,
+  MapPin,
   MoreHorizontal,
   Plus,
-  Funnel,
-  ChevronUp,
-  ChevronDown,
-  ArrowUpDown,
-  MapPin,
+  Trash,
 } from "lucide-react";
-import type { User } from "@/types";
-import { users as initialUsers } from "@/mockdata";
-import { useUsers } from "@/components/users/UsersContext";
 import { useRouter } from "next/navigation";
+import * as React from "react";
+import { useMemo, useState } from "react";
+import UserCard from "./UserCard";
 
 export default function UsersTable({
   initialData,
@@ -169,7 +168,7 @@ export default function UsersTable({
       deviceIds: [],
     };
 
-    await addUser(newUser);
+    // await addUser(newUser);
     // optionally refresh
     // await refresh();
   }
@@ -364,24 +363,7 @@ export default function UsersTable({
                 </TableCell>
 
                 <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      {user.profile_picture ? (
-                        <AvatarImage
-                          src={user.profile_picture}
-                          alt={user.name}
-                        />
-                      ) : (
-                        <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
-                      )}
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <div className="font-medium">{user.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {user.email}
-                      </div>
-                    </div>
-                  </div>
+                  <UserCard user={user} />
                 </TableCell>
 
                 <TableCell className="hidden sm:table-cell">

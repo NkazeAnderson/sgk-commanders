@@ -8,7 +8,7 @@ import { parseDatabaseResponse } from "./utils.js"
 const groupsTableRef = supabase.from(tables.groups)
 const groupMembersTableRef = supabase.from(tables.group_members)
 
-export const groupMembersJoinedSchema = groupMembersSchema.extend({group_id:groupsSchema, member_id:usersSchema.optional()})
+export const groupMembersJoinedSchema = groupMembersSchema.extend({group_id:groupsSchema, member_id:usersSchema.nullable().optional()})
 export type groupMembersJoinedSchemaT = z.infer<typeof groupMembersJoinedSchema>
 
 export const getMyGroups = async (id:string)=>{
@@ -28,10 +28,31 @@ if (groupsRes.data) {
 
 return {data:myGroups, errors}
 }
+
+export const getGroups = async (userId?:string)=>{
+const res = userId ?
+ await groupMembersTableRef.select("*, group_id (*)").eq("member_id", userId):
+ await groupsTableRef.select("*")
+    if( res.error )throw res.error
+    return userId? groupMembersJoinedSchema.omit({"member_id":true}).array().parse(res.data).map(item=>item.group_id) : groupsSchema.array().parse(res.data)
+}
+
+
+export async function getGroupMembers(groupId?:string) {
+    const res = !groupId ?
+     await groupMembersTableRef.select("*, member_id (*), group_id (*)")
+    : await groupMembersTableRef.select("*, member_id (*), group_id (*)").eq("group_id", groupId)
+    console.log(res);
+    if (res.error) {
+        throw res.error
+    }
+    return groupMembersJoinedSchema.array().parse(res.data)
+}
+
 export async function getGroupMember(membershipId:string) {
     const membersRes = await groupMembersTableRef.select("*").eq("id", membershipId).limit(1).single()
     console.log(membersRes);
-    
+
     return parseDatabaseResponse(membersRes, groupMembersJoinedSchema)
 }
 
