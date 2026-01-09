@@ -1,0 +1,1 @@
+ALTER TABLE "settings" ADD COLUMN "index" integer PRIMARY KEY DEFAULT 0 NOT NULL;
