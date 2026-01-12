@@ -62,10 +62,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { sosResponseT, supabase, withoutIdT } from "sgk-commanders-shared";
+import { groupInvitationDataT, sosResponseT, supabase, withoutIdT } from "sgk-commanders-shared";
+import { joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
 
 const { updateGroupInviteStatus } = supabase.groups;
-const { addSOSResponse, joinedSOSSchemaT } = supabase.sos;
+const { addSOSResponse } = supabase.sos;
 const Home = () => {
   const [lastGroupInvitation, setLastGroupInvitation] =
     useState<groupInvitationDataT>();

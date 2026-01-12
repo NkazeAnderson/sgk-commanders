@@ -1,3 +1,5 @@
+"use client"
+
 import { SOSProvider } from "@/components/alerts/SOSContext";
 import AppLogo from "@/components/AppLogo";
 import { GroupsProvider } from "@/components/groups/GroupsContext";
@@ -5,11 +7,24 @@ import DashboardSideBar from "@/components/navbars/DashboardSideBar";
 import DashboardTopBar from "@/components/navbars/DashboardTopBar";
 import { PaymentsProvider } from "@/components/payments/PaymentsContext";
 import { SOSResponsesProvider } from "@/components/reports/SOSResponsesContext";
+import { useUser } from "@/components/users/UserContext";
 import { UsersProvider } from "@/components/users/UsersContext";
-import { users } from "@/mockdata";
-import { PropsWithChildren } from "react";
+import { useRouter } from "next/navigation";
+import { PropsWithChildren, useEffect } from "react";
 
 function dashboardLayout(props: PropsWithChildren) {
+  const {user} = useUser()
+  const router = useRouter()
+
+  useEffect(()=>{
+    if (!user) {
+      router.replace("/login")
+    }
+  },[])
+
+  if (!user) {
+    return null
+  }
   return (
     <UsersProvider>
       <GroupsProvider>
@@ -26,7 +41,7 @@ function dashboardLayout(props: PropsWithChildren) {
                     <DashboardSideBar />
                   </div>
                   <div className="w-4/5 h-full relative text-blue-black p-10">
-                    <DashboardTopBar user={users[1]} />
+                    <DashboardTopBar user={user} />
                     {props.children}
                   </div>
                 </div>

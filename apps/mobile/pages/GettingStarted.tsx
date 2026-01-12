@@ -9,6 +9,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { getStartedTexts } from "@/constants";
 import { Link } from "expo-router";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
@@ -23,6 +24,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { userT } from "sgk-commanders-shared";
 
 type demoUserT = {
   id: string;
@@ -31,12 +33,6 @@ type demoUserT = {
   y: number;
   isSafe?: boolean;
 };
-
-const getStartedTexts: string[] = [
-  "Connect with your team and family anytime anywhere.",
-  "Smart location tracking for both work and home.",
-  "Ensure safety for loved ones and boost workplace efficiency.",
-];
 
 const GettingStarted = () => {
   const [activeHeadingTextIndex, setActiveHeadingTextIndex] = useState<{
@@ -151,7 +147,7 @@ const GettingStarted = () => {
                 home_address: "",
                 accepted_terms: false,
                 phone: 888,
-              }}
+              } as userT}
               safe={userIsSafe}
               size="lg"
             />
@@ -169,7 +165,7 @@ const GettingStarted = () => {
                 accepted_terms: false,
                 phone: 888,
                 is_agent: true,
-              }}
+              } as userT}
               rotationAngle={userIsSafe ? undefined : 210} // 210}
               size="lg"
             />
@@ -187,7 +183,7 @@ const GettingStarted = () => {
                 accepted_terms: false,
                 phone: 888,
                 is_agent: true,
-              }}
+              } as userT }
               rotationAngle={userIsSafe ? undefined : 60}
               size="lg"
             />

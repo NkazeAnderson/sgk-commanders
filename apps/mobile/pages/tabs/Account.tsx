@@ -42,7 +42,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Share, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supabase } from "sgk-commanders-shared";
+import { supabase as sharedSupabase } from "sgk-commanders-shared";
+const supabase = sharedSupabase.supabase
 const Account = () => {
   const [showModal, setShowModal] = useState(false);
   const { t } = useTranslation("account");

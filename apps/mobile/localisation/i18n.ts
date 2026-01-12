@@ -36,10 +36,10 @@ import signup_fr from "@/pages/locale/fr/signup";
 import sos_fr from "@/pages/locale/fr/sos";
 import subscriptions_fr from "@/pages/locale/fr/subscriptions";
 import verify_code_fr from "@/pages/locale/fr/verify_code";
-import { languageT } from '@/types';
 import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { languageT } from "sgk-commanders-shared";
 import common_en from './common_en';
 import common_fr from './common_fr';
 

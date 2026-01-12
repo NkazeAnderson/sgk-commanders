@@ -21,19 +21,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { User } from "@/types";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, CircleX } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { groupT } from "sgk-commanders-shared";
 import { getGroups } from "sgk-commanders-shared/dist/supabase/groups";
+import { useSOS } from "../alerts/SOSContext";
+import { useUser } from "./UserContext";
 import { useUsers } from "./UsersContext";
 
 export default function UserDetails() {
   const params = useParams();
   const router = useRouter();
   const { users, updateUser, deleteUser } = useUsers();
+  const {sos} = useSOS()
+  const {subscriptions} = useUser()
   const [groups, setGroups] = useState<groupT[]>([]);
   const id = params?.id as string;
 
@@ -52,6 +56,9 @@ export default function UserDetails() {
       setGroups(res);
     })();
   }, [user]);
+  const userSos = sos?.find(item=>item.sent_by.id === user?.id && !item.resolved)
+  const subscription = subscriptions.find(item=>item.id === user?.subcription)
+  
 
   if (!user) {
     return <div className="p-4">User not found</div>;
@@ -99,7 +106,8 @@ export default function UserDetails() {
   }
 
   return (
-    <div className="p-4 max-w-3xl h-full overflow-y-scroll">
+    <div className="p-4 w-full flex gap-2 h-full overflow-y-scroll">
+      <div className="flex-[3/4]">
       <Card>
         <CardHeader>
           <div className="flex items-center gap-4">
@@ -128,9 +136,12 @@ export default function UserDetails() {
               <Button variant="ghost" onClick={() => setEditing((e) => !e)}>
                 {editing ? "Cancel" : "Edit"}
               </Button>
+              {
+                !editing &&
               <Button variant="destructive" onClick={handleDelete}>
                 Delete
               </Button>
+              }
             </div>
           </div>
         </CardHeader>
@@ -244,7 +255,7 @@ export default function UserDetails() {
 
                 <FormField
                   control={form.control}
-                  name="accepted_terms"
+                  name="is_agent"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start gap-3">
                       <FormControl>
@@ -254,7 +265,7 @@ export default function UserDetails() {
                         />
                       </FormControl>
                       <div className="flex-1">
-                        <FormLabel>Accepted Terms</FormLabel>
+                        <FormLabel>Is Agent</FormLabel>
                         <FormMessage />
                       </div>
                     </FormItem>
@@ -275,36 +286,7 @@ export default function UserDetails() {
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-2">
-                  <FormField
-                    control={form.control}
-                    name={"last_known_location.latitude" as any}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Location Lat</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={"last_known_location.longitude" as any}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Location Lon</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+              
                 <div className="flex gap-2 mt-2">
                   <Button type="submit">Save</Button>
                   <Button variant="ghost" onClick={() => setEditing(false)}>
@@ -335,7 +317,7 @@ export default function UserDetails() {
                   <div className="text-sm text-muted-foreground">
                     Subscription
                   </div>
-                  <div className="font-medium">{user.subcription ?? "-"}</div>
+                  <div className="font-medium">{subscription?.name ?? "-"}</div>
                 </div>
 
                 <div>
@@ -445,6 +427,8 @@ export default function UserDetails() {
                   </div>
                 </div>
               </div>
+              {
+                Boolean(groups.length) && <>
               <h2>Groups</h2>
               <ul>
                 {groups.map((item) => (
@@ -458,11 +442,44 @@ export default function UserDetails() {
                   </li>
                 ))}
               </ul>
+                </>
+              }
             </div>
           )}
         </CardContent>
         <CardFooter />
       </Card>
+
+      </div>
+      <div className="flex-[1/4] sticky top-0">d
+          <p><b>
+            Notes
+            </b>
+            </p>
+            <p>Safety
+              {
+                user?.is_safe ?
+                <CheckCircle2 className=" stroke-[white] fill-[green] inline"/>:
+                <>
+                <CircleX className=" stroke-[white] fill-[red] inline"/>
+                {
+                  userSos &&
+                  <Link href={"/dashboard/alerts/"+userSos.id}>
+                  <div className=" flex items-center gap-1">
+
+                    <small>
+
+                    View alert 
+                    </small>
+                    <ArrowRight size={10}/>
+                  </div>
+                    </Link>
+                }
+                </>
+              }
+              
+               </p>
+      </div>
     </div>
   );
 }

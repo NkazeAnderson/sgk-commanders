@@ -100,7 +100,7 @@ export default {
       }
     },
     "owner": "sea_rocket_tech",
-    "runtimeVersion": {
+    "runtimeVersion":ENV === "development" ? "1.0.0" : {
       "policy": "appVersion"
     },
     "updates": {

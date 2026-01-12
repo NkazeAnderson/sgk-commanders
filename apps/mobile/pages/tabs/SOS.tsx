@@ -36,6 +36,7 @@ import {
   getImageFromGallery,
   getUserLocation,
 } from "@/utils";
+import { uploadBase64ImageToSupabase } from "@/utils/supabasePictures";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -57,7 +58,6 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { sosT, supabase, withoutIdT } from "sgk-commanders-shared";
 
-const { uploadBase64ImageToSupabase } = supabase.pictures;
 const { addMessageToSOS, createSOS, resolveSOS } = supabase.sos;
 const SOS = () => {
   const rippleScale = useSharedValue(1);
@@ -174,8 +174,8 @@ const SOS = () => {
         sent_by: user?.id!,
       };
       const res = await createSOS(sos);
-      if (res.data && !Array.isArray(res.data)) {
-        runOnJS(setNewSOSId)(res.data.id!);
+      if (res) {
+        runOnJS(setNewSOSId)(res.id!);
       } else {
         throw new Error("id required from newSOS");
       }

@@ -1,3 +1,8 @@
+  /** @type {import('react-native-worklets/plugin').PluginOptions} */
+  const workletsPluginOptions = {
+    // Your custom options.
+  }
+
 module.exports = function(api) {
     api.cache(true);
 
@@ -15,6 +20,7 @@ module.exports = function(api) {
             }
         }],
          'react-native-reanimated/plugin', //should be last
+        // ['react-native-worklets/plugin', workletsPluginOptions],
     ]
     };
 };

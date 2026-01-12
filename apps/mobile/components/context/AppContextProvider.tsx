@@ -16,8 +16,7 @@ import React, {
 import {
   settingsT,
   subscriptionT,
-  supabase,
-  userT,
+  supabase
 } from "sgk-commanders-shared";
 
 const { getMessages } = supabase.messages;
@@ -57,20 +56,16 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
 
   useEffect(() => {
     //supabase.auth.signOut();
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.supabase.auth.onAuthStateChange((event, session) => {
       console.log({ session });
 
       if (session?.user) {
-        getUserById(session.user.id).then(({ data, error }) => {
-          console.log({ data });
-
-          if (data) {
-            userMethods.setUser(data as userT);
+        getUserById(session.user.id).then((res) => {
+          if (res) {
+            userMethods.setUser(res);
             event === "SIGNED_IN" &&
               toast.show({ message: "Successfully signed in" });
             router.push("/tabs");
-          } else if (error) {
-            unknownErrorHandler(error);
           }
         });
         getSubscriptions().then((res) => {

@@ -4,7 +4,6 @@ import { Box } from "@/components/ui/box";
 import { Center } from "@/components/ui/center";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
-import { primaryColors } from "@/constants";
 import { getUserLocation, unknownErrorHandler } from "@/utils";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
@@ -12,16 +11,17 @@ import React, { useEffect, useState } from "react";
 import { supabase, zodSchemas } from "sgk-commanders-shared";
 
 const { registerToPostgresChanges } = supabase.realtime;
-const { joinedSOSSchemaT } = supabase.sos;
 const { getUserById, updateUser } = supabase.users;
 const { sosSchema, usersSchema } = zodSchemas;
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 //@eslint-ignore
+import { primaryColors } from "@/constants";
 import "@/localisation/i18n";
-import { tables } from "@/supabase/functions/_shared/constant";
 import { Platform } from "react-native";
+import { tables } from "sgk-commanders-shared/dist/constants";
+import { joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -176,10 +176,10 @@ const _layout = () => {
               ) {
                 const sos = sosSchema.parse(payload.new);
                 getUserById(sos.sent_by).then((res) => {
-                  if (res.data && !Array.isArray(res.data)) {
+                  if (res) {
                     const joinedSos: joinedSOSSchemaT = {
                       ...sos,
-                      sent_by: res.data,
+                      sent_by: res,
                     };
                     setSos((prev) => {
                       const index = prev.findIndex(

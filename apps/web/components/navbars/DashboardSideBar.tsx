@@ -4,13 +4,12 @@ import { sideBarMenuItems } from "@/constants";
 import { SideBarMenuItem } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { FC } from "react";
 
 function DashboardSideBar() {
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full flex flex-col gap-1 flex-grow overflow-y-scroll">
       {sideBarMenuItems.map((item) => (
-        <NavLink {...item} />
+        <NavLink key={item.displayText} {...item} />
       ))}
     </div>
   );
@@ -29,7 +28,10 @@ function NavLink(props: SideBarMenuItem) {
             : "text-blue-100 bg-blue-black "
         } `}
       >
+        {
+          //@ts-ignore
         <Icon />
+        }
         {props.displayText}
       </div>
     </Link>

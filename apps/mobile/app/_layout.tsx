@@ -13,7 +13,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { supabase } from "sgk-commanders-shared";
 //@eslint-ignore
-import { commonAsyncKey } from "@/constants";
+import { commonAsyncKey, primaryColors } from "@/constants";
 import "@/localisation/i18n";
 import { saveToAsycStore } from "@/utils";
 
@@ -33,7 +33,7 @@ export default function RootLayout() {
         console.log("saved");
       });
       setTimeout(() => {
-        supabase.auth.getUser().then((res) => {
+        supabase.supabase.auth.getUser().then((res) => {
           if (res) {
             router.push("/tabs");
           }
@@ -51,9 +51,9 @@ export default function RootLayout() {
   }
   return (
     <>
-      <GestureHandlerRootView style={{ flex: 1, display: "flex" }}>
+      <GestureHandlerRootView style={{ flex: 1, display: "flex", backgroundColor:primaryColors["--color-primary-900"] }}>
         <GluestackUIProvider mode="dark">
-          <View className="flex-1 bg-primary-900">
+          <View style={{display:"flex", flex:1}}>
             <AppContextProvider>
               <Stack
                 screenOptions={{ headerShown: false, animation: "none" }}

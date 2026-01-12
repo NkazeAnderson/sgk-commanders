@@ -74,7 +74,7 @@ const Subscriptions = () => {
   const submitting = useRef(false);
 
   async function submit(data: any) {
-    const res = await supabase.functions.invoke("tara-payments", {
+    const res = await supabase.supabase.functions.invoke("tara-payments", {
       body: data,
     });
     if (res.data) {

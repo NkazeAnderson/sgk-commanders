@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Animated, { SlideInRight } from "react-native-reanimated";
 import { supabase, zodSchemas } from "sgk-commanders-shared";
+import { groupMembersJoinedSchemaT } from "sgk-commanders-shared/dist/supabase/groups";
 import { z } from "zod";
 import { useAppContext } from "./context/AppContextProvider";
 import Form from "./Form";
@@ -29,7 +30,7 @@ import { Icon } from "./ui/icon";
 import { Text } from "./ui/text";
 import { VStack } from "./ui/vstack";
 
-const { createGroupMember, groupMembersJoinedSchemaT } = supabase.groups;
+const { createGroupMember } = supabase.groups;
 const { groupMembersSchema, usersSchema } = zodSchemas;
 
 const schema = groupMembersSchema
@@ -197,7 +198,7 @@ const GroupMembersList = ({
       {members.map((member) => (
         <MemberCard
           key={member.id}
-          user={member.member_id}
+          user={member.member_id!}
           role={member.role}
           manage={manage}
         />

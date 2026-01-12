@@ -18,6 +18,7 @@ import {
   hookFormErrorHandler,
   unknownErrorHandler,
 } from "@/utils";
+import { uploadBase64ImageToSupabase } from "@/utils/supabasePictures";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router, Stack } from "expo-router";
@@ -29,7 +30,6 @@ import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase, userT, zodSchemas } from "sgk-commanders-shared";
 
-const { uploadBase64ImageToSupabase } = supabase.pictures;
 const { updateUser } = supabase.users;
 const { usersSchema } = zodSchemas;
 const EditProfile = () => {
@@ -66,9 +66,6 @@ const EditProfile = () => {
       const res = await updateUser(data);
       setUser({ ...user, ...data });
       toast.show({ message: "Successfully updated your profile" });
-      if (res.error) {
-        throw new Error(res.error.message);
-      }
       router.back();
       return res;
     } catch (error) {

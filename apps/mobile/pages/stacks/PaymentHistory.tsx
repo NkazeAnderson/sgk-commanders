@@ -9,12 +9,13 @@ import { DollarSign } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList } from "react-native";
-import { paymentT, supabase } from "sgk-commanders-shared";
+import { supabase } from "sgk-commanders-shared";
+import { joinedPaymentT } from "sgk-commanders-shared/dist/supabase/payments";
 
 const { getPayments } = supabase.payments;
 
 const PaymentHistory = () => {
-  const [payments, setPayments] = useState<paymentT[]>([]);
+  const [payments, setPayments] = useState<joinedPaymentT[]>([]);
   const { t } = useTranslation("payment_history");
   useEffect(() => {
     getPayments().then((res) => {

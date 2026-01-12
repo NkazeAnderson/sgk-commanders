@@ -14,9 +14,8 @@ const sosResponseTableRef = supabase.from(tables.sos_responses)
 
 export async function createSOS(data:withoutIdT<sosT>) {
    const res = await supabase.functions.invoke("sos", {body:{action:"create", data}})
-   console.log(res);
-   
-   // return parseDatabaseResponse(res, sosSchema)
+   if (res.error) throw res.error
+   return sosSchema.parse(res.data)
 }
 
 export async function addMessageToSOS({id, message}:{id:string, message:string}) {

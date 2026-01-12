@@ -1,57 +1,77 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { supabase as sharedSupabase } from "sgk-commanders-shared";
+import { usersSchema } from "sgk-commanders-shared/dist/zodSchema";
+
+const supabase = sharedSupabase.supabase
 
 type LoginFormValues = {
   email: string;
-  password: string;
+  code: string;
   remember?: boolean;
 };
 
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+  const [step, setStep] = React.useState<"email"|"code">("email");
 
   const form = useForm<LoginFormValues>({
     defaultValues: {
       email: "",
-      password: "",
+      code: "",
       remember: false,
     },
     mode: "onTouched",
   });
 
   async function onSubmit(values: LoginFormValues) {
+
+    if (step === "email") {
+      try {
+        usersSchema.pick({email:true}).parse({email:values.email})
+       
+      } catch (error) {
+        console.log("Invalid email");
+        console.log(error);
+      }
+    }
+
     // Try sign in with email/password using Supabase
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithOtp({
         email: values.email,
-        password: values.password,
+        options:{
+          shouldCreateUser:true,
+          data:{name:"Nkaze Anderson", email:values.email, phone:683403750, home_address:"Diedo, douala, cmr", accepted_terms:true} 
+        }
       });
-
+       setStep("code")
+       console.log(data);
+       
       if (error) throw error;
 
       // successful login -> redirect to dashboard
@@ -111,50 +131,54 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle>Sign in to your account</CardTitle>
           <CardDescription>
-            Enter your email and password to continue.
+            Enter your email to continue.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="you@example.com"
-                        type="email"
-                        {...field}
-                        required
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Your password"
-                        type="password"
-                        {...field}
-                        required
-                        minLength={6}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {
+                step === "email" ?
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="you@example.com"
+                          type="email"
+                          {...field}
+                          required
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                  :
+                <FormField
+                  control={form.control}
+                  name="code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>OTP Code</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="OTP code"
+                          {...field}
+                          required
+                          minLength={6}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              }
 
               <Button type="submit" className="w-full">
                 Sign in
@@ -164,9 +188,7 @@ export default function LoginPage() {
                 <Link href="#" className="underline-offset-4 hover:underline">
                   Forgot password?
                 </Link>
-                <Link href="#" className="underline-offset-4 hover:underline">
-                  Create account
-                </Link>
+            
               </div>
             </form>
           </Form>

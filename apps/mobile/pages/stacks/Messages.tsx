@@ -11,7 +11,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { createMessage, messageT } from "sgk-commanders-shared";
+import { messageT } from "sgk-commanders-shared";
+import { createMessage } from "sgk-commanders-shared/dist/supabase/messages";
 
 const Messages = () => {
   const {
