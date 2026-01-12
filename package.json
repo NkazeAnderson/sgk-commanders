@@ -2,6 +2,10 @@
   "name": "sgk-commanders",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+  "eas-build-post-install": "npm run build --workspace=packages/shared",
+  "postinstall": "npm run build --workspace=packages/shared"
+},
   "workspaces": [
     "apps/*",
     "packages/*"
