@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-  "eas-build-post-install": "npm run build --workspace=packages/shared",
-  "postinstall": "npm run build --workspace=packages/shared"
-},
+    "eas-build-post-install": "npm run build --workspace=packages/shared",
+    "postinstall": "npm run build --workspace=packages/shared"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -13,7 +13,7 @@
   "devDependencies": {
     "typescript": "^5.8.3"
   },
-  "overrides": {
-    "react-native-worklets": "0.5.1"
+  "dependencies": {
+    "semver": "^7.7.3"
   }
 }

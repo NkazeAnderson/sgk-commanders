@@ -14,7 +14,7 @@ const workspaceRoot = path.resolve(projectRoot, '../..'); // Adjust based on you
 const config = getDefaultConfig(projectRoot);
 
 // 1. Watch all files in the monorepo hierarchy
-config.watchFolders = [workspaceRoot];
+config.watchFolders = [ ...(config.watchFolders ?? []), workspaceRoot];
 
 // 2. Force Metro to resolve modules from the project first, then the workspace
 config.resolver.nodeModulesPaths = [
@@ -23,6 +23,6 @@ config.resolver.nodeModulesPaths = [
 ];
 
 // 3. Prevent "Haste" map collisions
-config.resolver.disableHierarchicalLookup = true; 
+ config.resolver.disableHierarchicalLookup = true; 
   
 module.exports = withNativeWind(wrapWithReanimatedMetroConfig(config), { input: './global.css' });
