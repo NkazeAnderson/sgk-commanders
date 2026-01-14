@@ -2,21 +2,19 @@ import { tables } from "../constants.js";
 import type { messageT, userT, withoutIdT } from "../types.js";
 import { messagesSchema } from "../zodSchema.js";
 import { supabase } from "./instance.js";
-import { parseDatabaseResponse } from "./utils.js";
-
-const messageTableRef = supabase.from(tables.messages)
-
-
 
 export async function createMessage(message:withoutIdT<messageT>) {
-   return await messageTableRef.insert(message)
+   return await  supabase.from(tables.messages).insert(message)
 }
 
 export async function getMessages(user:userT) {
-  const res = await messageTableRef
+  const res = await  supabase.from(tables.messages)
     .select("*")
     .or(`sentBy.eq.${user.id},sentTo.eq.${user.id}`);
-    return parseDatabaseResponse(res, messagesSchema);
+    if (res.error) {
+      throw res.error;
+    }
+    return messagesSchema.array().parse(res.data)
 }
 
 

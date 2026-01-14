@@ -103,4 +103,4 @@ const MapAvatar = ({
   );
 };
 
-export default MapAvatar;
+export default React.memo(MapAvatar);

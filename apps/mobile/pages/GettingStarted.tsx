@@ -14,17 +14,17 @@ import { Link } from "expo-router";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, View } from "react-native";
 import Animated, {
   FadeInDown,
-  runOnJS,
-  runOnUI,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { runOnJS, runOnUI } from "react-native-worklets";
 import { userT } from "sgk-commanders-shared";
+import { getUsers } from "sgk-commanders-shared/dist/supabase/users";
 
 type demoUserT = {
   id: string;
@@ -100,6 +100,10 @@ const GettingStarted = () => {
 
   useEffect(() => {
     setTimeout(() => {
+      getUsers().then((users: userT[]) => {
+        console.log(users);
+      }).catch((e) => { console.log(e);
+       });
       setUserIsSafe(false);
       runOnUI(startSOS)();
     }, 3000);
@@ -153,8 +157,10 @@ const GettingStarted = () => {
             />
           </Animated.View>
 
-          <Animated.View className="absolute" style={agent1styles}>
-            <MapAvatar
+          <Animated.View className="absolute" style={[agent1styles]}>
+            <View>
+
+            {/* <MapAvatar
               user={{
                 name: "Wale",
                 id: "7776777",
@@ -168,9 +174,10 @@ const GettingStarted = () => {
               } as userT}
               rotationAngle={userIsSafe ? undefined : 210} // 210}
               size="lg"
-            />
+            /> */}
+            </View>
           </Animated.View>
-
+{/*
           <Animated.View className="absolute" style={agent2styles}>
             <MapAvatar
               user={{
@@ -187,7 +194,7 @@ const GettingStarted = () => {
               rotationAngle={userIsSafe ? undefined : 60}
               size="lg"
             />
-          </Animated.View>
+          </Animated.View> */}
         </Box>
 
         <VStack className="flex-1 justify-between">

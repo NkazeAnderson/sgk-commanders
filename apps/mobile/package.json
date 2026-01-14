@@ -10,7 +10,8 @@
     "lint": "expo lint",
     "start-supabase": "cd supabase & npx supabase start",
     "generate-migrations": "npx drizzle-kit generate",
-    "migrate": "npx drizzle-kit migrate"
+    "migrate": "npx drizzle-kit migrate",
+    "serve":"supabase functions serve"
   },
   "dependencies": {
     "@expo/html-elements": "^0.4.2",

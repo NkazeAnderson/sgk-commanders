@@ -13,8 +13,7 @@
   "devDependencies": {
     "typescript": "^5.8.3"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.90.0",
-     "react-native-worklets": "0.5.1"
+  "overrides": {
+    "react-native-worklets": "0.5.1"
   }
 }
