@@ -39,7 +39,7 @@ function UserContextProvider(props:Required<PropsWithChildren>) {
                 }
             }
             else {
-             //   setUser(undefined)
+             setUser(undefined)
             }
 
         })

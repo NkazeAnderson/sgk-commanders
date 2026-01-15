@@ -91,7 +91,7 @@ export default function UserDetails() {
 
   return (
     <div className="p-4 w-full flex gap-2 h-full overflow-y-scroll">
-      <div className="flex-[3/4]">
+      <div className="flex-[3/4] min-w-xl">
       <Card>
         <CardHeader>
           <div className="flex items-center gap-4">

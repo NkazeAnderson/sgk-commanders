@@ -37,6 +37,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [step, setStep] = React.useState<"email"|"code">("email");
+  const emailRef = React.useRef<string>("");
   
   const supabase = sharedSupabase.supabase
   const form = useForm<LoginFormValues>({
@@ -51,6 +52,7 @@ export default function LoginPage() {
   async function onSubmit(values: LoginFormValues) {
 
     if (step === "email") {
+      emailRef.current = values.email;
       try {
         usersSchema.pick({email:true}).parse({email:values.email})
        
@@ -58,9 +60,8 @@ export default function LoginPage() {
         console.log("Invalid email");
         console.log(error);
       }
-    }
 
-    // Try sign in with email/password using Supabase
+       // Try sign in with email/password using Supabase
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithOtp({
@@ -75,14 +76,33 @@ export default function LoginPage() {
        
       if (error) throw error;
 
-      // successful login -> redirect to dashboard
-      router.push("/dashboard");
     } catch (err) {
       console.error("Email sign-in failed:", err);
       alert("Email sign-in failed. You can try anonymous login instead.");
     } finally {
       setLoading(false);
     }
+    }
+    else if (step === "code") {
+      // Try verify OTP code using Supabase
+      setLoading(true); 
+      try {
+        const { error } = await supabase.auth.verifyOtp({
+          email: emailRef.current,
+          token: values.code,
+          type: "email",
+        });
+        if (error) {
+          throw error;
+        }
+          // successful login -> redirect to dashboard
+      router.push("/dashboard");
+    }
+    catch (err) {
+      console.error("OTP verification failed:", err);
+      alert("OTP verification failed. Please check the code and try again.");
+    }}
+
   }
 
   return (
