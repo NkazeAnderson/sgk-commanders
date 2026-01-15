@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -25,7 +26,6 @@ import { useForm } from "react-hook-form";
 import { supabase as sharedSupabase } from "sgk-commanders-shared";
 import { usersSchema } from "sgk-commanders-shared/dist/zodSchema";
 
-const supabase = sharedSupabase.supabase
 
 type LoginFormValues = {
   email: string;
@@ -37,7 +37,8 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [step, setStep] = React.useState<"email"|"code">("email");
-
+  
+  const supabase = sharedSupabase.supabase
   const form = useForm<LoginFormValues>({
     defaultValues: {
       email: "",
@@ -79,47 +80,6 @@ export default function LoginPage() {
     } catch (err) {
       console.error("Email sign-in failed:", err);
       alert("Email sign-in failed. You can try anonymous login instead.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleAnonymousSignIn() {
-    setLoading(true);
-    try {
-      // Prefer explicit anonymous sign-in if available
-      // (some supabase versions expose signInAnonymously)
-      // @ts-ignore
-      if (
-        supabase.auth &&
-        typeof supabase.auth.signInAnonymously === "function"
-      ) {
-        // @ts-ignore
-        const { data, error } = await supabase.auth.signInAnonymously();
-        if (error) throw error;
-      } else {
-        // Fallback: create a temporary user with a generated email + password
-        const email = `anon-${Date.now()}@example.com`;
-        const password =
-          Math.random().toString(36).slice(-10) +
-          Date.now().toString(36).slice(-4);
-        const { error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (signUpError) throw signUpError;
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (signInError) throw signInError;
-      }
-
-      // On success redirect to dashboard
-      router.push("/dashboard");
-    } catch (err) {
-      console.error("Anonymous sign-in failed:", err);
-      alert("Anonymous sign-in failed. Check console for details.");
     } finally {
       setLoading(false);
     }
@@ -182,6 +142,7 @@ export default function LoginPage() {
 
               <Button type="submit" className="w-full">
                 Sign in
+                {loading && <Spinner />}
               </Button>
 
               <div className="text-sm text-muted-foreground flex justify-between">

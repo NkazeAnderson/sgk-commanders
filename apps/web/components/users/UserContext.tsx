@@ -28,13 +28,9 @@ function UserContextProvider(props:Required<PropsWithChildren>) {
     useEffect(()=>{
         getSubscriptions().then(res=>setSubscriptions(res))
         supabase.supabase.auth.onAuthStateChange(async (e, session)=>{
-            console.log("session", session);
-                    const res = await getUserById("617570ff-16b3-46c0-b09c-54f2e99f4cf5"||session.user.id)
-                    setUser(res)
-                    router.replace("/dashboard")
             if(session){
                 try {
-                    const user = await getUserById("617570ff-16b3-46c0-b09c-54f2e99f4cf5"||session.user.id)
+                    const user = await getUserById(session.user.id)
                     setUser(user)
                     console.log(user);
                     router.replace("/dashboard")

@@ -2,7 +2,7 @@
 import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { FC, PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
 interface NavLinkT extends PropsWithChildren {
   href: Url;

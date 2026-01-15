@@ -57,12 +57,12 @@ export async function createGroup(group:withoutIdT<groupT>) {
     return await supabase.from(tables.groups).insert(group)
 }
 
-export async function editGroup(group:groupT) {
+export async function editGroup(group:Partial<groupT> & {id:string}) {
     return await supabase.from(tables.groups).update({name: group.name}).eq("id", group.id)
 }
 
-export async function deleteGroup(group:groupT) {
-    return await supabase.from(tables.groups).delete().eq("id", group.id)
+export async function deleteGroup(id:string) {
+    return await supabase.from(tables.groups).delete().eq("id", id)
 }
 
 export async function createGroupMember(groupMember:withoutIdT<groupMemberT> & {

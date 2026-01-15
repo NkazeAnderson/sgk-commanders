@@ -48,8 +48,8 @@ export default function UserDetails() {
   const form = useForm<Partial<User>>();
 
   React.useEffect(() => {
-    //@ts-ignore
-    user && form.reset({ ...user });
+    //@ts-expect-error yet to fix
+    user && form.reset({ ...user});
     (async () => {
       if (!user) return;
       const res = await getGroups(user.id);
@@ -68,32 +68,16 @@ export default function UserDetails() {
     // normalize types from form (strings -> numbers/booleans/arrays)
     const payload: Partial<User> = {
       ...values,
-      phone: values.phone ? Number(values.phone as any) : undefined,
+      phone: values.phone ? Number(values.phone) : undefined,
       emergency_phone: values.emergency_phone
-        ? Number(values.emergency_phone as any)
+        ? Number(values.emergency_phone)
         : null,
       accepted_terms: !!values.accepted_terms,
       subcriptionExpiration: values.subcriptionExpiration
-        ? new Date(values.subcriptionExpiration as any).toISOString()
+        ? new Date(values.subcriptionExpiration).toISOString()
         : values.subcriptionExpiration,
-      deviceIds:
-        typeof (values as any).deviceIds === "string"
-          ? (values as any).deviceIds
-              .split(",")
-              .map((s: string) => s.trim())
-              .filter(Boolean)
-          : (values as any).deviceIds,
-    };
 
-    // handle nested lat/long if provided
-    const lat = (values as any)?.last_known_location?.latitude;
-    const long = (values as any)?.last_known_location?.longitude;
-    if (lat && long) {
-      payload.last_known_location = {
-        latitude: Number(lat),
-        longitude: Number(long),
-      };
-    }
+    };
 
     await updateUser(id, payload);
     setEditing(false);
@@ -202,8 +186,8 @@ export default function UserDetails() {
                       <FormLabel>Emergency Phone</FormLabel>
                       <FormControl>
                         {
-                          //@ts-ignore
-                          <Input {...field} />
+                          
+                          <Input {...field} value={field.value?.toString()}/>
                         }
                       </FormControl>
                       <FormMessage />
@@ -268,20 +252,6 @@ export default function UserDetails() {
                         <FormLabel>Is Agent</FormLabel>
                         <FormMessage />
                       </div>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name={"deviceIds" as any}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Devices (comma separated)</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />

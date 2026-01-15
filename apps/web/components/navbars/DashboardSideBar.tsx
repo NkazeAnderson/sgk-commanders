@@ -28,10 +28,7 @@ function NavLink(props: SideBarMenuItem) {
             : "text-blue-100 bg-blue-black "
         } `}
       >
-        {
-          //@ts-ignore
         <Icon />
-        }
         {props.displayText}
       </div>
     </Link>

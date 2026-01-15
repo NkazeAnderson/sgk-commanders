@@ -31,7 +31,6 @@ export function UsersProvider({
   initialData?: userT[];
 }) {
   const [users, setUsers] = React.useState<userT[]>(initialData ?? []);
-  const [user, setUser] = React.useState<userT>();
   const [loading, setLoading] = React.useState(false);
 
   async function refresh() {

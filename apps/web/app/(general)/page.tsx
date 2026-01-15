@@ -10,7 +10,7 @@ export default function Home() {
           <h4>One Tap. Rapid Response.</h4>
           <h1 className="text-blue-900">SGK Commanders </h1>
           <p className="py-4">
-            Cameroon's first rapid security intervention mobile app
+            {"Cameroon's first rapid security intervention mobile app"}
           </p>
           <div className=" text-gray-300!">
             <div className="flex items-start  space-x-4 ">

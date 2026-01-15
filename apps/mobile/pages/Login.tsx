@@ -4,10 +4,10 @@ import Input from "@/components/Input";
 import Logo from "@/components/Logo";
 import { Box } from "@/components/ui/box";
 import {
-  Button,
-  ButtonIcon,
-  ButtonSpinner,
-  ButtonText,
+    Button,
+    ButtonIcon,
+    ButtonSpinner,
+    ButtonText,
 } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
 import { Divider } from "@/components/ui/divider";
@@ -39,7 +39,7 @@ const Login = () => {
   const [pending, setPending] = useState(false);
   const phoneForm = useForm({
     defaultValues: phone ? { phone: Number(phone) } : {},
-    //@ts-ignore
+    //@ts-expect-error
     resolver: zodResolver(usersSchema.pick({ phone: true })),
   });
   const codeForm = useForm({

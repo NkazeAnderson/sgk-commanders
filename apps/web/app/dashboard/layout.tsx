@@ -12,7 +12,7 @@ import { UsersProvider } from "@/components/users/UsersContext";
 import { useRouter } from "next/navigation";
 import { PropsWithChildren, useEffect } from "react";
 
-function dashboardLayout(props: PropsWithChildren) {
+function DashboardLayout(props: PropsWithChildren) {
   const {user} = useUser()
   const router = useRouter()
 
@@ -54,4 +54,4 @@ function dashboardLayout(props: PropsWithChildren) {
   );
 }
 
-export default dashboardLayout;
+export default DashboardLayout;
