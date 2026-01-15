@@ -25,7 +25,7 @@ export default function Home() {
 
               <div className="space-y-3 sm:space-y-4">
                 <h5 className="text-lg sm:text-xl text-gray-200 font-semibold">
-                  Cameroon's first rapid security intervention mobile app
+                  Cameroon&apos;s first rapid security intervention mobile app
                 </h5>
                 <p className="text-gray-400 italic text-base sm:text-lg leading-relaxed">
                   Put your personal security at your fingertips. One click and we are there to intervene.

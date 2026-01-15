@@ -135,7 +135,7 @@ export default function ContactUsPage() {
         <div className="mx-auto max-w-4xl">
           <h1 className="mb-4 text-4xl font-bold sm:text-5xl">Get in Touch</h1>
           <p className="text-lg text-blue-200">
-            Have questions or feedback? We'd love to hear from you. Reach out
+            Have questions or feedback? We&apos;d love to hear from you. Reach out
             using the form below or through any of our contact methods.
           </p>
         </div>
