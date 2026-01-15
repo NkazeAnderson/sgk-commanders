@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'About Us - SDG Commanders',
-  description: 'Learn about SDG Commanders mission to enhance public safety through rapid emergency response and community protection in Cameroon.',
+  title: 'About Us - SGK Commanders',
+  description: 'Learn about SGK Commanders mission to enhance public safety through rapid emergency response and community protection in Cameroon.',
 };
 
 export default function AboutUsPage() {
@@ -9,7 +9,7 @@ export default function AboutUsPage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-b from-blue-900 to-blue-950 text-white py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">About SDG Commanders</h1>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">About SGK Commanders</h1>
           <p className="text-xl sm:text-2xl text-blue-200">Empowering Communities Through Rapid Emergency Response</p>
         </div>
       </div>
@@ -29,7 +29,7 @@ export default function AboutUsPage() {
                 Traditional emergency response systems often suffer from slow communication, unclear victim locations, and delayed assistance. When seconds matter, these delays can have devastating consequences. Communities need a faster, more reliable way to get help when they need it most.
               </p>
               <p className="text-lg text-gray-300 leading-relaxed">
-                <strong className="text-white">SDG Commanders was created to bridge this critical gap.</strong> We believe that everyone deserves access to rapid emergency response, regardless of their socioeconomic status.
+                <strong className="text-white">SGK Commanders was created to bridge this critical gap.</strong> We believe that everyone deserves access to rapid emergency response, regardless of their socioeconomic status.
               </p>
             </div>
             <div className="bg-blue-900/50 border border-blue-800 p-8 rounded-lg border-l-4 border-l-red-500">
@@ -70,7 +70,7 @@ export default function AboutUsPage() {
                 <div className="text-4xl font-bold text-blue-300 mb-4">1</div>
                 <h3 className="text-xl font-bold text-white mb-3">Send SOS Alert</h3>
                 <p className="text-gray-300">
-                  Users in distress instantly activate the SOS feature with a single tap in the SDG Commanders app.
+                  Users in distress instantly activate the SOS feature with a single tap in the SGK Commanders app.
                 </p>
               </div>
 
@@ -97,7 +97,7 @@ export default function AboutUsPage() {
 
         {/* Key Features Section */}
         <section className="mb-20">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center">Why SDG Commanders</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center">Why SGK Commanders</h2>
           <div className="grid md:grid-cols-2 gap-8">
             {/* Feature 1 */}
             <div className="flex gap-4">
@@ -190,7 +190,7 @@ export default function AboutUsPage() {
               <p className="text-lg text-blue-300 font-semibold mb-4">Founder & Vision Leader</p>
               
               <p className="text-lg text-gray-300 mb-4 leading-relaxed">
-                Steeve Kenfack envisioned a world where security is not a luxury, but a fundamental right accessible to every person in Cameroon. Witnessing the impact of crime on communities and the gaps in traditional emergency response systems, he founded SDG Commanders in 2025 with a singular mission: to democratize personal safety.
+                Steeve Kenfack envisioned a world where security is not a luxury, but a fundamental right accessible to every person in Cameroon. Witnessing the impact of crime on communities and the gaps in traditional emergency response systems, he founded SGK Commanders in 2025 with a singular mission: to democratize personal safety.
               </p>
 
               <p className="text-lg text-gray-300 mb-4 leading-relaxed">
@@ -198,7 +198,7 @@ export default function AboutUsPage() {
               </p>
 
               <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                Under Steeve&rsquo;s leadership, SDG Commanders is revolutionizing emergency response in Cameroon through rapid SOS notifications, real-time location tracking, and a pay-as-you-go model that ensures affordability. His dedication continues to drive the platform&rsquo;s mission to save lives and protect communities across the nation.
+                Under Steeve&rsquo;s leadership, SGK Commanders is revolutionizing emergency response in Cameroon through rapid SOS notifications, real-time location tracking, and a pay-as-you-go model that ensures affordability. His dedication continues to drive the platform&rsquo;s mission to save lives and protect communities across the nation.
               </p>
 
               {/* Contact Links */}
@@ -228,7 +228,7 @@ export default function AboutUsPage() {
           <div className="mt-12 bg-blue-800/50 border border-blue-700 p-8 rounded-lg border-l-4 border-l-blue-400">
             <h4 className="text-2xl font-bold text-white mb-4">Steeve&rsquo;s Vision</h4>
             <p className="text-xl text-gray-200 italic leading-relaxed">
-              &quot;Security should not be determined by wealth or social status. Through technology and community collaboration, we can create a Cameroon where every person has immediate access to help in their darkest hours. SDG Commanders is just the beginning of a movement to make our cities safer for everyone.&quot;
+              &quot;Security should not be determined by wealth or social status. Through technology and community collaboration, we can create a Cameroon where every person has immediate access to help in their darkest hours. SGK Commanders is just the beginning of a movement to make our cities safer for everyone.&quot;
             </p>
           </div>
         </section>
@@ -250,7 +250,7 @@ export default function AboutUsPage() {
                 <div className="pt-2">
                   <h4 className="text-xl font-bold text-white">2025 - Launch & Foundation</h4>
                   <p className="text-gray-300 mt-2">
-                    SDG Commanders was founded with the core mission to address the emergency response crisis in Cameroon. The platform begins development with a focus on rapid SOS notifications and real-time location tracking.
+                    SGK Commanders was founded with the core mission to address the emergency response crisis in Cameroon. The platform begins development with a focus on rapid SOS notifications and real-time location tracking.
                   </p>
                 </div>
               </div>
@@ -277,7 +277,7 @@ export default function AboutUsPage() {
                 <div className="pt-2">
                   <h4 className="text-xl font-bold text-white">Present & Future</h4>
                   <p className="text-gray-300 mt-2">
-                    SDG Commanders continues to expand its network of responders and communities, working toward making rapid emergency response accessible to everyone on a pay-as-you-go basis. The vision is to save lives and build safer communities across Cameroon.
+                    SGK Commanders continues to expand its network of responders and communities, working toward making rapid emergency response accessible to everyone on a pay-as-you-go basis. The vision is to save lives and build safer communities across Cameroon.
                   </p>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function AboutUsPage() {
         <section className="bg-gradient-to-r from-blue-900 to-blue-950 text-white py-12 px-8 rounded-lg text-center border border-blue-800">
           <h2 className="text-3xl font-bold mb-4 text-white">Join the Movement for Safer Communities</h2>
           <p className="text-xl text-blue-200 mb-6">
-            Be part of a revolution in emergency response. Download SDG Commanders today and help protect your community.
+            Be part of a revolution in emergency response. Download SGK Commanders today and help protect your community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-white text-blue-950 font-bold py-3 px-8 rounded-lg hover:bg-blue-50 transition">

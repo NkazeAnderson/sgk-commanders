@@ -1,10 +1,10 @@
-# Privacy Policy - SDG Commanders Mobile App
+# Privacy Policy - SGK Commanders Mobile App
 
 **Last Updated:** January 15, 2026
 
 ## Introduction
 
-SDG Commanders ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how our mobile application collects, uses, discloses, and safeguards your information when you use our application.
+SGK Commanders ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how our mobile application collects, uses, discloses, and safeguards your information when you use our application.
 
 Please read this Privacy Policy carefully. If you do not agree with our policies and practices, please do not use our app.
 
@@ -260,7 +260,7 @@ We may update this Privacy Policy from time to time. We will notify you of any m
 
 If you have questions about this Privacy Policy or our privacy practices, please contact us at:
 
-**SDG Commanders Support**
+**SGK Commanders Support**
 - Email: privacy@sdgcommanders.com
 - Address: [Company Address]
 - Phone: [Support Phone Number]
@@ -271,7 +271,7 @@ If you have questions about this Privacy Policy or our privacy practices, please
 
 ### Android-Specific Information
 - The app requests the following Android permissions: ACCESS_FINE_LOCATION, CAMERA, READ_MEDIA_IMAGES, POST_NOTIFICATIONS
-- You can manage these permissions in Settings > Apps > SDG Commanders > Permissions
+- You can manage these permissions in Settings > Apps > SGK Commanders > Permissions
 
 ### iOS-Specific Information
 - The app requests the following iOS permissions: Location, Photos/Camera, Notifications

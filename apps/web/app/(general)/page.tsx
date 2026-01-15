@@ -19,7 +19,7 @@ export default function Home() {
                   One Tap. Rapid Response.
                 </h1>
                 <p className="text-base sm:text-lg text-blue-200">
-                  SDG Commanders
+                  SGK Commanders
                 </p>
               </div>
 
@@ -99,15 +99,15 @@ export default function Home() {
         <div className="mx-auto max-w-4xl">
           <div className="text-center space-y-4 sm:space-y-6">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              Why Choose SDG Commanders?
+              Why Choose SGK Commanders?
             </h2>
             <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
-              In a world where safety is paramount, SDG Commanders stands out as
+              In a world where safety is paramount, SGK Commanders stands out as
               the premier choice for rapid security intervention. Our app is
               designed to provide immediate assistance at the tap of a button,
               ensuring that help is always within reach. With a network of elite
               security professionals ready to respond, we prioritize your safety
-              above all else. Choose SDG Commanders for peace of mind, knowing
+              above all else. Choose SGK Commanders for peace of mind, knowing
               that expert help is just a click away.
             </p>
           </div>

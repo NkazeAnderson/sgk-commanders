@@ -1,7 +1,7 @@
 
 export const metadata = {
-  title: "Privacy Policy - SDG Commanders",
-  description: 'Read our comprehensive privacy policy for the SDG Commanders mobile and web applications.',
+  title: "Privacy Policy - SGK Commanders",
+  description: 'Read our comprehensive privacy policy for the SGK Commanders mobile and web applications.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
         {/* Introduction */}
         <section className="mb-12">
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
-            SDG Commanders (&quot;we,&quot; &quot;us,&quot; &quot;our,&quot; or &quot;Company&quot;) is committed to protecting your privacy. This Privacy Policy explains how our mobile application collects, uses, discloses, and safeguards your information when you use our application.
+            SGK Commanders (&quot;we,&quot; &quot;us,&quot; &quot;our,&quot; or &quot;Company&quot;) is committed to protecting your privacy. This Privacy Policy explains how our mobile application collects, uses, discloses, and safeguards your information when you use our application.
           </p>
           <p className="text-gray-700 leading-relaxed text-lg font-semibold text-red-600">
             Please read this Privacy Policy carefully. If you do not agree with our policies and practices, please do not use our app.
@@ -459,7 +459,7 @@ export default function PrivacyPolicyPage() {
           </h2>
           <p className="text-gray-700 mb-4">If you have questions about this Privacy Policy or our privacy practices, please contact us at:</p>
           <div className="bg-gray-50 p-6 rounded-lg">
-            <p className="font-semibold text-gray-900 mb-3">SDG Commanders Support</p>
+            <p className="font-semibold text-gray-900 mb-3">SGK Commanders Support</p>
             <ul className="space-y-2 text-gray-700">
               <li><strong>Email:</strong> <a href="mailto:privacy@sdgcommanders.com" className="text-blue-600 hover:text-blue-800">privacy@sdgcommanders.com</a></li>
               <li><strong>Address:</strong> [Company Address]</li>
@@ -479,7 +479,7 @@ export default function PrivacyPolicyPage() {
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Android-Specific Information</h3>
               <ul className="ml-4 space-y-2">
                 <li className="text-gray-700">• The app requests the following Android permissions: ACCESS_FINE_LOCATION, CAMERA, READ_MEDIA_IMAGES, POST_NOTIFICATIONS</li>
-                <li className="text-gray-700">• You can manage these permissions in Settings &gt; Apps &gt; SDG Commanders &gt; Permissions</li>
+                <li className="text-gray-700">• You can manage these permissions in Settings &gt; Apps &gt; SGK Commanders &gt; Permissions</li>
               </ul>
             </div>
 
