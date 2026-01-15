@@ -1,6 +1,6 @@
 
 export const metadata = {
-  title: 'Privacy Policy - SDG Commanders',
+  title: "Privacy Policy - SDG Commanders",
   description: 'Read our comprehensive privacy policy for the SDG Commanders mobile and web applications.',
 };
 
@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
         {/* Introduction */}
         <section className="mb-12">
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
-            SDG Commanders ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how our mobile application collects, uses, discloses, and safeguards your information when you use our application.
+            SDG Commanders (&quot;we,&quot; &quot;us,&quot; &quot;our,&quot; or &quot;Company&quot;) is committed to protecting your privacy. This Privacy Policy explains how our mobile application collects, uses, discloses, and safeguards your information when you use our application.
           </p>
           <p className="text-gray-700 leading-relaxed text-lg font-semibold text-red-600">
             Please read this Privacy Policy carefully. If you do not agree with our policies and practices, please do not use our app.
@@ -93,10 +93,10 @@ export default function PrivacyPolicyPage() {
 
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">Permission:</h4>
-              <p className="text-gray-700 mb-2">The app requests "Access Location" permission. You can grant this as:</p>
+              <p className="text-gray-700 mb-2">The app requests &quot;Access Location&quot; permission. You can grant this as:</p>
               <ul className="ml-4 space-y-1">
-                <li className="text-gray-700">• "While Using the App" (foreground only)</li>
-                <li className="text-gray-700">• "Always" (foreground and background)</li>
+                <li className="text-gray-700">• &quot;While Using the App&quot; (foreground only)</li>
+                <li className="text-gray-700">• &quot;Always&quot; (foreground and background)</li>
               </ul>
             </div>
 
@@ -118,8 +118,8 @@ export default function PrivacyPolicyPage() {
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">What we collect:</h4>
               <ul className="ml-4 space-y-2">
-                <li className="text-gray-700">• Images and videos you select from your device's photo library</li>
-                <li className="text-gray-700">• Camera footage you capture using the app's camera feature</li>
+                <li className="text-gray-700">• Images and videos you select from your device&#39;s photo library</li>
+                <li className="text-gray-700">• Camera footage you capture using the app&#39;s camera feature</li>
                 <li className="text-gray-700">• Metadata associated with images (size, format, timestamp)</li>
               </ul>
             </div>
@@ -137,8 +137,8 @@ export default function PrivacyPolicyPage() {
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">Permissions Requested:</h4>
               <ul className="ml-4 space-y-2">
-                <li className="text-gray-700">• "Camera" - Access to capture photos directly</li>
-                <li className="text-gray-700">• "Photo Library" - Access to select existing photos from your device</li>
+                <li className="text-gray-700">• &quot;Camera&quot; - Access to capture photos directly</li>
+                <li className="text-gray-700">• &quot;Photo Library&quot; - Access to select existing photos from your device</li>
               </ul>
             </div>
 
@@ -178,7 +178,7 @@ export default function PrivacyPolicyPage() {
 
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">Permission:</h4>
-              <p className="text-gray-700">You're prompted to allow "Notifications" when first using the app.</p>
+              <p className="text-gray-700">You&#39;re prompted to allow &quot;Notifications&quot; when first using the app.</p>
             </div>
 
             <div className="mb-4">
@@ -251,7 +251,7 @@ export default function PrivacyPolicyPage() {
 
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">Third-Party Services:</h4>
-              <p className="text-gray-700">Google Maps integration requires sharing coordinates with Google's services to generate directions and map tiles.</p>
+              <p className="text-gray-700">Google Maps integration requires sharing coordinates with Google&#39;s services to generate directions and map tiles.</p>
             </div>
 
             <div>
@@ -286,7 +286,7 @@ export default function PrivacyPolicyPage() {
 
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">Data Storage:</h4>
-              <p className="text-gray-700">Information is stored locally on your device and encrypted by your device's security mechanisms.</p>
+              <p className="text-gray-700">Information is stored locally on your device and encrypted by your device&#39;s security mechanisms.</p>
             </div>
 
             <div>
@@ -329,7 +329,7 @@ export default function PrivacyPolicyPage() {
             <div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">4.1 With Group Members</h3>
               <ul className="ml-4 space-y-2">
-                <li className="text-gray-700">• Group members can see your location when you're part of an active group</li>
+                <li className="text-gray-700">• Group members can see your location when you&#39;re part of an active group</li>
                 <li className="text-gray-700">• Your profile information is visible to other group members</li>
                 <li className="text-gray-700">• Emergency contact information may be visible during SOS activation</li>
               </ul>
@@ -386,7 +386,7 @@ export default function PrivacyPolicyPage() {
             <li className="text-gray-700"><strong>Active Account:</strong> Data is retained while your account is active</li>
             <li className="text-gray-700"><strong>After Account Deletion:</strong> Account data is deleted within 30 days. However, cached data in backups may be retained for up to 90 days</li>
             <li className="text-gray-700"><strong>SOS Records:</strong> Incident reports may be retained for legal and operational purposes</li>
-            <li className="text-gray-700"><strong>Location History:</strong> Real-time location data is not permanently stored; it's updated as you move</li>
+            <li className="text-gray-700"><strong>Location History:</strong> Real-time location data is not permanently stored; it&#39;s updated as you move</li>
           </ul>
         </section>
 
@@ -425,10 +425,10 @@ export default function PrivacyPolicyPage() {
         {/* Section 8 */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-6 pb-2 border-b-2 border-blue-600">
-            8. Children's Privacy
+            8. Children&#39;s Privacy
           </h2>
           <p className="text-gray-700">
-            This app is not intended for children under 13 (or the applicable age of digital consent in your jurisdiction). We do not knowingly collect information from children under 13. If we become aware that we've collected data from a child under 13, we will delete such data immediately.
+            This app is not intended for children under 13 (or the applicable age of digital consent in your jurisdiction). We do not knowingly collect information from children under 13. If we become aware that we&#39;ve collected data from a child under 13, we will delete such data immediately.
           </p>
         </section>
 
@@ -448,7 +448,7 @@ export default function PrivacyPolicyPage() {
             10. Changes to This Privacy Policy
           </h2>
           <p className="text-gray-700">
-            We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy in the app and updating the "Last Updated" date. Your continued use of the app following changes constitutes your acceptance of the updated Privacy Policy.
+            We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy in the app and updating the &quot;Last Updated&quot; date. Your continued use of the app following changes constitutes your acceptance of the updated Privacy Policy.
           </p>
         </section>
 
