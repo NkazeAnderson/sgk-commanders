@@ -31,18 +31,33 @@ function DashboardLayout(props: PropsWithChildren) {
         <SOSProvider>
           <SOSResponsesProvider>
             <PaymentsProvider>
-              <main className="w-full h-full overflow-hidden bg-blue-100">
-                <div className="flex w-full h-full">
-                  <div className="w-1/5 h-full bg-blue-200 flex flex-col gap-14 items-center p-8">
-                    <div className="flex flex-col items-center">
-                      <AppLogo />
-                      <h4 className=" text-blue-700">SGK Commanders</h4>
+              <main className="w-full h-screen overflow-hidden bg-blue-100">
+                <div className="flex w-full h-full flex-col">
+                  {/* Mobile Horizontal Sidebar */}
+                  <div className="md:hidden bg-blue-200 border-b border-blue-300 overflow-x-auto">
+                    <div className="flex gap-2 p-2 min-w-min">
+                      <DashboardSideBar />
                     </div>
-                    <DashboardSideBar />
                   </div>
-                  <div className="w-4/5 h-full relative text-blue-black p-10">
-                    <DashboardTopBar user={user} />
-                    {props.children}
+
+                  {/* Main Layout */}
+                  <div className="flex w-full h-full flex-col md:flex-row flex-1">
+                    {/* Desktop Sidebar */}
+                    <div className="hidden md:flex md:w-1/5 h-auto md:h-full bg-blue-200 flex-col gap-8 md:gap-14 items-center p-6 md:p-8">
+                      <div className="flex flex-col items-center">
+                        <AppLogo />
+                        <h4 className="text-blue-700 text-sm md:text-base">SGK Commanders</h4>
+                      </div>
+                      <DashboardSideBar />
+                    </div>
+                    
+                    {/* Main Content */}
+                    <div className="w-full md:w-4/5 h-full relative text-blue-black overflow-y-auto flex flex-col">
+                      <DashboardTopBar user={user} />
+                      <div className="flex-1 p-4 md:p-10 overflow-y-auto">
+                        {props.children}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </main>

@@ -1,7 +1,6 @@
-import React from "react";
 
 function dashbaordPage() {
-  return <div>dashbaordPage</div>;
+  return <div className="w-full h-full">dashbaordPage</div>;
 }
 
 export default dashbaordPage;

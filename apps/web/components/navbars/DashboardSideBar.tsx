@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 function DashboardSideBar() {
   return (
-    <div className="w-full flex flex-col gap-1 flex-grow overflow-y-scroll">
+    <div className="w-full flex flex-row md:flex-col gap-1 flex-grow overflow-y-scroll md:overflow-y-scroll overflow-x-auto md:overflow-x-hidden">
       {sideBarMenuItems.map((item) => (
         <NavLink key={item.displayText} {...item} />
       ))}
@@ -22,14 +22,17 @@ function NavLink(props: SideBarMenuItem) {
   return (
     <Link href={props.url}>
       <div
-        className={`p-4 font-semibold  rounded-md flex gap-2 ${
+        className={`p-2 md:p-4 font-semibold rounded-md flex gap-2 text-sm md:text-base whitespace-nowrap ${
           !isActive
             ? "text-blue-black bg-blue-300"
             : "text-blue-100 bg-blue-black "
         } `}
       >
-        <Icon />
-        {props.displayText}
+        {
+          //@ts-expect-error Icon is a valid React component
+          <Icon size={18} className="md:w-6 md:h-6" />
+          }
+        <span className="hidden md:inline">{props.displayText}</span>
       </div>
     </Link>
   );
