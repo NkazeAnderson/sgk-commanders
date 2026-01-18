@@ -29,24 +29,18 @@ import {
   Trash,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 import { useMemo, useState } from "react";
 import type { groupT as Group } from "sgk-commanders-shared";
 
 export default function GroupsTable({
   initialData,
 }: { initialData?: Group[] } = {}) {
-  const { groups, loading, refresh, deleteGroup, updateGroup, addGroup } =
+  const { groups, loading, refresh, deleteGroup, addGroup } =
     useGroups();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const router = useRouter();
 
-  React.useEffect(() => {
-    if (initialData && initialData.length) {
-      // no-op: provider accepts initialData
-    }
-  }, [initialData]);
 
   const selectedIds = useMemo(
     () => Object.keys(selected).filter((k) => selected[k]),
@@ -107,7 +101,7 @@ export default function GroupsTable({
 
   const sorted = useMemo(() => {
     if (!sort.key || !sort.direction) return filtered;
-    const sortedCopy = [...filtered].sort((a: any, b: any) => {
+    const sortedCopy = [...filtered].sort((a, b) => {
       const aVal = a[sort.key!];
       const bVal = b[sort.key!];
       if (aVal == null && bVal == null) return 0;
@@ -217,7 +211,7 @@ export default function GroupsTable({
                 <button
                   type="button"
                   className="flex items-center gap-2"
-                  onClick={() => toggleSort("name" as any)}
+                  onClick={() => toggleSort("name")}
                 >
                   <span>Name</span>
                   {sort.key !== "name" ? (
@@ -249,11 +243,11 @@ export default function GroupsTable({
                 <TableCell>
                   <Checkbox
                     checked={!!selected[group.id]}
-                    onCheckedChange={(checked: any) => {
+                    onCheckedChange={(checked) => {
                       checked;
                       toggleSelect(group.id);
                     }}
-                    onClick={(e: any) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                     aria-label={`Select ${group.name}`}
                   />
                 </TableCell>
@@ -286,14 +280,14 @@ export default function GroupsTable({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={(e: any) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem
-                          onClick={(e: any) => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             router.push(`/dashboard/groups/${group.id}`);
                           }}

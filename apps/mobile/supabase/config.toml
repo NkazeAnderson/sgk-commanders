@@ -192,8 +192,10 @@ template = "Your code is {{ .Code }}"
 max_frequency = "5s"
 
 # Use pre-defined map of phone number to OTP for testing.
-# [auth.sms.test_otp]
-# 237683403750 = "123456"
+[auth.sms.test_otp]
+683403750 = "123456"
+237683403750 = "123456"
+"+237683403750" = "123456"
 
 # Configure logged in session timeouts.
 # [auth.sessions]
@@ -349,7 +351,7 @@ entrypoint = "./functions/tara-webhook/index.ts"
 
 [functions.sos]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/sos/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx

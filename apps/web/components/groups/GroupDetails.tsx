@@ -48,7 +48,6 @@ export default function GroupDetails() {
   const form = useForm<Partial<Group>>();
 
   React.useEffect(() => {
-    // @ts-ignore reset with group data when available
     group && form.reset({ ...group });
     (async () => {
       if (!group) return;
@@ -64,7 +63,7 @@ export default function GroupDetails() {
       ...values,
       is_organisation: !!values.is_organisation,
       subcriptionExpiration: values.subcriptionExpiration
-        ? new Date(values.subcriptionExpiration as any).toISOString()
+        ? new Date(values.subcriptionExpiration).toISOString()
         : values.subcriptionExpiration,
     };
 
@@ -153,8 +152,8 @@ export default function GroupDetails() {
                       <FormLabel>Subscription</FormLabel>
                       <FormControl>
                         {
-                          //@ts-ignore
-                          <Input {...field} />
+                          
+                          <Input  {...field} value={field.value?.toString()} />
                         }
                       </FormControl>
                       <FormMessage />
@@ -170,8 +169,8 @@ export default function GroupDetails() {
                       <FormLabel>Subscription Expires</FormLabel>
                       <FormControl>
                         {
-                          //@ts-ignore
-                          <Input type="date" {...field} />
+                          
+                          <Input type="date" {...field} value={field.value?.toString()} />
                         }
                       </FormControl>
                       <FormMessage />

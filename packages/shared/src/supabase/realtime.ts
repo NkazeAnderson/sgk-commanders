@@ -2,13 +2,11 @@ import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 import { supabase } from "./instance.js";
 
-export const postgresChangesChannel = supabase
-  .channel('schema-db-changes')
-
 export  function registerToPostgresChanges(callback:(payload:RealtimePostgresChangesPayload<{
-    [key: string]: any;
+    [key: string]: unknown;
 }>)=>void, updateRegistrationStatus:(registered:boolean|undefined)=>void) {
-  postgresChangesChannel
+  supabase
+  .channel('schema-db-changes')
   .on(
     'postgres_changes',
     {

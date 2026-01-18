@@ -9,20 +9,22 @@ import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { getStartedTexts } from "@/constants";
 import { Link } from "expo-router";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, View } from "react-native";
 import Animated, {
   FadeInDown,
-  runOnJS,
-  runOnUI,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { runOnJS, runOnUI } from "react-native-worklets";
+import { userT } from "sgk-commanders-shared";
+import { getUsers } from "sgk-commanders-shared/dist/supabase/users";
 
 type demoUserT = {
   id: string;
@@ -32,11 +34,7 @@ type demoUserT = {
   isSafe?: boolean;
 };
 
-const getStartedTexts: string[] = [
-  "Connect with your team and family anytime anywhere.",
-  "Smart location tracking for both work and home.",
-  "Ensure safety for loved ones and boost workplace efficiency.",
-];
+const AnimatedAvatar = Animated.createAnimatedComponent(MapAvatar);
 
 const GettingStarted = () => {
   const [activeHeadingTextIndex, setActiveHeadingTextIndex] = useState<{
@@ -104,6 +102,10 @@ const GettingStarted = () => {
 
   useEffect(() => {
     setTimeout(() => {
+      getUsers().then((users: userT[]) => {
+        console.log(users);
+      }).catch((e) => { console.log(e);
+       });
       setUserIsSafe(false);
       runOnUI(startSOS)();
     }, 3000);
@@ -141,7 +143,7 @@ const GettingStarted = () => {
               ],
             }}
           >
-            <MapAvatar
+            <AnimatedAvatar
               user={{
                 name: "Wale",
                 id: "7776777",
@@ -151,30 +153,19 @@ const GettingStarted = () => {
                 home_address: "",
                 accepted_terms: false,
                 phone: 888,
-              }}
+              } as userT}
               safe={userIsSafe}
               size="lg"
             />
           </Animated.View>
 
-          <Animated.View className="absolute" style={agent1styles}>
-            <MapAvatar
-              user={{
-                name: "Wale",
-                id: "7776777",
-                profile_picture:
-                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-                email: "",
-                home_address: "",
-                accepted_terms: false,
-                phone: 888,
-                is_agent: true,
-              }}
-              rotationAngle={userIsSafe ? undefined : 210} // 210}
-              size="lg"
-            />
-          </Animated.View>
+          <Animated.View  style={agent1styles}>
+            <View>
 
+            
+            </View>
+          </Animated.View>
+{/*
           <Animated.View className="absolute" style={agent2styles}>
             <MapAvatar
               user={{
@@ -187,11 +178,11 @@ const GettingStarted = () => {
                 accepted_terms: false,
                 phone: 888,
                 is_agent: true,
-              }}
+              } as userT }
               rotationAngle={userIsSafe ? undefined : 60}
               size="lg"
             />
-          </Animated.View>
+          </Animated.View> */}
         </Box>
 
         <VStack className="flex-1 justify-between">

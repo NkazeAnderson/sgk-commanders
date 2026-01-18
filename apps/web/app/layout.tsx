@@ -1,4 +1,5 @@
 import SupabaseClientInit from "@/components/SupabaseClientInit";
+import UserContextProvider from "@/components/users/UserContext";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -29,7 +30,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SupabaseClientInit />
-        <div className=" w-screen h-screen fixed text-gray-300">{children}</div>
+        <UserContextProvider>
+          <div className=" w-screen h-screen fixed text-gray-300">{children}</div>
+        </UserContextProvider>
       </body>
     </html>
   );

@@ -1,10 +1,5 @@
 import useToast from "@/hooks/useToast";
-import {
-  createGroupMember,
-  groupMembersJoinedSchemaT,
-} from "@/supabase/groups";
 import { hookFormErrorHandler } from "@/utils";
-import { groupMembersSchema, usersSchema } from "@/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import {
@@ -19,6 +14,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Animated, { SlideInRight } from "react-native-reanimated";
+import { supabase, zodSchemas } from "sgk-commanders-shared";
+import { groupMembersJoinedSchemaT } from "sgk-commanders-shared/dist/supabase/groups";
 import { z } from "zod";
 import { useAppContext } from "./context/AppContextProvider";
 import Form from "./Form";
@@ -32,6 +29,9 @@ import { HStack } from "./ui/hstack";
 import { Icon } from "./ui/icon";
 import { Text } from "./ui/text";
 import { VStack } from "./ui/vstack";
+
+const { createGroupMember } = supabase.groups;
+const { groupMembersSchema, usersSchema } = zodSchemas;
 
 const schema = groupMembersSchema
   .omit({ id: true })
@@ -198,7 +198,7 @@ const GroupMembersList = ({
       {members.map((member) => (
         <MemberCard
           key={member.id}
-          user={member.member_id}
+          user={member.member_id!}
           role={member.role}
           manage={manage}
         />

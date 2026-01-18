@@ -15,7 +15,8 @@ type userT = { deviceIds?: string[], id: string }
 
 Deno.serve(async (req) => {
   const { action, data } = await req.json()
-
+  console.log(data);
+  
   const authorization = req.headers.get('Authorization')!
   const token = authorization.replace('Bearer ', '')
   const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '',

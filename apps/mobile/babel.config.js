@@ -1,3 +1,8 @@
+  /** @type {import('react-native-worklets/plugin').PluginOptions} */
+  const workletsPluginOptions = {
+    // Your custom options.
+  }
+
 module.exports = function(api) {
     api.cache(true);
 
@@ -14,7 +19,8 @@ module.exports = function(api) {
                 "tailwind.config": "./tailwind.config.js"
             }
         }],
-         'react-native-reanimated/plugin', //should be last
+        // 'react-native-reanimated/plugin', //should be last
+         ['react-native-worklets/plugin'],
     ]
     };
 };

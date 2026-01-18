@@ -4,21 +4,23 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-import { getpayments } from "@/supabase/payments";
-import { paymentT } from "@/types";
 import { Stack } from "expo-router";
 import { DollarSign } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList } from "react-native";
+import { supabase } from "sgk-commanders-shared";
+import { joinedPaymentT } from "sgk-commanders-shared/dist/supabase/payments";
+
+const { getPayments } = supabase.payments;
 
 const PaymentHistory = () => {
-  const [payments, setPayments] = useState<paymentT[]>([]);
+  const [payments, setPayments] = useState<joinedPaymentT[]>([]);
   const { t } = useTranslation("payment_history");
   useEffect(() => {
-    getpayments().then((res) => {
-      if (Array.isArray(res.data)) {
-        setPayments(res.data);
+    getPayments().then((res) => {
+      if (Array.isArray(res)) {
+        setPayments(res);
       }
     });
   }, []);

@@ -31,21 +31,18 @@ import { Modal } from "@/components/ui/modal";
 import { Text } from "@/components/ui/text";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { primaryColors } from "@/constants";
-import { uploadBase64ImageToSupabase } from "@/supabase/pictures";
-import { addMessageToSOS, createSOS, resolveSOS } from "@/supabase/sos";
-import { sosT, withoutIdT } from "@/types";
 import {
   getGoogleMapsDirectionURL,
-  getImageFromGallery,
-  getUserLocation,
+  getImageFromGallery
 } from "@/utils";
+import { uploadBase64ImageToSupabase } from "@/utils/supabasePictures";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ChevronUp, Send, X } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Keyboard, Pressable, ScrollView, View } from "react-native";
+import { Keyboard, Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
@@ -58,6 +55,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { scheduleOnRN } from "react-native-worklets";
+import { sosT, supabase, withoutIdT } from "sgk-commanders-shared";
+
+const { addMessageToSOS, createSOS, resolveSOS } = supabase.sos;
 const SOS = () => {
   const rippleScale = useSharedValue(1);
   const { t } = useTranslation("sos");
@@ -76,26 +77,13 @@ const SOS = () => {
   const [reportMessage, setReportMessage] = useState("");
   const [reportImages, setReportImages] = useState<ImagePickerAsset[]>([]);
   const [submitting, setSubmitting] = useState(false);
-
+  const  {height} = useWindowDimensions()
   const {
     userMethods: { user, userLocation },
     sosMethods: { sos, activeSos, lastSosResponse, setLastSosResponse },
   } = useAppContext();
   const sosData = activeSos;
-  useEffect(() => {
-    if (sosRef.current) {
-      sosRef.current.measure((x, y, w, h, px, py) => {
-        sosHeight.value = h;
-        setBottomPosition(py + h);
-      });
-    }
-    if (avatarRef.current) {
-      avatarRef.current.measure((x, y, w, h, px, py) => {
-        avatarheight.value = h;
-        avatarTopPostion.value = py;
-      });
-    }
-  }, []);
+  
   useEffect(() => {
     rippleScale.value = withRepeat(
       withTiming(2.5, {
@@ -142,10 +130,17 @@ const SOS = () => {
   const avatarPanGesture = Gesture.Pan()
     .onUpdate((e) => {
       avatarTranslation.value = e.translationY;
+      console.log(e.absoluteY);
+      
     })
     .onEnd((e) => {
-      if (e.absoluteY < sosBottomPostion.value) {
-        runOnJS(sendSOS)();
+      
+      console.log(height);
+      
+      if (e.absoluteY < height/3) {
+        scheduleOnRN(sendSOS);
+        console.log("sending");
+        
       } else {
         avatarTranslation.value = withTiming(0, {
           duration: 2000,
@@ -155,26 +150,27 @@ const SOS = () => {
     });
 
   avatarPanGesture.enabled(user?.is_safe ?? true);
-  function setBottomPosition(value: number) {
-    "worklet";
 
-    if (sosBottomPostion.value) return;
-    sosBottomPostion.value = value;
-  }
   async function sendSOS() {
     setSendingSOS(true);
     try {
-      const location = await getUserLocation();
-      if (!location) {
-        throw new Error("Location required");
-      }
+      console.log("getting location");
+      
+      // const location = await getUserLocation();
+      // console.log({location})
+      // if (!location) {
+      //   throw new Error("Location required");
+      // }
       const sos: withoutIdT<sosT> = {
-        location: location.coords,
+        location: {
+          longitude: userLocation?.longitude! || 3.979317,
+          latitude: userLocation?.latitude! || 9.807368,
+        },  // location.coords,
         sent_by: user?.id!,
       };
       const res = await createSOS(sos);
-      if (res.data && !Array.isArray(res.data)) {
-        runOnJS(setNewSOSId)(res.data.id!);
+      if (res) {
+        runOnJS(setNewSOSId)(res.id!);
       } else {
         throw new Error("id required from newSOS");
       }
@@ -371,7 +367,7 @@ const SOS = () => {
       <View className="flex flex-1 bg-primary-950 px-4">
         <SafeAreaView className="flex-1 justify-between">
           <Center>
-            <Box ref={sosRef} className="w-1/2 aspect-square relative">
+            <View ref={sosRef} className="w-1/2 aspect-square relative">
               <Animated.View style={animatedRippleStyle}></Animated.View>
               <Center
                 className={`w-full h-full ${
@@ -392,11 +388,11 @@ const SOS = () => {
                   />
                 )}
               </Center>
-            </Box>
+            </View>
           </Center>
           {user?.is_safe && (
             <Center>
-              <Animated.View className={" animate-bounce"}>
+              <Animated.View className={""}>
                 <Icon
                   className="text-typography-400 w-10 h-10"
                   as={ChevronUp}
@@ -421,7 +417,7 @@ const SOS = () => {
               <>
                 <GestureDetector gesture={avatarPanGesture}>
                   <Animated.View style={animatedAvatarPosition}>
-                    <Box
+                  <Box
                       ref={avatarRef}
                       className={`${
                         user?.is_safe !== true && "animate-pulse"
@@ -432,7 +428,7 @@ const SOS = () => {
                         safe={user?.is_safe ?? undefined}
                         size="lg"
                       />
-                    </Box>
+                    </Box> 
                   </Animated.View>
                 </GestureDetector>
                 <Heading className=" text-typography-100">
@@ -443,6 +439,8 @@ const SOS = () => {
           </Center>
         </SafeAreaView>
       </View>
+
+
       <Modal isOpen={newSOSId ? true : false}>
         <Pressable
           onPress={() => {

@@ -40,7 +40,7 @@ import UserCard from "./UserCard";
 export default function UsersTable({
   initialData,
 }: { initialData?: User[] } = {}) {
-  const { users, loading, refresh, deleteUser, updateUser, addUser } =
+  const { users, loading, refresh, deleteUser} =
     useUsers();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
@@ -119,8 +119,8 @@ export default function UsersTable({
   const sorted = useMemo(() => {
     if (!sort.key || !sort.direction) return filtered;
     const sortedCopy = [...filtered].sort((a, b) => {
-      const aVal = (a as any)[sort.key!];
-      const bVal = (b as any)[sort.key!];
+      const aVal = (a )[sort.key!];
+      const bVal = (b )[sort.key!];
       if (aVal == null && bVal == null) return 0;
       if (aVal == null) return 1;
       if (bVal == null) return -1;
@@ -353,11 +353,11 @@ export default function UsersTable({
                 <TableCell>
                   <Checkbox
                     checked={!!selected[user.id]}
-                    onCheckedChange={(checked: any) => {
+                    onCheckedChange={(checked) => {
                       checked;
                       toggleSelect(user.id);
                     }}
-                    onClick={(e: any) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                     aria-label={`Select ${user.name}`}
                   />
                 </TableCell>
@@ -416,7 +416,7 @@ export default function UsersTable({
                       href={`https://www.google.com/maps/search/?api=1&query=${user.last_known_location.latitude},${user.last_known_location.longitude}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e: any) => e.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                       className="flex items-center gap-1 text-sm text-primary"
                     >
                       <MapPin className="size-4" /> View
@@ -439,14 +439,14 @@ export default function UsersTable({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={(e: any) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem
-                          onClick={(e: any) => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             router.push(`/dashboard/users/${user.id}`);
                           }}
@@ -454,7 +454,7 @@ export default function UsersTable({
                           <Edit className="size-4" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={(e: any) => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             router.push(`/dashboard/users/${user.id}`);
                           }}
@@ -462,7 +462,7 @@ export default function UsersTable({
                           <Button
                             variant="ghost"
                             className="w-full text-left p-0"
-                            onClick={(e: any) => e.stopPropagation()}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             Update
                           </Button>

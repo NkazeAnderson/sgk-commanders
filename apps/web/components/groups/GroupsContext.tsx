@@ -59,13 +59,8 @@ export function GroupsProvider({
     // optimistic update
     setGroups((s) => [group, ...s]);
     try {
-      const createdRes = await supabase.groups.createGroup(group as any);
-      // if createGroup returns the record, replace optimistic entry
-      if ((createdRes as any)?.data) {
-        const created = (createdRes as any).data;
-        setGroups((s) => [created, ...s.filter((g) => g.id !== created.id)]);
-        return created as groupT;
-      }
+      await supabase.groups.createGroup(group);
+      
       // fallback: refresh
       await refresh();
       return null;
@@ -81,16 +76,11 @@ export function GroupsProvider({
     const prev = groups;
     setGroups((s) => s.map((g) => (g.id === id ? { ...g, ...data } : g)));
     try {
-      const updatedRes = await supabase.groups.editGroup({
+    await supabase.groups.editGroup({
         id,
         ...data,
-      } as any);
-      // if API returns updated row in data
-      if ((updatedRes as any)?.data) {
-        const updated = (updatedRes as any).data;
-        setGroups((s) => s.map((g) => (g.id === id ? updated : g)));
-        return updated as groupT;
-      }
+      } as groupT);
+     
       // fallback: refresh
       await refresh();
       return null;
@@ -105,7 +95,7 @@ export function GroupsProvider({
     const prev = groups;
     setGroups((s) => s.filter((g) => g.id !== id));
     try {
-      await supabase.groups.deleteGroup({ id } as any);
+      await supabase.groups.deleteGroup(id);
       return true;
     } catch (err) {
       console.error("Failed to delete group:", err);

@@ -3,19 +3,22 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import useToast from "@/hooks/useToast";
 import "@/localisation/i18n";
-import { supabase } from "@/supabase";
 import { useFonts } from "expo-font";
 import * as Linking from "expo-linking";
 import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { supabase } from "sgk-commanders-shared";
 //@eslint-ignore
 import { commonAsyncKey } from "@/constants";
 import "@/localisation/i18n";
 import { saveToAsycStore } from "@/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import 'react-native-url-polyfill/auto';
+import { setUpSupabase } from "sgk-commanders-shared/dist/supabase";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -33,7 +36,7 @@ export default function RootLayout() {
         console.log("saved");
       });
       setTimeout(() => {
-        supabase.auth.getUser().then((res) => {
+        supabase.supabase.auth.getUser().then((res) => {
           if (res) {
             router.push("/tabs");
           }
@@ -42,18 +45,29 @@ export default function RootLayout() {
     }
   }
 
-  useEffect(() => {
-    // loaded && router.push("/tabs/sos");
-  }, [loaded]);
+  useLayoutEffect(() => {
+    console.log(process.env.EXPO_PUBLIC_SUPABASE_URL);
+    console.log(process.env.EXPO_PUBLIC_ANON_KEY);
+    
+    setUpSupabase([process.env.EXPO_PUBLIC_SUPABASE_URL!, process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!, {
+      auth: {
+        storage: AsyncStorage,
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: false,
+        },
+      }])
+  }, []);
 
   if (!loaded) {
     return null;
   }
   return (
-    <>
-      <GestureHandlerRootView style={{ flex: 1, display: "flex" }}>
+      <GestureHandlerRootView>
+       <View style={{flex:1}}> 
+
         <GluestackUIProvider mode="dark">
-          <View className="flex-1 bg-primary-900">
+          <View style={{display:"flex", flex:1}}>
             <AppContextProvider>
               <Stack
                 screenOptions={{ headerShown: false, animation: "none" }}
@@ -61,8 +75,9 @@ export default function RootLayout() {
             </AppContextProvider>
           </View>
         </GluestackUIProvider>
-      </GestureHandlerRootView>
+       </View>
       <StatusBar style="light" translucent />
-    </>
+      </GestureHandlerRootView>
+    
   );
 }

@@ -1,7 +1,8 @@
-import { getMyGroups, groupMembersJoinedSchemaT } from '@/supabase/groups';
-import { userT } from '@/types';
+
 import { LocationObjectCoords } from 'expo-location';
 import { useEffect, useState } from 'react';
+import { userT } from 'sgk-commanders-shared';
+import { getMyGroups, groupMembersJoinedSchemaT } from 'sgk-commanders-shared/dist/supabase/groups';
 
 export function useUser() {
     const [user, setUser] = useState<userT>();

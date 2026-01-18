@@ -88,7 +88,8 @@ export default {
       ],
       "expo-web-browser",
       "expo-localization",
-       "expo-notifications"
+       "expo-notifications",
+        "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
@@ -100,7 +101,7 @@ export default {
       }
     },
     "owner": "sea_rocket_tech",
-    "runtimeVersion": {
+    "runtimeVersion":ENV === "development" ? "1.0.0" : {
       "policy": "appVersion"
     },
     "updates": {

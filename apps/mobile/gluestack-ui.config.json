@@ -1,10 +1,10 @@
 {
   "tailwind": {
-    "config": "tailwind.config.js",
-    "css": "global.css"
+    "config": "./tailwind.config.js",
+    "css": "./global.css"
   },
   "app": {
-    "entry": "app/_layout.tsx",
-    "components": "components/ui"
+    "entry": "./app/_layout.tsx",
+    "components": "./components/ui"
   }
 }

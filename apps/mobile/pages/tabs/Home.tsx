@@ -27,9 +27,6 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { commonAsyncKey } from "@/constants";
 import useToast from "@/hooks/useToast";
-import { updateGroupInviteStatus } from "@/supabase/groups";
-import { addSOSResponse, joinedSOSSchemaT } from "@/supabase/sos";
-import { groupInvitationDataT, sosResponseT, withoutIdT } from "@/types";
 import {
   deleteFromAsycStore,
   getFromAsycStore,
@@ -65,6 +62,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { groupInvitationDataT, sosResponseT, supabase, withoutIdT } from "sgk-commanders-shared";
+import { joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
+
+const { updateGroupInviteStatus } = supabase.groups;
+const { addSOSResponse } = supabase.sos;
 const Home = () => {
   const [lastGroupInvitation, setLastGroupInvitation] =
     useState<groupInvitationDataT>();

@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useSOSResponses } from "./SOSResponsesContext";
 
@@ -66,11 +67,13 @@ export default function SOSResponseDetails() {
                 <div className="text-sm text-muted-foreground">Images</div>
                 <div className="flex gap-2 flex-wrap">
                   {item.images.map((img, idx) => (
-                    <img
+                    <Image
                       key={idx}
                       src={img}
                       alt="response"
                       className="w-32 h-32 object-cover rounded"
+                      width={128}
+                      height={128}
                     />
                   ))}
                 </div>

@@ -16,10 +16,7 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
+    "nodemodules/@types/**/*.ts",
     "nativewind-env.d.ts",
-    "../../packages/shared/src/constants.ts",
-    "../../packages/shared/src/supabase/groups.ts",
-    "../../packages/shared/src/supabase/index.ts",
-    "../../packages/shared/src/supabase/messages.ts"
   ]
 }

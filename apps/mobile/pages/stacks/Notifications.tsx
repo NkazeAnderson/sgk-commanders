@@ -3,12 +3,12 @@ import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
-import { notificationT } from "@/types";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 import Animated, { SlideInRight } from "react-native-reanimated";
+import { notificationT } from "sgk-commanders-shared";
 
 const Notifications = () => {
   const {

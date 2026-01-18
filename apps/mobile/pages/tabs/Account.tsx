@@ -26,7 +26,6 @@ import { Icon } from "@/components/ui/icon";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { supabase } from "@/supabase";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -43,6 +42,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Share, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase as sharedSupabase } from "sgk-commanders-shared";
+const supabase = sharedSupabase.supabase
 const Account = () => {
   const [showModal, setShowModal] = useState(false);
   const { t } = useTranslation("account");
@@ -61,15 +62,7 @@ const Account = () => {
     <>
       <Box className="flex-1 bg-primary-950">
         <SafeAreaView className="px-4">
-          <Button
-            onPress={async () => {
-              await supabase.functions.invoke("sos", {
-                body: { action: "Create" },
-              });
-            }}
-          >
-            <ButtonText>SOS Test</ButtonText>
-          </Button>
+      
           <HStack space="md" className=" items-center">
             <Avatar size={"lg"}>
               <AvatarFallbackText>{user?.name}</AvatarFallbackText>

@@ -1,7 +1,7 @@
-import { userT } from "@/types";
 import { CheckCircle, Info, Siren, Trash } from "lucide-react-native";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { userT } from "sgk-commanders-shared";
 import { Avatar, AvatarFallbackText, AvatarImage } from "./ui/avatar";
 import { Box } from "./ui/box";
 import { Button, ButtonIcon } from "./ui/button";

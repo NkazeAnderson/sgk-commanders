@@ -4,8 +4,6 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonSpinner } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
-import { createMessage } from "@/supabase/messages";
-import { messageT } from "@/types";
 import { hookFormErrorHandler } from "@/utils";
 import { Redirect, Stack } from "expo-router";
 import { Send } from "lucide-react-native";
@@ -13,6 +11,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
+import { messageT } from "sgk-commanders-shared";
+import { createMessage } from "sgk-commanders-shared/dist/supabase/messages";
 
 const Messages = () => {
   const {

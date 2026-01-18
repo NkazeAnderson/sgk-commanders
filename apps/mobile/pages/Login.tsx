@@ -4,10 +4,10 @@ import Input from "@/components/Input";
 import Logo from "@/components/Logo";
 import { Box } from "@/components/ui/box";
 import {
-  Button,
-  ButtonIcon,
-  ButtonSpinner,
-  ButtonText,
+    Button,
+    ButtonIcon,
+    ButtonSpinner,
+    ButtonText,
 } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
 import { Divider } from "@/components/ui/divider";
@@ -17,7 +17,6 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import useToast from "@/hooks/useToast";
 import { hookFormErrorHandler } from "@/utils";
-import  {zodSchemas, supabase, userT} from "sgk-commanders-shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocalSearchParams } from "expo-router";
 import { ArrowLeft, Check, Lock } from "lucide-react-native";
@@ -27,6 +26,8 @@ import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, TextInput } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "sgk-commanders-shared";
+import { usersSchema } from "sgk-commanders-shared/dist/zodSchema";
 import { z } from "zod";
 
 
@@ -38,7 +39,7 @@ const Login = () => {
   const [pending, setPending] = useState(false);
   const phoneForm = useForm({
     defaultValues: phone ? { phone: Number(phone) } : {},
-    //@ts-ignore
+    //@ts-expect-error
     resolver: zodResolver(usersSchema.pick({ phone: true })),
   });
   const codeForm = useForm({
@@ -124,12 +125,9 @@ const Login = () => {
         </Center>
 
         <Box>
-          <FlatList
-            ref={flatListRef}
-            data={steps}
-            renderItem={({ item }) => {
-              if (item === "credential") {
-                return (
+         {
+          step === 0
+                ? (
                   <Form space="2xl" className="pb-10 pt-20 px-4 w-[100vw]">
                     <Input
                       control={phoneForm.control}
@@ -157,9 +155,7 @@ const Login = () => {
                       </Button>
                     </Gradient>
                   </Form>
-                );
-              } else {
-                return (
+                ):(
                   <Form space="2xl" className="pb-10 pt-20 px-4 w-[100vw]">
                     <Box className="relative ">
                       <HStack space="md" className="px-[10%] ">
@@ -221,14 +217,7 @@ const Login = () => {
                       <ButtonText>{t("goBack")}</ButtonText>
                     </Button>
                   </Form>
-                );
-              }
-            }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            scrollEnabled={false}
-          />
+                )}
 
           <HStack space="sm" className="py-5 justify-center items-center">
             <Text className=" text-typography-400 text-center py-7">
@@ -243,6 +232,7 @@ const Login = () => {
         </Box>
       </SafeAreaView>
     </KeyboardAvoidingView>
+    
   );
 };
 export default Login;

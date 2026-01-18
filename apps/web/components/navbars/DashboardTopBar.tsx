@@ -1,13 +1,12 @@
 "use client";
 
-import React from "react";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { sideBarMenuItems } from "@/constants";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { usePathname } from "next/navigation";
-import { sideBarMenuItems } from "@/constants";
-import { User } from "@/types";
+import { userT } from "sgk-commanders-shared";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
-function DashboardTopBar(props: { user: User }) {
+function DashboardTopBar(props: { user: userT }) {
   const route = usePathname();
   const activeRoute = sideBarMenuItems.find(
     (item) => item.url.toString().toLowerCase() === route.toLowerCase()
