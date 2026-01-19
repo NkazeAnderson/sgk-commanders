@@ -4,10 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import {
   ArrowRight,
+  DollarSign,
+  List,
   Pen,
   Plus,
   PlusCircle,
   Trash,
+  Users,
   X,
 } from "lucide-react-native";
 import React, { useState } from "react";
@@ -23,7 +26,6 @@ import Input from "./Input";
 import MemberCard from "./MemberCard";
 import { Box } from "./ui/box";
 import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "./ui/button";
-import { Center } from "./ui/center";
 import { Heading } from "./ui/heading";
 import { HStack } from "./ui/hstack";
 import { Icon } from "./ui/icon";
@@ -91,39 +93,60 @@ const GroupMembersList = ({
     }
   }
   return (
-    <VStack space="xs" className=" border-y border-primary-100/20 py-4">
-      <Center>
+    <VStack space="md" className=" border-y border-primary-100/20 py-4 gap-6">
+      <HStack className=" items-center justify-between px-4 w-full">
+        <HStack space="md" className="items-center ">
+          <Icon as={Users} className="text-primary-100"/>
         <Heading className="text-center text-primary-100 capitalize ">
           {group.name}
         </Heading>
+        </HStack>
         {manage && (
           <HStack space="md">
-            <Button variant="outline" size="xs" onPress={editFunc}>
+            <Button variant="outline" size="xs" onPress={editFunc} className="rounded-full p-4!">
               <ButtonIcon as={Pen} />
             </Button>
             <Button
               action="negative"
               variant="outline"
               size="xs"
+              className="rounded-full p-4!"
               onPress={deleteFunc}
             >
               <ButtonIcon as={Trash} />
             </Button>
           </HStack>
         )}
-
-        <HStack className=" items-center justify-center" space="sm">
-          <Text className="text-center text-typography-50 italic">
-            {t("subscriptionLabel")}
-          </Text>
-          <Text className="text-center text-typography-50 italic" size="sm">
-            {!subscription ? t("noSubscription") : subscription.name}
-          </Text>
-        </HStack>
-      </Center>
+      </HStack>
+      {expired && (
+        <Animated.View entering={SlideInRight.springify().delay(2000)}>
+            <HStack className=" justify-end items-center" space="lg">
+              <Text className=" text-error-500 text-nowrap" italic size="sm"   >
+                {t("subscriptionExpired")}
+              </Text>
+            
+              <Button
+                action="positive"
+                className="rounded-l-3xl "
+                onPress={() => {
+                  router.push({
+                    pathname: "/stacks/subscriptions",
+                    params: {
+                      groupId: group.id,
+                      action: "renew",
+                    },
+                  });
+                }}
+              >
+                <ButtonIcon as={DollarSign} />
+                <ButtonText>{t("paySubscription")}</ButtonText>
+              </Button>
+            </HStack>
+          </Animated.View>
+      )}
       {
-        //manage && subscription && user?.id === group.admin_id
-        true && (
+        manage && subscription && user?.id === group.admin_id
+        && (
           <>
             <HStack
               className={`${
@@ -185,10 +208,11 @@ const GroupMembersList = ({
           </>
         )
       }
-      <HStack space="sm" className=" items-end">
-        <Heading className=" text-primary-0 px-2">{t("membersLabel")}</Heading>
+      <HStack space="md" className=" items-center px-4">
+        <Icon as={List} className=" text-typography-400 w-4 h-4" />
+        <Heading className=" text-typography-400 leading-none">{t("membersLabel")}</Heading>
         {manage && (
-          <Heading className=" text-primary-0" size="xs">{`(${members.length}/${
+          <Heading className=" text-typography-400 leading-none" size="xs">{`(${members.length}/${
             (subscription?.maximumSubAccounts
               ? subscription?.maximumSubAccounts
               : 0) + 1
@@ -206,7 +230,7 @@ const GroupMembersList = ({
 
       {subscription &&
         members.length === subscription.maximumSubAccounts - 1 && (
-          <Box className=" gap-4 py-4">
+          <Box className=" gap-4">
             <Animated.View entering={SlideInRight.springify()}>
               <HStack className=" justify-end items-center" space="lg">
                 <Text className=" text-typography-50" italic size="sm">
@@ -229,33 +253,8 @@ const GroupMembersList = ({
             </Animated.View>
           </Box>
         )}
-      {expired && (
-        <Box className=" gap-4 py-4">
-          <Animated.View entering={SlideInRight.springify().delay(2000)}>
-            <HStack className=" justify-end items-center" space="lg">
-              <Text className=" text-typography-50" italic size="sm">
-                {t("subscriptionExpired")}
-              </Text>
-              <Icon className="text-typography-50 w-3 h-3" as={ArrowRight} />
-              <Button
-                action="positive"
-                className="rounded-l-3xl "
-                onPress={() => {
-                  router.push({
-                    pathname: "/stacks/subscriptions",
-                    params: {
-                      groupId: group.id,
-                      action: "renew",
-                    },
-                  });
-                }}
-              >
-                <ButtonText>{t("paySubscription")}</ButtonText>
-              </Button>
-            </HStack>
-          </Animated.View>
-        </Box>
-      )}
+
+      
     </VStack>
   );
 };

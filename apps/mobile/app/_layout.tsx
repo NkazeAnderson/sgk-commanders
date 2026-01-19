@@ -46,9 +46,7 @@ export default function RootLayout() {
   }
 
   useLayoutEffect(() => {
-    console.log(process.env.EXPO_PUBLIC_SUPABASE_URL);
-    console.log(process.env.EXPO_PUBLIC_ANON_KEY);
-    
+
     setUpSupabase([process.env.EXPO_PUBLIC_SUPABASE_URL!, process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!, {
       auth: {
         storage: AsyncStorage,

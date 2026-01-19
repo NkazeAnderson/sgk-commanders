@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/icon";
 import { getUserLocation, unknownErrorHandler } from "@/utils";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { supabase, zodSchemas } from "sgk-commanders-shared";
 
 const { registerToPostgresChanges } = supabase.realtime;
@@ -20,8 +20,11 @@ import * as Notifications from "expo-notifications";
 import { primaryColors } from "@/constants";
 import "@/localisation/i18n";
 import { Platform } from "react-native";
-import { tables } from "sgk-commanders-shared/dist/constants";
-import { joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
+import { mockLocationYassa, tables } from "sgk-commanders-shared/dist/constants";
+import { getGroupMembers, getGroups } from "sgk-commanders-shared/dist/supabase/groups";
+import { getMessages } from "sgk-commanders-shared/dist/supabase/messages";
+import { getMyLastResponse, getSOSResponses, getSOSs, joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
+import { sosResponseSchema } from "sgk-commanders-shared/dist/zodSchema";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -81,7 +84,6 @@ async function registerForPushNotificationsAsync() {
         projectId,
       })
     ).data;
-    console.log(pushTokenString);
     return pushTokenString;
   } catch (e: unknown) {
     handleRegistrationError(`${e}`);
@@ -95,36 +97,68 @@ const _layout = () => {
   >(undefined);
   const {
     userMethods: { setUserLocation, user, setUser, myGroups, setMyGroups },
-    sosMethods: { setSos },
+    sosMethods,
+    messagesMethods
   } = useAppContext();
-  console.log({ expoPushToken, notification });
 
   const [
     postgresChangesRegistrationStatus,
     setPostgresChangesRegistrationStatus,
   ] = useState<boolean | undefined>(undefined);
 
-  // get the user location and set it in the context
-  useEffect(() => {
-    getUserLocation()
+  useLayoutEffect(() => {
+
+      if (!user) return
+        getGroups(user.id).then(async (res)=>{
+            const groups: typeof myGroups = {}
+            for(let group of res) {
+              try {
+                  const members = await getGroupMembers(group.id)
+                  groups[group.id] = members
+                  setMyGroups(groups)
+              } catch (error) {
+                  console.log(error);
+              }
+            }
+        }).catch(e=>console.log(e)
+        )
+        if (!__DEV__) {
+          getUserLocation()
       .then((location) => setUserLocation(location?.coords ?? undefined))
       .catch((err) => {
         console.error("Error getting user location:", err);
       });
+  
+  setInterval(() => { 
+    getUserLocation()
+      .then((location) =>{ setUserLocation(location?.coords ?? undefined)
+        updateUser({
+          id: user.id,
+          last_known_location: location?.coords ?? null,
+        })
+      })
+      .catch((err) => {
+        console.error("Error getting user location:", err);
+      });
+  }, 1*60*1000);
+        }
+        else {
+          setUserLocation(mockLocationYassa);
+           updateUser({
+          id: user.id,
+          last_known_location: mockLocationYassa,
+        })
+        }
 
     registerForPushNotificationsAsync()
       .then((token) => {
-        console.log({ user, token });
-
         user &&
           token &&
           !(user?.deviceIds ?? []).includes(token) &&
           updateUser({
             id: user.id,
             deviceIds: [...(user?.deviceIds ?? []), token],
-          }).then((res) => {
-            console.log(res);
-          });
+          })
       })
       .catch((error: any) => console.log(error));
 
@@ -138,7 +172,46 @@ const _layout = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
       });
+   getMessages(user)
+        .then((res) => {
+            messagesMethods.setMessages(res);
+        })
+        .catch((e) => {
+          unknownErrorHandler(e);
+        });
+        console.log("Getting sos");
+        
+      getSOSs(!user.is_agent? user.id:undefined).then((res) => {
+        sosMethods.setSos(res)
+      }).catch((e) => {
+        unknownErrorHandler(e);
+      });
+     
+    if (user?.is_agent) {
+      getMyLastResponse(user.id)
+        .then((res) => {
+          // res.data && sosMethods.setLastSosResponse(res.data);
+        })
+        .catch((e) => {
+          unknownErrorHandler(e);
+        });
+     
+    }
+  
   }, []);
+
+  useEffect(() => {
+    if (sosMethods.sos.length) {
+      console.log("gtting res");
+      
+      getSOSResponses().then((responses) => {
+       console.log({responses});
+       
+        sosMethods.setSosResponses(responses);
+    }).catch(e=>{
+      unknownErrorHandler(e);
+    })}
+  }, [sosMethods.sos]);
 
   useEffect(() => {
     postgresChangesRegistrationStatus === undefined &&
@@ -153,14 +226,25 @@ const _layout = () => {
                 if (newUser.id === user?.id) {
                   setUser(newUser);
                 }
+                setMyGroups((prev)=>{
+                  for(let item of Object.keys(prev)) {
+                    const index = prev[item].findIndex(m=>m.member_id?.id === newUser.id)
+                    if(index >=0 ) {
+                      prev[item][index].member_id = newUser
+                    }
+                  }
+                  return prev
+                 })
               }
             } else if (payload.table === tables.groups) {
               switch (payload.eventType) {
                 case "DELETE":
                   setMyGroups((prev) => {
+                    //@ts-ignore
                     delete prev[payload.old.id];
                     return { ...prev };
                   });
+
                   break;
 
                 default:
@@ -181,18 +265,32 @@ const _layout = () => {
                       ...sos,
                       sent_by: res,
                     };
-                    setSos((prev) => {
+                    sosMethods.setSos((prev) => {
                       const index = prev.findIndex(
                         (item) => item.id === joinedSos.id
                       );
                       if (index >= 0) {
                         prev[index] = joinedSos;
-                        return prev;
+                        return [...prev];
                       } else {
                         return [joinedSos, ...prev];
                       }
                     });
                   }
+                });
+              }
+            }
+            else if (payload.table === tables.sos_responses) {
+              if (
+                payload.eventType === "INSERT" ||
+                payload.eventType === "UPDATE"
+              ) {
+                const sosResponsePayload = sosResponseSchema.parse(payload.new);
+                getSOSResponses({sosId: sosResponsePayload.sos}).then((res) => {
+                  sosMethods.setSosResponses((prev) => {
+                    const otherResponses = prev.filter(item=>item.sos.id !== sosResponsePayload.sos)
+                    return [...otherResponses, ...res]
+                  });
                 });
               }
             }

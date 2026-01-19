@@ -12,7 +12,10 @@ const supabase = sharedSupabase.supabase
  * @returns The base64 string of the file contents.
  */
 export async function getBase64FromUri(uri: string): Promise<string> {
-    return await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    const base64 = await new FileSystem.File(uri).base64()
+    console.log({base64});
+    
+    return base64
 }
 
 
@@ -23,13 +26,10 @@ export async function getBase64FromUri(uri: string): Promise<string> {
  * @returns The public URL of the uploaded image or an error.
  */
 export async function uploadBase64ImageToSupabase(
-    asset: ImagePickerAsset
+    asset: ImagePickerAsset, userId: string
 ): Promise<string> {
-    const userRes = await supabase.auth.getUser()
-  if ( !userRes.data.user?.id) {
-    throw new Error("Base 64 required or unauthenticanted");
-  }
-  const fileName = `${userRes.data.user.id}/${new Date().getTime()}_${asset.fileName ?? "file"}.${asset.mimeType?.split("/")[1]}`
+   
+  const fileName = `${userId}/${new Date().getTime()}_${asset.fileName ?? "file"}.${asset.mimeType?.split("/")[1]}`
    const base64 = await getBase64FromUri(asset.uri)
     const { error } = await supabase.storage
         .from(storageBuckets.public)

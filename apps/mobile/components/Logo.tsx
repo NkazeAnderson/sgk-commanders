@@ -1,11 +1,11 @@
 import React from "react";
 import { Image } from "./ui/image";
 
-const Logo = () => {
+const Logo = ({size="md"}:{size?: "xs" | "sm" | "md" | "lg" }) => {
   return (
     <Image
       className="rounded-lg"
-      size="md"
+      size={size}
       source={require("@/assets/images/logo.png")}
       alt="Logo"
     />

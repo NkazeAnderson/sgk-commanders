@@ -3,7 +3,6 @@ import useMessage from "@/hooks/useMessage";
 import useSOS from "@/hooks/useSOS";
 import useToast from "@/hooks/useToast";
 import { useUser } from "@/hooks/useUser";
-import { unknownErrorHandler } from "@/utils";
 import { router } from "expo-router";
 import React, {
   createContext,
@@ -57,8 +56,6 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
   useEffect(() => {
     //supabase.auth.signOut();
     supabase.supabase.auth.onAuthStateChange((event, session) => {
-      console.log({ session });
-
       if (session?.user) {
         getUserById(session.user.id).then((res) => {
           if (res) {
@@ -69,9 +66,7 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
           }
         });
         getSubscriptions().then((res) => {
-          if (Array.isArray(res.data)) {
-            setSubscriptions(res.data);
-          }
+         setSubscriptions(res);
         });
         getSettings().then((res) => {
           res && setSettings(res);
@@ -85,39 +80,6 @@ const AppContextProvider: FC<PropsWithChildren> = (props) => {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (!sosMethods.sos.length && user?.is_agent) {
-      getAllSOS().then((res) => {
-        if (res.data && Array.isArray(res.data)) {
-          sosMethods.setSos(res.data);
-        }
-      });
-    }
-    if (user?.is_agent) {
-      getMyLastResponse(user.id)
-        .then((res) => {
-          res.data && sosMethods.setLastSosResponse(res.data);
-        })
-        .catch((e) => {
-          unknownErrorHandler(e);
-        });
-    }
-    if (user && !messagesMethods.messages.length) {
-      getMessages(user)
-        .then((res) => {
-          if (res.error) {
-            return unknownErrorHandler(res.error);
-          }
-          res.data &&
-            Array.isArray(res.data) &&
-            messagesMethods.setMessages(res.data);
-        })
-        .catch((e) => {
-          unknownErrorHandler(e);
-        });
-    }
-  }, [user]);
 
   return (
     <AppContext.Provider

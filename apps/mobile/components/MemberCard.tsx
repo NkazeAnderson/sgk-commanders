@@ -1,4 +1,4 @@
-import { CheckCircle, Info, Siren, Trash } from "lucide-react-native";
+import { ArrowRight, CheckCircle, Info, MinusCircle, Siren } from "lucide-react-native";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { userT } from "sgk-commanders-shared";
@@ -71,12 +71,14 @@ const MemberCard = ({
           </HStack>
         </Box>
       </HStack>
-      {manage && role !== "main" && (
+      {manage && role !== "main" ? (
         <HStack space="sm">
-          <Button size="sm" action="negative">
-            <ButtonIcon as={Trash} />
+          <Button size="md" action="negative" variant="link" >
+            <ButtonIcon as={MinusCircle} className="text-error-200" />
           </Button>
-        </HStack>
+        </HStack>                                     
+      ):(
+        <Icon className=" text-typography-100" as={ArrowRight} />
       )}
     </HStack>
   );

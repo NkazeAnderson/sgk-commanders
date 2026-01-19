@@ -33,3 +33,15 @@ export const languages = ["en", "fr"] as const
 export const commonAsyncKey = {
     groupInvitation:"groupInvitation"
   } as const
+
+export const mockLocationBonaberi = { latitude: 4.086168, longitude: 9.656306,     altitude: null,
+            accuracy: 5,
+            heading: 0,
+            speed: 0,
+            altitudeAccuracy: null, } as const
+            
+export const mockLocationYassa = { latitude: 3.994943, longitude: 9.784966, altitude: null,
+            accuracy: 5,
+            heading: 0,
+            speed: 0,
+            altitudeAccuracy: null, } as const

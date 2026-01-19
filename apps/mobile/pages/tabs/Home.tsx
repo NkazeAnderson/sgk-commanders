@@ -11,6 +11,7 @@ import {
 
 import { useAppContext } from "@/components/context/AppContextProvider";
 import GroupMembersList from "@/components/GroupMembersList";
+import Logo from "@/components/Logo";
 import MapAvatar from "@/components/MapAvatar";
 import {
   Avatar,
@@ -36,10 +37,11 @@ import { Link, router, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Bell,
-  CircleArrowRight,
+  Car,
+  MapPin,
   MessageCircle,
   Siren,
-  Users,
+  Users
 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -75,9 +77,12 @@ const Home = () => {
   const { height: windowsHeight } = useWindowDimensions();
   const {
     userMethods: { userLocation, user, myGroups, setUserLocation },
-    sosMethods: { sos, activeSos, setActiveSos, setLastSosResponse },
+    sosMethods: { sos, sosResponses },
     messagesMethods: { messages },
   } = useAppContext();
+
+
+
   const mapRef = useRef<MapView>(null);
   const markerRef = useRef<MapMarker>(null);
   const height = useSharedValue(windowsHeight / 4);
@@ -87,23 +92,10 @@ const Home = () => {
       height: height.value,
     };
   });
-
+  
   const toast = useToast();
-  const panGesture = Gesture.Pan()
-    .onBegin((e) => {})
-    .onUpdate(({ absoluteY }) => {
-      height.value = withSpring(
-        absoluteY >= windowsHeight - 100
-          ? 100
-          : absoluteY <= 200
-          ? windowsHeight - 200
-          : windowsHeight - absoluteY,
-        {
-          mass: 1,
-        }
-      );
-    });
-
+    
+  
   useEffect(() => {
     getFromAsycStore(commonAsyncKey.groupInvitation).then((res) => {
       res && setLastGroupInvitation(JSON.parse(res));
@@ -122,20 +114,46 @@ const Home = () => {
       );
     }
   }, [userLocation]);
+  const activeSos = user?.is_agent ? sosResponses.find((item=>!item.sos.resolved && item.response_by.id === user.id))?.sos : undefined;
+  const activeResponses = sosResponses.filter((item)=> item.sos.id === activeSos?.id)
   useEffect(() => {
     if (activeSos && userLocation && mapRef.current) {
-      // mapRef.current.animateToRegion(
-      //   {
-      //     ...activeSos.location,
-      //     latitudeDelta: 0.01,
-      //     longitudeDelta: 0.01,
-      //   },
-      //   2000
-      // );
+      // Fit both user location and active SOS into visible map area
+      mapRef.current.fitToCoordinates(
+        [userLocation, activeSos.location, ...activeResponses.map((item)=>item.response_by.last_known_location)].filter(item => item !== null && item !== undefined).flat(),
+        {
+          edgePadding: {
+            top: 150,
+            right: 100,
+            bottom: 300,
+            left: 100,
+          },
+          animated: true,
+        }
+      );
       markerRef.current && markerRef.current.forceUpdate();
-      mapRef.current.setMapBoundaries(userLocation, activeSos.location);
     }
   }, [activeSos]);
+
+  if (!user) {
+    return null;
+  }
+  const panGesture = Gesture.Pan()
+  .onBegin((e) => {})
+  .onUpdate(({ absoluteY }) => {
+    height.value = withSpring(
+      absoluteY >= windowsHeight - 150
+      ? 150
+      : absoluteY <= 200
+      ? windowsHeight - 200
+      : windowsHeight - absoluteY,
+      {
+        mass: 1,
+      }
+    );
+  });
+  
+
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
   const availableSOS = sos.filter((item) => {
@@ -151,8 +169,6 @@ const Home = () => {
   ) {
     setSubmitting(true);
     const res = await addSOSResponse(sosResponse);
-    setActiveSos(sos);
-    setLastSosResponse(res.data);
     setSubmitting(false);
   }
 
@@ -187,7 +203,6 @@ const Home = () => {
               height: "100%",
             }}
             ref={mapRef}
-            showsTraffic
             showsBuildings
             provider={PROVIDER_GOOGLE}
           >
@@ -216,40 +231,40 @@ const Home = () => {
               </MapMarker>
             )}
             {activeSos && (
+              <>
               <MapMarker
-                className={!activeSos ? " hidden" : ""}
                 ref={markerRef}
                 coordinate={
-                  activeSos?.location ?? {
-                    latitude: 3.844119,
-                    longitude: 11.501346,
-                  }
+                  activeSos?.location
                 }
               >
                 <>
                   <MapAvatar
                     user={activeSos.sent_by}
-                    safe={activeSos.sent_by.is_safe ?? undefined}
+                    safe={activeSos.resolved ?? undefined}
                     size={Platform.OS === "android" ? "sm" : "lg"}
                   />
-                  {activeSos.sent_by?.is_safe === false && (
-                    <Text size="sm" className="text-red-600">
-                      {t("notSafe")}
-                    </Text>
-                  )}
                 </>
               </MapMarker>
+              <MapViewDirections
+                origin={userLocation}
+                destination={activeSos?.location}
+                apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY!}
+                strokeWidth={3}
+                strokeColor={"#567fee"}
+              />
+              </>
             )}
-            <MapViewDirections
-              origin={userLocation}
-              destination={activeSos?.location}
-              apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY!}
-              strokeWidth={3}
-              strokeColor={"#567fee"}
-            />
+            {
+              activeResponses.map((item)=>{
+                if (!item.response_by.last_known_location) return null;
+              return <MapMarker key={item.id} coordinate={item.response_by.last_known_location}><MapAvatar user={item.response_by} size={Platform.OS === "android" ? "sm" : "lg"} /></MapMarker>}) 
+            }
           </MapView>
         </View>
-        <View className=" absolute top-12 right-4  ">
+        <View className=" absolute top-12  w-full px-4">
+          <HStack space="lg" className=" justify-between items-center w-full">
+            <Logo size="sm"/>
           <HStack space="lg" className=" justify-end items-center">
             <Link href={"/stacks/messages"} asChild>
               <Button
@@ -277,6 +292,7 @@ const Home = () => {
                 <ButtonIcon as={Bell} />
               </Button>
             </Link>
+          </HStack>
           </HStack>
         </View>
         <View className=" w-full bg-primary-950  border-0  absolute bottom-0 rounded-t-3xl">
@@ -386,8 +402,14 @@ const Home = () => {
                               }}
                             >
                               <ButtonIcon
-                                as={activeSos ? CircleArrowRight : Siren}
+                                as={activeSos ? Car : Siren}
                               />
+                              {
+                                activeSos && 
+                              <ButtonIcon
+                                as={ MapPin }
+                              />
+                              }
                             </Button>
                           </HStack>
                         </HStack>

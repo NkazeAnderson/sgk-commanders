@@ -4,10 +4,10 @@ import Input from "@/components/Input";
 import Logo from "@/components/Logo";
 import { Box } from "@/components/ui/box";
 import {
-    Button,
-    ButtonIcon,
-    ButtonSpinner,
-    ButtonText,
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
 } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
 import { Divider } from "@/components/ui/divider";
@@ -76,6 +76,7 @@ const Login = () => {
             phone: `237${data.phone}`,
             options: { channel: "sms" },
           });
+          
           if (!res.error) {
             setStep(!step ? 1 : 0);
           } else {
