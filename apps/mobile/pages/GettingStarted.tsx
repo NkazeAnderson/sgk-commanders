@@ -1,6 +1,7 @@
 import Gradient from "@/components/Gradient";
 import Logo from "@/components/Logo";
 import MapAvatar from "@/components/MapAvatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
@@ -14,17 +15,17 @@ import { Link } from "expo-router";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, useWindowDimensions, View } from "react-native";
+import { FlatList, useWindowDimensions } from "react-native";
 import Animated, {
   FadeInDown,
+  SlideInRight,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withTiming
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { runOnJS, runOnUI } from "react-native-worklets";
+import { runOnJS, scheduleOnUI } from "react-native-worklets";
 import { userT } from "sgk-commanders-shared";
-import { getUsers } from "sgk-commanders-shared/dist/supabase/users";
 
 type demoUserT = {
   id: string;
@@ -37,9 +38,7 @@ type demoUserT = {
 const AnimatedAvatar = Animated.createAnimatedComponent(MapAvatar);
 
 const GettingStarted = () => {
-  const [activeHeadingTextIndex, setActiveHeadingTextIndex] = useState<{
-    index: number;
-  }>();
+  const [visibleText, setVisibleText] = useState(0)
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const headingTextFlatlistRef = useRef<FlatList>(null);
   const [userIsSafe, setUserIsSafe] = useState<boolean>();
@@ -91,7 +90,7 @@ const GettingStarted = () => {
         shared.value[2].x = withTiming(shared.value[0].x - 100, {
           duration: 3000,
         });
-        shared.value[2].y = withTiming(shared.value[0].y - 300, {
+        shared.value[2].y = withTiming(shared.value[0].y - 260, {
           duration: 3000,
         });
         shared.value = [...shared.value];
@@ -100,30 +99,32 @@ const GettingStarted = () => {
     shared.value = [...shared.value];
   }
 
+ 
+
   useEffect(() => {
-    setTimeout(() => {
-      getUsers().then((users: userT[]) => {
-        console.log(users);
-      }).catch((e) => { console.log(e);
-       });
+    
+   const interval = setInterval(() => {
+     
+      setVisibleText((prev) => {
+        prev += 1;
+        if (prev >= getStartedTexts.length) {
+          prev = 0;
+        }
+        return prev;
+      });
+    }, 7000);
+
+  const agentsInterval = setInterval(() => {
       setUserIsSafe(false);
-      runOnUI(startSOS)();
-    }, 3000);
+      scheduleOnUI(startSOS);
+    }, 10000);
+
+    return ()=> {
+      clearInterval(interval);
+      clearInterval(agentsInterval);
+    }
   }, []);
 
-  useEffect(() => {
-    headingTextFlatlistRef.current &&
-      activeHeadingTextIndex &&
-      headingTextFlatlistRef.current?.scrollToIndex({
-        index:
-          activeHeadingTextIndex.index == getStartedTexts.length - 1
-            ? 0
-            : activeHeadingTextIndex.index + 1,
-      });
-    return () => {};
-  }, [activeHeadingTextIndex]);
-
-  const env = process.env.environment || "development";
   return (
     <Box className=" flex flex-1 bg-background-50">
       <Image
@@ -160,80 +161,49 @@ const GettingStarted = () => {
           </Animated.View>
 
           <Animated.View  style={agent1styles}>
-            <View>
-
-            
-            </View>
+              <Avatar size="lg">
+                <AvatarImage source={require("@/assets/images/sdg-officer.png")} />
+              </Avatar>
           </Animated.View>
-{/*
-          <Animated.View className="absolute" style={agent2styles}>
-            <MapAvatar
-              user={{
-                name: "Wale",
-                id: "7776777",
-                profile_picture:
-                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-                email: "",
-                home_address: "",
-                accepted_terms: false,
-                phone: 888,
-                is_agent: true,
-              } as userT }
-              rotationAngle={userIsSafe ? undefined : 60}
-              size="lg"
-            />
-          </Animated.View> */}
+          <Animated.View  style={agent2styles}>
+              <Avatar size="lg">
+                <AvatarImage source={require("@/assets/images/sdg-officer.png")} />
+              </Avatar>
+          </Animated.View>
+
+          
         </Box>
 
         <VStack className="flex-1 justify-between">
           <Center className="py-20">
-            <Logo />
-            <Box>
               <Animated.View entering={FadeInDown.duration(2000)}>
-                <Heading className="text-cyan-100 uppercase " size="xl">
+                <Heading className="text-primary-500 uppercase text-center" size="xl">
                   SGK
                 </Heading>
               </Animated.View>
+            <Box className="p-2 rounded-full bg-primary-950">
+            <Logo />
+            </Box>
+            <Box>
               {
-                // env !== "production"
-                true && (
-                  <Text size="xs" className="text-success-500  capitalize" bold>
-                    {env}
+                __DEV__ && (
+                  <Text size="sm" className="text-success-500  capitalize" bold>
+                    Development
                   </Text>
                 )
               }
             </Box>
           </Center>
           <VStack className=" " space="md">
-            <FlatList
-              data={getStartedTexts}
-              ref={headingTextFlatlistRef}
-              renderItem={({ item, index }) => (
-                <Box className=" w-[100vw] p-2">
-                  <Heading size="3xl" className=" text-center text-white">
+            {
+              getStartedTexts.map((text, index) => (
+             visibleText === index ? <Animated.View key={index} entering={SlideInRight} className={"px-2"} >
+             <Heading size="3xl" className=" text-center text-white">
                     {t(`bannerText.${index}`)}
                   </Heading>
-                </Box>
-              )}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              onViewableItemsChanged={(e) => {
-                if (e.viewableItems.length === 1) {
-                  setTimeout(() => {
-                    setActiveHeadingTextIndex(
-                      e.viewableItems[0]
-                        ? { index: e.viewableItems[0].index as number }
-                        : {
-                            index: 0,
-                          }
-                    );
-                  }, 5000);
-                }
-              }}
-              onScrollToIndexFailed={(e) => {}}
-              scrollEnabled={false}
-              pagingEnabled
-            />
+            </Animated.View>:null))
+            }
+            
             <Center>
               <HStack space="sm">
                 {getStartedTexts.map((_, index) => {
@@ -241,7 +211,7 @@ const GettingStarted = () => {
                     <Box
                       key={index}
                       className={`p-1.5 rounded-full ${
-                        activeHeadingTextIndex?.index !== index
+                        visibleText !== index
                           ? "bg-gray-500"
                           : "bg-primary-600"
                       } `}

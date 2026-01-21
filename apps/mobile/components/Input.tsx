@@ -38,6 +38,7 @@ function Input<T extends FieldValues>({
   right,
   helperText,
   disabled,
+  size="lg",
   ...rest
 }: InputProps<T>) {
   const hasError = errors && errors[name];
@@ -46,6 +47,7 @@ function Input<T extends FieldValues>({
     <FormControl isInvalid={!!hasError} size={"lg"} isDisabled={disabled}>
       {label && (
         <FormControlLabel>
+          
           <FormControlLabelText className={labelClassName}>
             {label}
           </FormControlLabelText>
@@ -56,7 +58,9 @@ function Input<T extends FieldValues>({
         name={name}
         render={({ field: { onChange, onBlur, value } }) => (
           <GlueStackInput
-            className={`rounded-md bg-gray-600 ${inputClassName}`}
+            className={`rounded-md bg-primary-0 ${inputClassName}`}
+
+            size={size as "sm" | "md" | "lg" | "xl" | undefined}
           >
             <Box className="px-2">{left}</Box>
             <InputField
@@ -67,7 +71,7 @@ function Input<T extends FieldValues>({
                 )
               }
               onBlur={onBlur}
-              className={`flex-1 rounded-md text-typography-50 ${inputClassName}`}
+              className={`flex-1 rounded-md text-primary-950 ${inputClassName}`}
               {...rest}
             />
             <Box className="px-2">{right}</Box>

@@ -13,6 +13,7 @@ import {
 } from "lucide-react-native";
 
 import { useAppContext } from "@/components/context/AppContextProvider";
+import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import Form from "@/components/Form";
 import Gradient from "@/components/Gradient";
 import MapAvatar from "@/components/MapAvatar";
@@ -82,10 +83,14 @@ const SOS = () => {
   const [reportImages, setReportImages] = useState<ImagePickerAsset[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const  {height} = useWindowDimensions()
-  const {
-    userMethods: { user, userLocation },
+ const {
+    groupsMethods:{myGroups},
     sosMethods: { sos, sosResponses },
-  } = useAppContext();
+    messagesMethods: { messages },
+    locationMethods:{userLocation}
+  } = useDashboardContext();
+
+  const {userMethods:{user}} = useAppContext()
   const toast = useToast();
   const sliderY = useSharedValue(0);
   const bounce = useAnimatedStyle(() => {
@@ -184,9 +189,9 @@ const SOS = () => {
   avatarPanGesture.enabled(userIsSafe ?? true);
 
   async function sendSOS() {
-    if (!user) return;
-    setSendingSOS(true);
     try {
+      if (!user) throw new Error("User required");
+      setSendingSOS(true);
       const sos: withoutIdT<sosT> = {
         location: __DEV__ ? mockLocationBonaberi  : {
           longitude: userLocation?.longitude! ,
@@ -208,6 +213,7 @@ const SOS = () => {
         });           
         toast.show({message:"Failed to send SOS, please try again", status:"error"});
      
+        unknownErrorHandler(error);
     }
     setSendingSOS(false);
   }

@@ -31,7 +31,8 @@ export const taraPaymentApps = [ "whatsappLink", "telegramLink", "dikaloLink" ] 
 export const languages = ["en", "fr"] as const
 
 export const commonAsyncKey = {
-    groupInvitation:"groupInvitation"
+    groupInvitation:"groupInvitation",
+    onboarded:"onboarded",
   } as const
 
 export  const getStartedTexts: string[] = [

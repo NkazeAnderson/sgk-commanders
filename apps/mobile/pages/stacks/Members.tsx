@@ -1,4 +1,4 @@
-import { useAppContext } from "@/components/context/AppContextProvider";
+import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import Form from "@/components/Form";
 import GroupMembersList from "@/components/GroupMembersList";
 import Input from "@/components/Input";
@@ -57,8 +57,9 @@ const Members = () => {
     setCreateFamily((prev) => !prev);
   }
   const {
-    userMethods: { myGroups, user },
-  } = useAppContext();
+    groupsMethods: { myGroups },
+    user
+  } = useDashboardContext();
   const toast = useToast();
   const createFamilyForm = useForm({
     resolver: zodResolver(groupsSchema.omit({ id: true })),
@@ -216,7 +217,7 @@ const Members = () => {
               className="border-0"
               onPress={() => {
                 groupToDelete &&
-                  deleteGroup(groupToDelete).then((res) => {
+                  deleteGroup(groupToDelete.id).then((res) => {
                     if (!res.error) {
                       setGroupToDelete(undefined);
                     }

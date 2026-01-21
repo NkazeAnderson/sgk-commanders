@@ -9,15 +9,11 @@ import {
   ModalHeader,
 } from "@/components/ui/modal";
 
-import { useAppContext } from "@/components/context/AppContextProvider";
+import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import GroupMembersList from "@/components/GroupMembersList";
 import Logo from "@/components/Logo";
-import MapAvatar from "@/components/MapAvatar";
-import {
-  Avatar,
-  AvatarFallbackText,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import MapBox from "@/components/MapBox";
+import SOSCard from "@/components/SOSCard";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
@@ -30,42 +26,29 @@ import { commonAsyncKey } from "@/constants";
 import useToast from "@/hooks/useToast";
 import {
   deleteFromAsycStore,
-  getFromAsycStore,
-  getGoogleMapsDirectionURL,
+  getFromAsycStore
 } from "@/utils";
-import { Link, router, Tabs } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Bell,
-  Car,
-  MapPin,
   MessageCircle,
-  Siren,
   Users
 } from "lucide-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Platform,
   ScrollView,
-  TouchableOpacity,
   useWindowDimensions,
-  View,
+  View
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import MapView, {
-  MapCallout,
-  MapMarker,
-  PROVIDER_GOOGLE,
-} from "react-native-maps";
-import MapViewDirections from "react-native-maps-directions";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { groupInvitationDataT, sosResponseT, supabase, withoutIdT } from "sgk-commanders-shared";
-import { joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
+import { groupInvitationDataT, supabase } from "sgk-commanders-shared";
 
 const { updateGroupInviteStatus } = supabase.groups;
 const { addSOSResponse } = supabase.sos;
@@ -76,15 +59,12 @@ const Home = () => {
   const { t } = useTranslation("home");
   const { height: windowsHeight } = useWindowDimensions();
   const {
-    userMethods: { userLocation, user, myGroups, setUserLocation },
-    sosMethods: { sos, sosResponses },
+    groupsMethods:{myGroups},
+    sosMethods: { sos, activeSos, activeResponses },
     messagesMethods: { messages },
-  } = useAppContext();
+    locationMethods:{userLocation}, user
+  } = useDashboardContext();
 
-
-
-  const mapRef = useRef<MapView>(null);
-  const markerRef = useRef<MapMarker>(null);
   const height = useSharedValue(windowsHeight / 4);
   const [submitting, setSubmitting] = useState(false);
   const animatedSliderStyles = useAnimatedStyle(() => {
@@ -102,42 +82,6 @@ const Home = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (userLocation && mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          ...userLocation,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        },
-        2000
-      );
-    }
-  }, [userLocation]);
-  const activeSos = user?.is_agent ? sosResponses.find((item=>!item.sos.resolved && item.response_by.id === user.id))?.sos : undefined;
-  const activeResponses = sosResponses.filter((item)=> item.sos.id === activeSos?.id)
-  useEffect(() => {
-    if (activeSos && userLocation && mapRef.current) {
-      // Fit both user location and active SOS into visible map area
-      mapRef.current.fitToCoordinates(
-        [userLocation, activeSos.location, ...activeResponses.map((item)=>item.response_by.last_known_location)].filter(item => item !== null && item !== undefined).flat(),
-        {
-          edgePadding: {
-            top: 150,
-            right: 100,
-            bottom: 300,
-            left: 100,
-          },
-          animated: true,
-        }
-      );
-      markerRef.current && markerRef.current.forceUpdate();
-    }
-  }, [activeSos]);
-
-  if (!user) {
-    return null;
-  }
   const panGesture = Gesture.Pan()
   .onBegin((e) => {})
   .onUpdate(({ absoluteY }) => {
@@ -156,25 +100,13 @@ const Home = () => {
 
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
-  const availableSOS = sos.filter((item) => {
-    if (activeSos) {
-      return activeSos.id === item.id;
-    }
-    return !item.resolved;
-  });
+  
 
-  async function interveneSOS(
-    sosResponse: withoutIdT<sosResponseT>,
-    sos: joinedSOSSchemaT
-  ) {
-    setSubmitting(true);
-    const res = await addSOSResponse(sosResponse);
-    setSubmitting(false);
-  }
+  
 
   async function updateGroupInvitationStatus(status: boolean) {
     setSubmitting(true);
-    if (user?.phone == lastGroupInvitation?.phone) {
+    if (user?.phone.toString() === lastGroupInvitation?.phone.toString()) {
       const res = await updateGroupInviteStatus(
         user?.id!,
         lastGroupInvitation?.membership_id!,
@@ -197,70 +129,7 @@ const Home = () => {
     <>
       <Box className=" flex-1 relative bg-primary-950">
         <View className=" flex-1 border relative">
-          <MapView
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-            ref={mapRef}
-            showsBuildings
-            provider={PROVIDER_GOOGLE}
-          >
-            {userLocation && (
-              <MapMarker
-                ref={markerRef}
-                coordinate={
-                  userLocation ?? {
-                    latitude: 3.844119,
-                    longitude: 11.501346,
-                  }
-                }
-              >
-                <MapAvatar
-                  user={user!}
-                  safe={user?.is_safe ?? undefined}
-                  size={Platform.OS === "android" ? "sm" : "lg"}
-                />
-                {user?.is_safe === false && (
-                  <MapCallout>
-                    <Text size="sm" className="text-red-600 z-50">
-                      {t("notSafe")}
-                    </Text>
-                  </MapCallout>
-                )}
-              </MapMarker>
-            )}
-            {activeSos && (
-              <>
-              <MapMarker
-                ref={markerRef}
-                coordinate={
-                  activeSos?.location
-                }
-              >
-                <>
-                  <MapAvatar
-                    user={activeSos.sent_by}
-                    safe={activeSos.resolved ?? undefined}
-                    size={Platform.OS === "android" ? "sm" : "lg"}
-                  />
-                </>
-              </MapMarker>
-              <MapViewDirections
-                origin={userLocation}
-                destination={activeSos?.location}
-                apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY!}
-                strokeWidth={3}
-                strokeColor={"#567fee"}
-              />
-              </>
-            )}
-            {
-              activeResponses.map((item)=>{
-                if (!item.response_by.last_known_location) return null;
-              return <MapMarker key={item.id} coordinate={item.response_by.last_known_location}><MapAvatar user={item.response_by} size={Platform.OS === "android" ? "sm" : "lg"} /></MapMarker>}) 
-            }
-          </MapView>
+         <MapBox />
         </View>
         <View className=" absolute top-12  w-full px-4">
           <HStack space="lg" className=" justify-between items-center w-full">
@@ -306,6 +175,9 @@ const Home = () => {
                 <Heading className="text-typography-100">
                   {t("welcome")}
                 </Heading>
+                <Heading className=" text-primary-500 capitalize text-center">
+                      {user?.name}
+                </Heading>
               </VStack>
             </View>
           </GestureDetector>
@@ -324,106 +196,10 @@ const Home = () => {
               showsVerticalScrollIndicator={false}
               className=" flex-1 py-4"
             >
-              {Boolean(groupsKeys.length) && myGroups && !user?.is_agent && (
-                <ScrollView>
-                  {groupsKeys.map((item) => {
-                    const members = myGroups[item];
-                    return <GroupMembersList key={item} members={members} />;
-                  })}
-                </ScrollView>
-              )}
-              {!Boolean(groupsKeys.length) && !user?.is_agent && (
-                <Center className=" gap-4">
-                  <Box className=" w-full">
-                    <Heading className=" text-primary-500 capitalize text-center">
-                      {user?.name}
-                    </Heading>
-                  </Box>
-                  <Link href={"/stacks/members"} asChild>
-                    <Button>
-                      <ButtonIcon as={Users} />
-                      <ButtonText>{t("addFamilyMembers")}</ButtonText>
-                    </Button>
-                  </Link>
-                </Center>
-              )}
-              {user?.is_agent && Boolean(availableSOS.length) && (
-                <ScrollView>
-                  {availableSOS.map((item) => {
-                    return (
-                      <TouchableOpacity
-                        key={item.id}
-                        onPress={() => {
-                          router.push("/tabs/sos");
-                        }}
-                      >
-                        <HStack space="sm" className=" items-center p-2">
-                          <Avatar>
-                            <AvatarFallbackText>
-                              {item.sent_by.name}
-                            </AvatarFallbackText>
-                            <AvatarImage
-                              source={{
-                                uri: item.sent_by.profile_picture ?? "/",
-                              }}
-                            />
-                          </Avatar>
-                          <Box className="flex-grow">
-                            <Heading className=" text-typography-100 capitalize">
-                              {item.sent_by.name}
-                            </Heading>
-                            <Text size="sm">{item.message}</Text>
-                          </Box>
-                          <HStack space="sm">
-                            <Button
-                              action={
-                                activeSos && activeSos.id === item.id
-                                  ? "positive"
-                                  : "primary"
-                              }
-                              onPress={(e) => {
-                                e.stopPropagation();
-                                !activeSos
-                                  ? interveneSOS(
-                                      {
-                                        sos: item.id!,
-                                        response_by: user.id!,
-                                      },
-                                      item
-                                    )
-                                  : userLocation
-                                  ? router.navigate(
-                                      getGoogleMapsDirectionURL(
-                                        userLocation,
-                                        activeSos.location
-                                      )
-                                    )
-                                  : null;
-                              }}
-                            >
-                              <ButtonIcon
-                                as={activeSos ? Car : Siren}
-                              />
-                              {
-                                activeSos && 
-                              <ButtonIcon
-                                as={ MapPin }
-                              />
-                              }
-                            </Button>
-                          </HStack>
-                        </HStack>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-              )}
-
-              {user?.is_agent && !Boolean(availableSOS.length) && (
-                <Center className="flex-1">
-                  <Text className="text-success-0">{t("noSOSPosted")}</Text>
-                </Center>
-              )}
+              {
+                !user.is_agent ? <ClientPanel /> :<AgentPanel />
+              }
+          
             </ScrollView>
           </Animated.View>
         </View>
@@ -487,3 +263,53 @@ const Home = () => {
   );
 };
 export default Home;
+
+function ClientPanel() {
+  const {groupsMethods:{myGroups}} = useDashboardContext()
+  const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
+  const { t } = useTranslation("home");
+
+  return  <>
+    {
+    groupsKeys.length ?  groupsKeys.map((item) => {
+        const members = myGroups[item];
+        return <GroupMembersList key={item} members={members} />;
+      }):
+          <Center className=" gap-4">
+                  
+                  <Link href={"/stacks/members"} asChild>
+                    <Button>
+                      <ButtonIcon as={Users} />
+                      <ButtonText>{t("addFamilyMembers")}</ButtonText>
+                    </Button>
+                  </Link>
+                </Center>
+    }
+  </>
+}
+
+function AgentPanel() {
+  const {sosMethods:{sos,activeSos}} = useDashboardContext()
+  const { t } = useTranslation("home");
+  const availableSOS = sos.filter((item) => {
+    if (activeSos) {
+      return activeSos.id === item.id;
+    }
+    return !item.resolved;
+  });
+
+
+
+  return  <>
+    {
+      availableSOS ?  availableSOS.map((item) => {
+                    return (
+                      <SOSCard sos={item} />
+                    );
+                  }): <Center className="flex-1">
+                  <Text className="text-success-0">{t("noSOSPosted")}</Text>
+                </Center>
+}
+              
+  </>
+}

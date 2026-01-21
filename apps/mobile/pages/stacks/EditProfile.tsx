@@ -4,19 +4,19 @@ import Gradient from "@/components/Gradient";
 import Input from "@/components/Input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
-    Button,
-    ButtonIcon,
-    ButtonSpinner,
-    ButtonText,
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
 } from "@/components/ui/button";
 import { Center } from "@/components/ui/center";
 import { Icon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import useToast from "@/hooks/useToast";
 import {
-    getImageFromGallery,
-    hookFormErrorHandler,
-    unknownErrorHandler,
+  getImageFromGallery,
+  hookFormErrorHandler,
+  unknownErrorHandler,
 } from "@/utils";
 import { uploadBase64ImageToSupabase } from "@/utils/supabasePictures";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,15 +52,9 @@ const EditProfile = () => {
 
   async function submit(data: userT) {
     try {
-      Object.keys(data).forEach((item) => {
-        //@ts-expect-error
-        if (!data[item]) {
-          //@ts-expect-error
-          delete data[item];
-        }
-      });
+     
       if (profilePictureAsset) {
-        const url = await uploadBase64ImageToSupabase(profilePictureAsset);
+        const url = await uploadBase64ImageToSupabase(profilePictureAsset, user?.id!);
         data.profile_picture = url;
       }
       const res = await updateUser(data);

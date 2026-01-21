@@ -4,10 +4,10 @@ import { Box } from "@/components/ui/box";
 import { Center } from "@/components/ui/center";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
-import { getUserLocation, unknownErrorHandler } from "@/utils";
+import { unknownErrorHandler } from "@/utils";
 import { Tabs } from "expo-router";
 import { LayoutDashboard, Settings, Siren } from "lucide-react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { supabase, zodSchemas } from "sgk-commanders-shared";
 
 const { registerToPostgresChanges } = supabase.realtime;
@@ -17,14 +17,11 @@ const { sosSchema, usersSchema } = zodSchemas;
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 //@eslint-ignore
+import DashboardContextProvider from "@/components/context/DashboardContextProvider";
 import { primaryColors } from "@/constants";
 import "@/localisation/i18n";
 import { Platform } from "react-native";
-import { mockLocationYassa, tables } from "sgk-commanders-shared/dist/constants";
-import { getGroupMembers, getGroups } from "sgk-commanders-shared/dist/supabase/groups";
-import { getMessages } from "sgk-commanders-shared/dist/supabase/messages";
-import { getMyLastResponse, getSOSResponses, getSOSs, joinedSOSSchemaT } from "sgk-commanders-shared/dist/supabase/sos";
-import { sosResponseSchema } from "sgk-commanders-shared/dist/zodSchema";
+import { getMyLastResponse } from "sgk-commanders-shared/dist/supabase/sos";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -96,9 +93,7 @@ const _layout = () => {
     Notifications.Notification | undefined
   >(undefined);
   const {
-    userMethods: { setUserLocation, user, setUser, myGroups, setMyGroups },
-    sosMethods,
-    messagesMethods
+    userMethods: { user},
   } = useAppContext();
 
   const [
@@ -107,49 +102,8 @@ const _layout = () => {
   ] = useState<boolean | undefined>(undefined);
 
   useLayoutEffect(() => {
-
       if (!user) return
-        getGroups(user.id).then(async (res)=>{
-            const groups: typeof myGroups = {}
-            for(let group of res) {
-              try {
-                  const members = await getGroupMembers(group.id)
-                  groups[group.id] = members
-                  setMyGroups(groups)
-              } catch (error) {
-                  console.log(error);
-              }
-            }
-        }).catch(e=>console.log(e)
-        )
-        if (!__DEV__) {
-          getUserLocation()
-      .then((location) => setUserLocation(location?.coords ?? undefined))
-      .catch((err) => {
-        console.error("Error getting user location:", err);
-      });
-  
-  setInterval(() => { 
-    getUserLocation()
-      .then((location) =>{ setUserLocation(location?.coords ?? undefined)
-        updateUser({
-          id: user.id,
-          last_known_location: location?.coords ?? null,
-        })
-      })
-      .catch((err) => {
-        console.error("Error getting user location:", err);
-      });
-  }, 1*60*1000);
-        }
-        else {
-          setUserLocation(mockLocationYassa);
-           updateUser({
-          id: user.id,
-          last_known_location: mockLocationYassa,
-        })
-        }
-
+       
     registerForPushNotificationsAsync()
       .then((token) => {
         user &&
@@ -172,21 +126,7 @@ const _layout = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
       });
-   getMessages(user)
-        .then((res) => {
-            messagesMethods.setMessages(res);
-        })
-        .catch((e) => {
-          unknownErrorHandler(e);
-        });
-        console.log("Getting sos");
-        
-      getSOSs(!user.is_agent? user.id:undefined).then((res) => {
-        sosMethods.setSos(res)
-      }).catch((e) => {
-        unknownErrorHandler(e);
-      });
-     
+
     if (user?.is_agent) {
       getMyLastResponse(user.id)
         .then((res) => {
@@ -200,118 +140,108 @@ const _layout = () => {
   
   }, []);
 
-  useEffect(() => {
-    if (sosMethods.sos.length) {
-      console.log("gtting res");
-      
-      getSOSResponses().then((responses) => {
-       console.log({responses});
-       
-        sosMethods.setSosResponses(responses);
-    }).catch(e=>{
-      unknownErrorHandler(e);
-    })}
-  }, [sosMethods.sos]);
+  // useEffect(() => {
+  //   postgresChangesRegistrationStatus === undefined &&
+  //     registerToPostgresChanges(
+  //       (payload) => {
+  //         console.log({ payload });
+  //         try {
+  //           if (payload.table === tables.users) {
+  //             const schema = usersSchema;
+  //             if (payload.new) {
+  //               const newUser = schema.parse(payload.new);
+  //               if (newUser.id === user?.id) {
+  //                 setUser(newUser);
+  //               }
+  //               setMyGroups((prev)=>{
+  //                 for(let item of Object.keys(prev)) {
+  //                   const index = prev[item].findIndex(m=>m.member_id?.id === newUser.id)
+  //                   if(index >=0 ) {
+  //                     prev[item][index].member_id = newUser
+  //                   }
+  //                 }
+  //                 return prev
+  //                })
+  //             }
+  //           } else if (payload.table === tables.groups) {
+  //             switch (payload.eventType) {
+  //               case "DELETE":
+  //                 setMyGroups((prev) => {
+  //                   //@ts-ignore
+  //                   delete prev[payload.old.id];
+  //                   return { ...prev };
+  //                 });
 
-  useEffect(() => {
-    postgresChangesRegistrationStatus === undefined &&
-      registerToPostgresChanges(
-        (payload) => {
-          console.log({ payload });
-          try {
-            if (payload.table === tables.users) {
-              const schema = usersSchema;
-              if (payload.new) {
-                const newUser = schema.parse(payload.new);
-                if (newUser.id === user?.id) {
-                  setUser(newUser);
-                }
-                setMyGroups((prev)=>{
-                  for(let item of Object.keys(prev)) {
-                    const index = prev[item].findIndex(m=>m.member_id?.id === newUser.id)
-                    if(index >=0 ) {
-                      prev[item][index].member_id = newUser
-                    }
-                  }
-                  return prev
-                 })
-              }
-            } else if (payload.table === tables.groups) {
-              switch (payload.eventType) {
-                case "DELETE":
-                  setMyGroups((prev) => {
-                    //@ts-ignore
-                    delete prev[payload.old.id];
-                    return { ...prev };
-                  });
+  //                 break;
 
-                  break;
+  //               default:
+  //                 setUser((prev) => (prev ? { ...prev } : prev));
+  //                 break;
+  //             }
+  //           } else if (payload.table === tables.group_members) {
+  //             setUser((prev) => (prev ? { ...prev } : prev));
+  //           } else if (payload.table === tables.sos) {
+  //             if (
+  //               payload.eventType === "INSERT" ||
+  //               payload.eventType === "UPDATE"
+  //             ) {
+  //               const sos = sosSchema.parse(payload.new);
+  //               getUserById(sos.sent_by).then((res) => {
+  //                 if (res) {
+  //                   const joinedSos: joinedSOSSchemaT = {
+  //                     ...sos,
+  //                     sent_by: res,
+  //                   };
+  //                   sosMethods.setSos((prev) => {
+  //                     const index = prev.findIndex(
+  //                       (item) => item.id === joinedSos.id
+  //                     );
+  //                     if (index >= 0) {
+  //                       prev[index] = joinedSos;
+  //                       return [...prev];
+  //                     } else {
+  //                       return [joinedSos, ...prev];
+  //                     }
+  //                   });
+  //                 }
+  //               });
+  //             }
+  //           }
+  //           else if (payload.table === tables.sos_responses) {
+  //             if (
+  //               payload.eventType === "INSERT" ||
+  //               payload.eventType === "UPDATE"
+  //             ) {
+  //               const sosResponsePayload = sosResponseSchema.parse(payload.new);
+  //               getSOSResponses({sosId: sosResponsePayload.sos}).then((res) => {
+  //                 sosMethods.setSosResponses((prev) => {
+  //                   const otherResponses = prev.filter(item=>item.sos.id !== sosResponsePayload.sos)
+  //                   return [...otherResponses, ...res]
+  //                 });
+  //               });
+  //             }
+  //           }
+  //         } catch (error) {
+  //           unknownErrorHandler(error);
+  //         }
+  //       },
+  //       (registered) => {
+  //         setPostgresChangesRegistrationStatus(registered);
+  //       }
+  //     );
 
-                default:
-                  setUser((prev) => (prev ? { ...prev } : prev));
-                  break;
-              }
-            } else if (payload.table === tables.group_members) {
-              setUser((prev) => (prev ? { ...prev } : prev));
-            } else if (payload.table === tables.sos) {
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "UPDATE"
-              ) {
-                const sos = sosSchema.parse(payload.new);
-                getUserById(sos.sent_by).then((res) => {
-                  if (res) {
-                    const joinedSos: joinedSOSSchemaT = {
-                      ...sos,
-                      sent_by: res,
-                    };
-                    sosMethods.setSos((prev) => {
-                      const index = prev.findIndex(
-                        (item) => item.id === joinedSos.id
-                      );
-                      if (index >= 0) {
-                        prev[index] = joinedSos;
-                        return [...prev];
-                      } else {
-                        return [joinedSos, ...prev];
-                      }
-                    });
-                  }
-                });
-              }
-            }
-            else if (payload.table === tables.sos_responses) {
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "UPDATE"
-              ) {
-                const sosResponsePayload = sosResponseSchema.parse(payload.new);
-                getSOSResponses({sosId: sosResponsePayload.sos}).then((res) => {
-                  sosMethods.setSosResponses((prev) => {
-                    const otherResponses = prev.filter(item=>item.sos.id !== sosResponsePayload.sos)
-                    return [...otherResponses, ...res]
-                  });
-                });
-              }
-            }
-          } catch (error) {
-            unknownErrorHandler(error);
-          }
-        },
-        (registered) => {
-          setPostgresChangesRegistrationStatus(registered);
-        }
-      );
-
-    return () => {
-      // postgresChangesChannel.unsubscribe().then(() => {
-      //   setPostgresChangesRegistrationStatus(undefined);
-      // });
-    };
-  }, [postgresChangesRegistrationStatus]);
-
+  //   return () => {
+  //     // postgresChangesChannel.unsubscribe().then(() => {
+  //     //   setPostgresChangesRegistrationStatus(undefined);
+  //     // });
+  //   };
+  // }, [postgresChangesRegistrationStatus]);
+  if (!user) {
+    return null
+  }
   return (
-    <Tabs
+    <DashboardContextProvider user={user}>
+      <Tabs
       screenOptions={{
         tabBarStyle: {
           borderTopWidth: 0,
@@ -388,7 +318,8 @@ const _layout = () => {
           },
         }}
       />
-    </Tabs>
+      </Tabs>
+    </DashboardContextProvider>
   );
 };
 

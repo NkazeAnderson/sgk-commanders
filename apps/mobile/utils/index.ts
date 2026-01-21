@@ -88,3 +88,12 @@ export const getFromAsycStore = async(key:string)=>{
 export const deleteFromAsycStore = async(key:string)=>{
   await AsyncStorage.removeItem(key)
 }
+
+export function removeEmptyKeysFromObject<T extends Record<any, any>>(data:T):NonNullable<T>{
+    Object.keys(data).forEach((item) => {
+            if (!data[item]) {
+              delete data[item];
+            }
+          }) 
+        return data
+    }

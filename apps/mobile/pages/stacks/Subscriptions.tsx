@@ -1,4 +1,4 @@
-import { useAppContext } from "@/components/context/AppContextProvider";
+import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import Gradient from "@/components/Gradient";
 import Input from "@/components/Input";
 import { Box } from "@/components/ui/box";
@@ -39,9 +39,9 @@ const Subscriptions = () => {
   const [payWith, setPaywith] = useState<"phone" | "card">("phone");
 
   const {
-    userMethods: { user, myGroups },
-    subscriptions,
-  } = useAppContext();
+    subscriptions,user,
+    groupsMethods:{myGroups}
+  } = useDashboardContext();
   const {
     control,
     setValue,
@@ -143,7 +143,7 @@ const Subscriptions = () => {
                 className=" relative bg-primary-200  rounded-lg p-2 my-4"
               >
                 <Gradient
-                  className="overflow-hidden rounded-full "
+                  className="overflow-hidden rounded-md"
                   start={{ x: 0, y: 1 }}
                   end={{ x: 0.4, y: 0 }}
                 >
@@ -241,7 +241,7 @@ const Subscriptions = () => {
         onClose={() => {
           setShowDrawer(false);
         }}
-        size="sm"
+        size="md"
         anchor="top"
       >
         <DrawerBackdrop />
@@ -361,8 +361,8 @@ function SimpleSubscriptionListCard({
 }) {
   const {
     subscriptions,
-    userMethods: { myGroups },
-  } = useAppContext();
+    groupsMethods: { myGroups },
+  } = useDashboardContext();
   const subscription = subscriptions.find((sub) => sub.id === item.subcription);
   const expired = new Date(item.subcriptionExpiration!) < new Date();
 

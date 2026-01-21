@@ -1,4 +1,4 @@
-import { useAppContext } from "@/components/context/AppContextProvider";
+import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import Input from "@/components/Input";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonSpinner } from "@/components/ui/button";
@@ -23,10 +23,11 @@ const Messages = () => {
   } = useForm<{ text: string }>();
   const { t } = useTranslation("messages");
   const {
-    userMethods: { user },
+    
     messagesMethods: { messages, setMessages },
     settings,
-  } = useAppContext();
+    user
+  } = useDashboardContext();
 
   const listRef = useRef<FlatList | null>(null);
 

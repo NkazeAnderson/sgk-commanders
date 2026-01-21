@@ -17,7 +17,6 @@ begin
     phone,
     home_address,
     accepted_terms,
-    subcription
   )
   values (
     NEW.id,
@@ -25,8 +24,7 @@ begin
     user_data->>'email',
     (user_data->>'phone')::integer,
     user_data->>'home_address',
-    (user_data->>'accepted_terms')::boolean,
-    (select id from public.subscriptions where is_defualt is true order by id limit 1)
+    (user_data->>'accepted_terms')::boolean
   );
 
   return NEW;

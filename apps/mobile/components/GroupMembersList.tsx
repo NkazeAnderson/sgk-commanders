@@ -20,7 +20,7 @@ import Animated, { SlideInRight } from "react-native-reanimated";
 import { supabase, zodSchemas } from "sgk-commanders-shared";
 import { groupMembersJoinedSchemaT } from "sgk-commanders-shared/dist/supabase/groups";
 import { z } from "zod";
-import { useAppContext } from "./context/AppContextProvider";
+import { useDashboardContext } from "./context/DashboardContextProvider";
 import Form from "./Form";
 import Input from "./Input";
 import MemberCard from "./MemberCard";
@@ -56,10 +56,7 @@ const GroupMembersList = ({
   }
   const [addNewMember, setAddNewMember] = useState(false);
   const group = members[0]?.group_id;
-  const {
-    userMethods: { user },
-    subscriptions,
-  } = useAppContext();
+  const {subscriptions, user} = useDashboardContext()
   const {
     control,
     handleSubmit,

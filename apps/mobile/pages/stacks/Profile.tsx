@@ -1,4 +1,4 @@
-import { useAppContext } from "@/components/context/AppContextProvider";
+import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
@@ -17,8 +17,9 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 const Profile = () => {
   const {
-    userMethods: { user, myGroups },
-  } = useAppContext();
+    groupsMethods: { myGroups },
+    user
+  } = useDashboardContext();
   const { t } = useTranslation("profile");
 
   const expired = user?.subcriptionExpiration
