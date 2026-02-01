@@ -1,27 +1,28 @@
+import { primaryColors } from "@/constants";
 import useToast from "@/hooks/useToast";
 import { hookFormErrorHandler } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import {
   ArrowRight,
-  DollarSign,
   List,
   Pen,
   Plus,
   PlusCircle,
   Trash,
-  Users,
-  X,
+  X
 } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import Animated, { SlideInRight } from "react-native-reanimated";
+import { View } from "react-native";
+import Animated, { SlideInRight, useSharedValue } from "react-native-reanimated";
 import { supabase, zodSchemas } from "sgk-commanders-shared";
 import { groupMembersJoinedSchemaT } from "sgk-commanders-shared/dist/supabase/groups";
 import { z } from "zod";
 import { useDashboardContext } from "./context/DashboardContextProvider";
 import Form from "./Form";
+import GroupSubscriptionBanner from "./GroupSubscriptionBanner";
 import Input from "./Input";
 import MemberCard from "./MemberCard";
 import { Box } from "./ui/box";
@@ -51,6 +52,8 @@ const GroupMembersList = ({
   deleteFunc?: VoidFunction;
 }) => {
   const { t } = useTranslation("group_members_list");
+  const sharedBackgroundColor = useSharedValue<(typeof primaryColors)[keyof typeof primaryColors]>(primaryColors["--color-primary-600"])
+  const paymentButtonRef = useRef<View>(null)
   if (!members.length) {
     return null;
   }
@@ -71,14 +74,13 @@ const GroupMembersList = ({
   const subscription = subscriptions.find(
     (item) => item.id === group?.subcription
   );
-
-  const expired = new Date(group.subcriptionExpiration!) < new Date();
-
+  
   function toggleAddMember() {
     setAddNewMember((prev) => !prev);
   }
 
   const toast = useToast();
+  
 
   async function submit(data: z.infer<typeof schema>) {
     const res = await createGroupMember(data);
@@ -92,12 +94,7 @@ const GroupMembersList = ({
   return (
     <VStack space="md" className=" border-y border-primary-100/20 py-4 gap-6">
       <HStack className=" items-center justify-between px-4 w-full">
-        <HStack space="md" className="items-center ">
-          <Icon as={Users} className="text-primary-100"/>
-        <Heading className="text-center text-primary-100 capitalize ">
-          {group.name}
-        </Heading>
-        </HStack>
+        <GroupSubscriptionBanner group={group} />
         {manage && (
           <HStack space="md">
             <Button variant="outline" size="xs" onPress={editFunc} className="rounded-full p-4!">
@@ -115,32 +112,7 @@ const GroupMembersList = ({
           </HStack>
         )}
       </HStack>
-      {expired && (
-        <Animated.View entering={SlideInRight.springify().delay(2000)}>
-            <HStack className=" justify-end items-center" space="lg">
-              <Text className=" text-error-500 text-nowrap" italic size="sm"   >
-                {t("subscriptionExpired")}
-              </Text>
-            
-              <Button
-                action="positive"
-                className="rounded-l-3xl "
-                onPress={() => {
-                  router.push({
-                    pathname: "/stacks/subscriptions",
-                    params: {
-                      groupId: group.id,
-                      action: "renew",
-                    },
-                  });
-                }}
-              >
-                <ButtonIcon as={DollarSign} />
-                <ButtonText>{t("paySubscription")}</ButtonText>
-              </Button>
-            </HStack>
-          </Animated.View>
-      )}
+      
       {
         manage && subscription && user?.id === group.admin_id
         && (

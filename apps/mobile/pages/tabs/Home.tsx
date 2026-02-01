@@ -9,6 +9,7 @@ import {
   ModalHeader,
 } from "@/components/ui/modal";
 
+import ClientSubscriptionBanner from "@/components/ClientSubscriptionBanner";
 import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import GroupMembersList from "@/components/GroupMembersList";
 import Logo from "@/components/Logo";
@@ -32,8 +33,10 @@ import { Link, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Bell,
+  CheckCircle,
   MessageCircle,
-  Users
+  Users,
+  XCircle
 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -44,14 +47,12 @@ import {
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
-  useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withSpring
 } from "react-native-reanimated";
 import { groupInvitationDataT, supabase } from "sgk-commanders-shared";
 
 const { updateGroupInviteStatus } = supabase.groups;
-const { addSOSResponse } = supabase.sos;
 const Home = () => {
   const [lastGroupInvitation, setLastGroupInvitation] =
     useState<groupInvitationDataT>();
@@ -60,21 +61,12 @@ const Home = () => {
   const { height: windowsHeight } = useWindowDimensions();
   const {
     groupsMethods:{myGroups},
-    sosMethods: { sos, activeSos, activeResponses },
-    messagesMethods: { messages },
-    locationMethods:{userLocation}, user
+    messagesMethods: { messages }, user
   } = useDashboardContext();
 
   const height = useSharedValue(windowsHeight / 4);
   const [submitting, setSubmitting] = useState(false);
-  const animatedSliderStyles = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-    };
-  });
-  
   const toast = useToast();
-    
   
   useEffect(() => {
     getFromAsycStore(commonAsyncKey.groupInvitation).then((res) => {
@@ -96,14 +88,8 @@ const Home = () => {
       }
     );
   });
-  
-
-  const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const unreadMessages = messages.filter((item) => item.unread);
   
-
-  
-
   async function updateGroupInvitationStatus(status: boolean) {
     setSubmitting(true);
     if (user?.phone.toString() === lastGroupInvitation?.phone.toString()) {
@@ -183,15 +169,8 @@ const Home = () => {
           </GestureDetector>
           <Animated.View
             className="bg-primary-900/10 "
-            style={animatedSliderStyles}
+            style={{height}}
           >
-            <Heading size="md" className=" text-typography-100 p-2 capitalize">
-              {user?.is_agent
-                ? t("sosList")
-                : Boolean(groupsKeys.length)
-                ? t("groupsAndMembers")
-                : ""}
-            </Heading>
             <ScrollView
               showsVerticalScrollIndicator={false}
               className=" flex-1 py-4"
@@ -199,7 +178,6 @@ const Home = () => {
               {
                 !user.is_agent ? <ClientPanel /> :<AgentPanel />
               }
-          
             </ScrollView>
           </Animated.View>
         </View>
@@ -265,25 +243,54 @@ const Home = () => {
 export default Home;
 
 function ClientPanel() {
-  const {groupsMethods:{myGroups}} = useDashboardContext()
+  const {groupsMethods:{myGroups}, sosMethods:{activeSos}} = useDashboardContext()
   const groupsKeys = !myGroups ? [] : Object.keys(myGroups);
   const { t } = useTranslation("home");
 
   return  <>
+  <VStack space="3xl" className=" px-4">
+
+    <HStack className=" gap-2 items-center">
+            <Text className=" text-typography-100">
+            Your Safety:
+            </Text>
+            {
+              !activeSos ? 
+              <Icon as={CheckCircle} className=" text-success-500" /> :
+              <Icon as={XCircle} className=" text-error-500" />
+            }
+          </HStack>
+          {
+            !groupsKeys.length && <ClientSubscriptionBanner />
+        }
+          
+  </VStack>
     {
-    groupsKeys.length ?  groupsKeys.map((item) => {
+    groupsKeys.length ? <>
+     <Heading size="md" className=" text-typography-100 p-2 capitalize">
+            {   t("groupsAndMembers")}
+    </Heading>
+    {
+      groupsKeys.map((item) => {
         const members = myGroups[item];
         return <GroupMembersList key={item} members={members} />;
-      }):
-          <Center className=" gap-4">
-                  
-                  <Link href={"/stacks/members"} asChild>
-                    <Button>
-                      <ButtonIcon as={Users} />
-                      <ButtonText>{t("addFamilyMembers")}</ButtonText>
-                    </Button>
-                  </Link>
-                </Center>
+      })
+    }
+    </> : 
+      <VStack className="px-4" space="4xl">
+          <Center className=" gap-8 py-10">
+            <Center className=" gap-4">
+            <Heading size="sm" className="text-primary-300">Need to pay multiple subscriptions?</Heading>
+            <Text className=" text-center text-typography-500">Enjoy the best pricing for your friends and family by creating and adding members to a group</Text>
+            </Center>
+            <Link href={"/stacks/members"} asChild>
+            <Button>
+              <ButtonIcon as={Users} />
+              <ButtonText>{t("createGroup")}</ButtonText>
+            </Button>
+          </Link>
+          </Center>
+      </VStack>
     }
   </>
 }
@@ -301,6 +308,9 @@ function AgentPanel() {
 
 
   return  <>
+    <Heading size="md" className=" text-typography-100 p-2 capitalize">
+        {t("sosList")}
+    </Heading>
     {
       availableSOS ?  availableSOS.map((item) => {
                     return (

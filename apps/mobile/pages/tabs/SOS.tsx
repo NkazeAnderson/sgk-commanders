@@ -12,7 +12,6 @@ import {
   Trash2,
 } from "lucide-react-native";
 
-import { useAppContext } from "@/components/context/AppContextProvider";
 import { useDashboardContext } from "@/components/context/DashboardContextProvider";
 import Form from "@/components/Form";
 import Gradient from "@/components/Gradient";
@@ -69,10 +68,6 @@ const SOS = () => {
   const { t } = useTranslation("sos");
   const rippleOpacity = useSharedValue(0.5);
   const avatarTranslation = useSharedValue(0);
-  const sosBottomPostion = useSharedValue(0);
-  const sosHeight = useSharedValue(0);
-  const avatarTopPostion = useSharedValue(0);
-  const avatarheight = useSharedValue(0);
   const [message, setMessage] = useState("");
   const [showSendReport, setShowSendReport] = useState(false);
   const sosRef = useRef<View>(null);
@@ -84,13 +79,10 @@ const SOS = () => {
   const [submitting, setSubmitting] = useState(false);
   const  {height} = useWindowDimensions()
  const {
-    groupsMethods:{myGroups},
-    sosMethods: { sos, sosResponses },
-    messagesMethods: { messages },
-    locationMethods:{userLocation}
+    sosMethods: { sos, sosResponses, activeSos, activeResponses },
+    locationMethods:{userLocation}, user
   } = useDashboardContext();
 
-  const {userMethods:{user}} = useAppContext()
   const toast = useToast();
   const sliderY = useSharedValue(0);
   const bounce = useAnimatedStyle(() => {
@@ -161,13 +153,7 @@ const SOS = () => {
     );
   }, []);
 
-  if (!user) {
-    return null;
-  }
-  
-  const focusedSOS = user.is_agent ? sosResponses.find(item=>!item.sos.resolved && item.response_by.id === user.id)?.sos : sos.find((sosItem) => sosItem.sent_by.id === user?.id);
-  const responses = sosResponses.filter(item=>item.sos.id === focusedSOS?.id)
-  const userIsSafe = focusedSOS === undefined ? true : focusedSOS.resolved;
+  const userIsSafe = activeSos?.resolved !== false;
   
   const avatarPanGesture = Gesture.Pan()
     .onUpdate((e) => {
@@ -175,9 +161,8 @@ const SOS = () => {
       
     })
     .onEnd((e) => {
-      if (e.absoluteY < height/3) {
+      if (e.absoluteY < height/2) {
         scheduleOnRN(sendSOS);
-        
       } else {
         avatarTranslation.value = withTiming(0, {
           duration: 2000,
@@ -232,9 +217,9 @@ const SOS = () => {
       throw new Error("User required");
     }
     setSubmitting(true);
-    console.log({responses});
+    console.log({activeResponses});
     
-    const focusedSOSResponse = responses.find((item) => item.response_by.id === user?.id );
+    const activeSosResponse = activeResponses.find((item) => item.response_by.id === user?.id );
 
     const imagesUrl: string[] = [];
     for (let image of reportImages) {
@@ -243,15 +228,15 @@ const SOS = () => {
       imagesUrl.push(url);
     }
 
-    if (!focusedSOSResponse) {
+    if (!activeSosResponse) {
       setSubmitting(false);
-      throw new Error("focusedSOSResponse Required");
+      throw new Error("activeSosResponse Required");
     }
     const res = await resolveSOS({
-      ...focusedSOSResponse,
+      ...activeSosResponse,
       description: reportMessage,
       images: imagesUrl,
-    }, focusedSOS!.id);
+    }, activeSos!.id);
     setSubmitting(false);
     if (!res.some((item) => item.error)) {
       setReportMessage("");
@@ -269,7 +254,7 @@ const SOS = () => {
   }
 
   if (user?.is_agent) {
-    if (!focusedSOS) {
+    if (!activeSos) {
       return (
         <View className="flex flex-1  bg-primary-950 px-4">
           <Center className="flex-1 items-center justify-center gap-5">
@@ -277,7 +262,7 @@ const SOS = () => {
 
           </Box> */}
             <Icon className=" text-success-500 w-10 h-10" as={CircleCheck} />
-            <Text>{t("nofocusedSOSMission")}</Text>
+            <Text>{t("noactiveSosMission")}</Text>
           </Center>
         </View>
       );
@@ -291,21 +276,21 @@ const SOS = () => {
           <ScrollView className=" gap-4">
             <Center className="gap-4">
               <Avatar size={"2xl"}>
-                <AvatarFallbackText>{focusedSOS.sent_by.name}</AvatarFallbackText>
+                <AvatarFallbackText>{activeSos.sent_by.name}</AvatarFallbackText>
                 <AvatarImage
                   source={{
-                    uri: focusedSOS.sent_by.profile_picture ?? "",
+                    uri: activeSos.sent_by.profile_picture ?? "",
                   }}
                 />
               </Avatar>
               <Heading className=" capitalize my-2 text-typography-0">
-                {focusedSOS.sent_by.name}
+                {activeSos.sent_by.name}
               </Heading>
             </Center>
-            {Boolean(focusedSOS.message) && (
+            {Boolean(activeSos.message) && (
               <Box>
                 <Heading className=" text-primary-50">{t("message")}</Heading>
-                <Text className=" text-typography-0">{focusedSOS.message}</Text>
+                <Text className=" text-typography-0">{activeSos.message}</Text>
               </Box>
             )}
 
@@ -314,10 +299,10 @@ const SOS = () => {
                 <Button
                   className=" flex-1"
                   onPress={() => {
-                    if (userLocation && focusedSOS) {
+                    if (userLocation && activeSos) {
                       const url = getGoogleMapsDirectionURL(
                         userLocation,
-                        focusedSOS.location
+                        activeSos.location
                       );
                       router.navigate(url);
                     }
@@ -406,7 +391,7 @@ const SOS = () => {
               </Animated.View>
             )}
             {
-              responses.length >1 &&  
+              activeResponses.length >1 &&  
             <Box className="gap-4">
             <Heading className=" text-primary-50">Other Agents on this case</Heading>
             <AvatarGroup className="self-start">
@@ -415,7 +400,7 @@ const SOS = () => {
                       source={require("../../assets/images/logo.png")}
                     /> </Avatar>
               {
-              responses.map((response, index) => (
+              activeResponses.map((response, index) => (
                   <Avatar key={index} size={"md"} className="mx-1 bg-primary-900" >
                     <AvatarImage
                       source={{
@@ -483,7 +468,7 @@ const SOS = () => {
               </Animated.View>
             </Center>
           )
-           : !!focusedSOS?.message?.length ? <Text className="text-typography-100 text-center">{focusedSOS.message}</Text> 
+           : !!activeSos?.message?.length ? <Text className="text-typography-100 text-center">{activeSos.message}</Text> 
            : null}
 
           <Center className="pb-20 gap-2">
@@ -499,7 +484,7 @@ const SOS = () => {
                       source={require("../../assets/images/logo.png")}
                     /> </Avatar>
               {
-                responses.map((response, index) => (
+                activeResponses.map((response, index) => (
                   <Avatar key={index} size={"md"} className="mx-1 bg-primary-900" >
                     <AvatarImage
                       source={{

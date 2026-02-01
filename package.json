@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "eas-build-post-install": "npm run build --workspace=packages/shared",
-    "postinstall": "npm run build --workspace=packages/shared"
+    "postinstall": "npm run build --workspace=packages/shared",
+    "dev:mobile":"npm run start -w apps/mobile",
+    "dev:web":"npm run dev -w apps/web",
+    "dev:package":"npm run dev -w apps/web"
   },
   "workspaces": [
     "apps/*",

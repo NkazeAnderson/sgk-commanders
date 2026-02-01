@@ -17,7 +17,6 @@ const { sosSchema, usersSchema } = zodSchemas;
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 //@eslint-ignore
-import DashboardContextProvider from "@/components/context/DashboardContextProvider";
 import { primaryColors } from "@/constants";
 import "@/localisation/i18n";
 import { Platform } from "react-native";
@@ -236,11 +235,8 @@ const _layout = () => {
   //     // });
   //   };
   // }, [postgresChangesRegistrationStatus]);
-  if (!user) {
-    return null
-  }
+ 
   return (
-    <DashboardContextProvider user={user}>
       <Tabs
       screenOptions={{
         tabBarStyle: {
@@ -319,7 +315,6 @@ const _layout = () => {
         }}
       />
       </Tabs>
-    </DashboardContextProvider>
   );
 };
 

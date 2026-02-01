@@ -1,5 +1,4 @@
 import { useAppContext } from "@/components/context/AppContextProvider";
-import DashboardContextProvider from "@/components/context/DashboardContextProvider";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { primaryColors } from "@/constants";
 import { Link, Stack } from "expo-router";
@@ -10,12 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const _layout = () => {
   const { userMethods:{user}}= useAppContext()
-  if (!user) {
-    return null
-  }
   return (
     <SafeAreaView className=" flex-1 bg-primary-900" edges={["bottom"]}>
-      <DashboardContextProvider user={user}>
       <Stack
         screenOptions={{
           headerStyle: {
@@ -35,8 +30,6 @@ const _layout = () => {
           animation: "none",
         }}
       />
-
-      </DashboardContextProvider>
       <StatusBar style="dark" />
     </SafeAreaView>
   );

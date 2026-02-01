@@ -5,7 +5,7 @@ export default {
   members: "Membres",
   goToSOS: "Aller à SOS",
   goToMembers: "Aller aux membres",
-  addFamilyMembers: "Ajouter des membres",
+  createGroup: "Creer une groupe",
   dashboard: "Tableau de bord",
   sosList: "Liste SOS",
   groupsAndMembers: "Groupes et membres",
