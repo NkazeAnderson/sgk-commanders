@@ -1,0 +1,1 @@
+drop trigger if exists after_auth_user_signup on auth.users;

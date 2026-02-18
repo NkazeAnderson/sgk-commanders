@@ -1,0 +1,19 @@
+{
+  "name": "sgk_supabase",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "type": "module",
+  "types": "database.types.ts",
+  "exports": {
+    ".": {
+      "import": "./database.types.ts",
+      "types": "./database.types.ts"
+    }
+  },
+  "scripts": {
+    "gen:types": "npx supabase gen types typescript --local > ../shared/src/database.types.ts",
+    "gen:migration": "npx supabase db diff --file ./migrations/$(date +%Y%m%d%H%M%S)_migration.sql",
+    "serve:functions": "supabase functions serve * --no-verify-jwt"
+  }
+}

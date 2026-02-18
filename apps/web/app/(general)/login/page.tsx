@@ -26,7 +26,6 @@ import { useForm } from "react-hook-form";
 import { supabase as sharedSupabase } from "sgk-commanders-shared";
 import { usersSchema } from "sgk-commanders-shared/dist/zodSchema";
 
-
 type LoginFormValues = {
   email: string;
   code: string;
@@ -36,10 +35,10 @@ type LoginFormValues = {
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
-  const [step, setStep] = React.useState<"email"|"code">("email");
+  const [step, setStep] = React.useState<"email" | "code">("email");
   const emailRef = React.useRef<string>("");
-  
-  const supabase = sharedSupabase.supabase
+
+  const supabase = sharedSupabase.supabase;
   const form = useForm<LoginFormValues>({
     defaultValues: {
       email: "",
@@ -50,42 +49,37 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: LoginFormValues) {
-
     if (step === "email") {
       emailRef.current = values.email;
       try {
-        usersSchema.pick({email:true}).parse({email:values.email})
-       
+        usersSchema.pick({ email: true }).parse({ email: values.email });
       } catch (error) {
         console.log("Invalid email");
         console.log(error);
       }
 
-       // Try sign in with email/password using Supabase
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email: values.email,
-        options:{
-          shouldCreateUser:true,
-          data:{name:"Nkaze Anderson", email:values.email, phone:683403750, home_address:"Diedo, douala, cmr", accepted_terms:true} 
-        }
-      });
-       setStep("code")
-       console.log(data);
-       
-      if (error) throw error;
+      // Try sign in with email/password using Supabase
+      setLoading(true);
+      try {
+        const { data, error } = await supabase.auth.signInWithOtp({
+          email: values.email,
+          options: {
+            shouldCreateUser: false,
+          },
+        });
+        setStep("code");
+        console.log(data);
 
-    } catch (err) {
-      console.error("Email sign-in failed:", err);
-      alert("Email sign-in failed. You can try anonymous login instead.");
-    } finally {
-      setLoading(false);
-    }
-    }
-    else if (step === "code") {
+        if (error) throw error;
+      } catch (err) {
+        console.error("Email sign-in failed:", err);
+        alert("Email sign-in failed. You can try anonymous login instead.");
+      } finally {
+        setLoading(false);
+      }
+    } else if (step === "code") {
       // Try verify OTP code using Supabase
-      setLoading(true); 
+      setLoading(true);
       try {
         const { error } = await supabase.auth.verifyOtp({
           email: emailRef.current,
@@ -95,14 +89,13 @@ export default function LoginPage() {
         if (error) {
           throw error;
         }
-          // successful login -> redirect to dashboard
-      router.push("/dashboard");
+        // successful login -> redirect to dashboard
+        router.push("/dashboard");
+      } catch (err) {
+        console.error("OTP verification failed:", err);
+        alert("OTP verification failed. Please check the code and try again.");
+      }
     }
-    catch (err) {
-      console.error("OTP verification failed:", err);
-      alert("OTP verification failed. Please check the code and try again.");
-    }}
-
   }
 
   return (
@@ -110,17 +103,12 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign in to your account</CardTitle>
-          <CardDescription>
-            Enter your email to continue.
-          </CardDescription>
+          <CardDescription>Enter your email to continue.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-
-              {
-                step === "email" ?
-
+              {step === "email" ? (
                 <FormField
                   control={form.control}
                   name="email"
@@ -139,7 +127,7 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-                  :
+              ) : (
                 <FormField
                   control={form.control}
                   name="code"
@@ -158,7 +146,7 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-              }
+              )}
 
               <Button type="submit" className="w-full">
                 Sign in
@@ -169,7 +157,6 @@ export default function LoginPage() {
                 <Link href="#" className="underline-offset-4 hover:underline">
                   Forgot password?
                 </Link>
-            
               </div>
             </form>
           </Form>

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { publicUsersRowSchema } from "./schemas.js";
 
 /**
  * Pure Zod schemas that correspond to the DB schema defined in `dbSchema.ts`.
@@ -6,7 +7,11 @@ import { z } from "zod";
  * required/optional semantics and simple constraints (lengths, ints, UUIDs).
  */
 
-export const subscriptionGroupEnum = z.enum(["individuals", "groups", "organisations"]);
+export const subscriptionGroupEnum = z.enum([
+  "individuals",
+  "groups",
+  "organisations",
+]);
 export const paymentStatusEnum = z.enum(["pending", "failed", "success"]);
 
 const locationSchema = z.object({
@@ -24,22 +29,8 @@ export const subscriptionsSchema = z.object({
 });
 export type Subscription = z.infer<typeof subscriptionsSchema>;
 
-export const usersSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1).max(255),
+export const usersSchema = publicUsersRowSchema.extend({
   email: z.string().email().max(255),
-  phone: z.number().int(),
-  emergency_phone: z.number().int().nullish(),
-  home_address: z.string().min(1).max(225),
-  accepted_terms: z.boolean(),
-  last_known_location: locationSchema.nullish(),
-  created_at: z.string().nullish(), // DB timestamp defaultNow
-  is_safe: z.boolean().nullish().default(true),
-  is_agent: z.boolean().nullish().default(false),
-  profile_picture: z.string().nullish(),
-  deviceIds: z.array(z.string()).nullish(),
-  subcription: z.string().uuid().describe("references a subscribtion in the subscriptions table").nullish(),
-  subcriptionExpiration: z.string().nullish(), // date string
 });
 export type User = z.infer<typeof usersSchema>;
 
@@ -48,15 +39,26 @@ export const groupsSchema = z.object({
   admin_id: z.string().uuid().describe("references a user in the users table"),
   is_organisation: z.boolean().nullish().default(false),
   name: z.string().min(1),
-  subcription: z.string().uuid().nullish().describe("references a subscribtion in the subscriptions table"),
+  subcription: z
+    .string()
+    .uuid()
+    .nullish()
+    .describe("references a subscribtion in the subscriptions table"),
   subcriptionExpiration: z.string().nullish(),
 });
 export type Group = z.infer<typeof groupsSchema>;
 
 export const groupMembersSchema = z.object({
   id: z.string().uuid(),
-  group_id: z.string().uuid().describe("references a group in the groups table"),
-  member_id: z.string().uuid().nullish().describe("references a user in the users table"),
+  group_id: z
+    .string()
+    .uuid()
+    .describe("references a group in the groups table"),
+  member_id: z
+    .string()
+    .uuid()
+    .nullish()
+    .describe("references a user in the users table"),
   role: z.string().min(1).max(50),
   invitation_accepted: z.boolean().nullish(),
   created_at: z.string().nullish(),
@@ -77,7 +79,10 @@ export type SOS = z.infer<typeof sosSchema>;
 export const sosResponseSchema = z.object({
   id: z.string().uuid(),
   sos: z.string().uuid().describe("References an alert/sos in the sos table"),
-  response_by: z.string().uuid().describe("References a user in the users table"),
+  response_by: z
+    .string()
+    .uuid()
+    .describe("References a user in the users table"),
   description: z.string().nullish(),
   images: z.array(z.string()).nullish(),
   created_at: z.string().nullish(),
@@ -131,4 +136,3 @@ export const paymentsSchema = z.object({
   group: z.string().uuid().nullish(),
 });
 export type Payment = z.infer<typeof paymentsSchema>;
-
